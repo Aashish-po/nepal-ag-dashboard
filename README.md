@@ -158,40 +158,108 @@ All seed data is committed in `backend/data/`. A weekly ETL pipeline (APSchedule
 
 ```
 nepal-ag-dashboard/
-├── backend/
-│   ├── main.py              # FastAPI application entry point
-│   ├── requirements.txt     # Python dependencies
-│   ├── .env.example         # Environment variable template
-│   ├── Dockerfile
-│   ├── render.yaml          # Render deployment config
-│   ├── api/
-│   │   ├── db.py            # Database session & engine
-│   │   ├── routes/          # API endpoint handlers
-│   │   └── models/          # Pydantic schemas + SQLAlchemy ORM
-│   ├── services/            # ETL, forecasting, correlations, caching, scheduler
-│   ├── data/                # Seed CSVs, GeoJSON
-│   ├── migrations/          # Database migration scripts
-│   ├── scripts/
-│   │   └── seed_db.py       # Database seeding script
-│   └── tests/
-│       ├── unit/            # Unit tests
-│       ├── integration/     # Integration tests
-│       └── fixtures/        # Test data fixtures
 ├── frontend/
-│   ├── src/
-│   │   ├── pages/           # 10 screen components
-│   │   ├── components/      # Shared UI components
-│   │   ├── hooks/           # Custom React hooks
-│   │   ├── lib/             # Utilities & API client
-│   │   └── __tests__/       # Test files
-│   ├── vercel.json          # Vercel deployment config
+│   ├── index.html
+│   ├── package.json
 │   ├── vite.config.ts
-│   └── package.json
+│   ├── vercel.json
+│   ├── .env.example
+│   ├── src/
+│   │   ├── main.tsx
+│   │   ├── App.tsx
+│   │   ├── components/
+│   │   │   ├── Header.tsx
+│   │   │   ├── Sidebar.tsx
+│   │   │   ├── Loading.tsx
+│   │   │   └── ErrorBoundary.tsx
+│   │   ├── pages/
+│   │   │   ├── Home.tsx
+│   │   │   ├── Yields.tsx
+│   │   │   ├── Climate.tsx
+│   │   │   ├── Correlation.tsx
+│   │   │   ├── ExportCrops.tsx
+│   │   │   ├── Commercialization.tsx
+│   │   │   ├── Forecasts.tsx
+│   │   │   ├── Map.tsx
+│   │   │   ├── Compare.tsx
+│   │   │   └── About.tsx
+│   │   ├── hooks/
+│   │   │   ├── useApi.ts
+│   │   │   └── useFilters.ts
+│   │   ├── lib/
+│   │   │   ├── api.ts
+│   │   │   └── utils.ts
+│   │   ├── styles/
+│   │   │   ├── tokens.css
+│   │   │   └── globals.css
+│   │   ├── types/
+│   │   │   └── index.ts
+│   │   └── __tests__/
+│   │       ├── components/
+│   │       ├── hooks/
+│   │       └── integration/
+│   └── public/
+│       └── favicon.svg
+├── backend/
+│   ├── main.py                    # FastAPI app entry point
+│   ├── requirements.txt          # Dependencies
+│   ├── .env.example              # Env template
+│   ├── Dockerfile                # For Render deployment
+│   ├── render.yaml               # Render deploy config
+│   ├── .pre-commit-config.yaml  # Pre-commit hooks
+│   ├── api/
+│   │   ├── __init__.py
+│   │   ├── db.py               # Database/session setup
+│   │   ├── routes/
+│   │   │   ├── __init__.py
+│   │   │   ├── districts.py
+│   │   │   ├── crops.py
+│   │   │   ├── yields.py
+│   │   │   ├── climate.py
+│   │   │   ├── forecasts.py
+│   │   │   ├── exports.py
+│   │   │   ├── commercialization.py
+│   │   │   ├── correlation.py
+│   │   │   └── heatmap.py
+│   │   └── models/
+│   │       ├── __init__.py
+│   │       ├── schemas.py      # Pydantic models
+│   │       └── db_models.py    # SQLAlchemy ORM
+│   ├── services/
+│   │   ├── __init__.py
+│   │   ├── etl.py
+│   │   ├── forecasting.py
+│   │   ├── correlations.py
+│   │   ├── cache.py
+│   │   ├── scheduler.py
+│   │   └── climate.py
+│   ├── data/
+│   │   ├── faostat_2014_2024.csv
+│   │   ├── chirps_2014_2024.csv
+│   │   ├── districts.csv
+│   │   ├── crops.csv
+│   │   └── nepal_districts.geojson
+│   ├── migrations/
+│   │   └── 001_initial_schema.sql
+│   ├── scripts/
+│   │   └── seed_db.py
+│   └── tests/
+│       ├── __init__.py
+│       ├── conftest.py
+│       ├── unit/
+│       │   ├── test_services.py
+│       │   ├── test_schemas.py
+│       │   └── test_utils.py
+│       ├── integration/
+│       │   └── test_api.py
+│       └── fixtures/
+│           ├── districts.json
+│           ├── yields.json
+│           └── climate.json
 ├── .github/
 │   └── workflows/
-│       ├── ci.yml           # Lint, test, type-check
-│       └── e2e.yml          # End-to-end tests
-├── .pre-commit-config.yaml  # Pre-commit hooks (black, isort, flake8)
+│       ├── ci.yml
+│       └── e2e.yml
 └── README.md
 ```
 

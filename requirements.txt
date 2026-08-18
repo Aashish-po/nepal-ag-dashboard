@@ -15,6 +15,6 @@ sentry-sdk==1.38.0
 apscheduler==3.11.3
 requests==2.31.0
 openpyxl==3.1.5
-python-multipart==0.0.6
+python-multipart==0.0.31
 pydantic==2.13.4
 pydantic-settings==2.1.0

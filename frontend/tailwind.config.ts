@@ -1,0 +1,76 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+          DEFAULT: 'var(--color-primary)',
+          light: 'var(--color-primary-light)',
+          dark: 'var(--color-primary-dark)',
+        },
+        secondary: {
+          DEFAULT: 'var(--color-secondary)',
+          light: 'var(--color-secondary-light)',
+          dark: 'var(--color-secondary-dark)',
+        },
+        success: 'var(--color-success)',
+        warning: 'var(--color-warning)',
+        error: 'var(--color-error)',
+        info: 'var(--color-info)',
+        'bg-primary': 'var(--color-bg-primary)',
+        'bg-secondary': 'var(--color-bg-secondary)',
+        'bg-tertiary': 'var(--color-bg-tertiary)',
+        'text-primary': 'var(--color-text-primary)',
+        'text-secondary': 'var(--color-text-secondary)',
+        'text-muted': 'var(--color-text-muted)',
+        'border-primary': 'var(--color-border)',
+        'border-light': 'var(--color-border-light)',
+        chart: {
+          1: 'var(--color-chart-1)',
+          2: 'var(--color-chart-2)',
+          3: 'var(--color-chart-3)',
+          4: 'var(--color-chart-4)',
+          5: 'var(--color-chart-5)',
+          6: 'var(--color-chart-6)',
+          7: 'var(--color-chart-7)',
+          8: 'var(--color-chart-8)',
+        },
+      },
+      fontFamily: {
+        sans: ['var(--font-family-base)', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+      },
+      fontSize: {
+        h1: 'var(--font-size-h1)',
+        h2: 'var(--font-size-h2)',
+        h3: 'var(--font-size-h3)',
+        h4: 'var(--font-size-h4)',
+        body: 'var(--font-size-body)',
+        small: 'var(--font-size-small)',
+        caption: 'var(--font-size-caption)',
+      },
+      fontWeight: {
+        regular: 'var(--font-weight-regular)',
+        medium: 'var(--font-weight-medium)',
+        semibold: 'var(--font-weight-semibold)',
+        bold: 'var(--font-weight-bold)',
+      },
+      spacing: {
+        xs: 'var(--spacing-xs)',
+        sm: 'var(--spacing-sm)',
+        md: 'var(--spacing-md)',
+        lg: 'var(--spacing-lg)',
+        xl: 'var(--spacing-xl)',
+        '2xl': 'var(--spacing-2xl)',
+        '3xl': 'var(--spacing-3xl)',
+      },
+      borderRadius: {
+        sm: 'var(--radius-sm)',
+        md: 'var(--radius-md)',
+        lg: 'var(--radius-lg)',
+        full: 'var(--radius-full)',
+      },
+    },
+  },
+  plugins: [],
+}

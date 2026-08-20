@@ -1,0 +1,2931 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 1,
+        "name": "Taplejung",
+        "province": "Koshi",
+        "region": "Mountain",
+        "population": 132000,
+        "area_sq_km": 3708.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              87.4667,
+              27.1833
+            ],
+            [
+              87.7667,
+              27.1833
+            ],
+            [
+              87.7667,
+              27.4833
+            ],
+            [
+              87.4667,
+              27.4833
+            ],
+            [
+              87.4667,
+              27.1833
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 2,
+        "name": "Panchthar",
+        "province": "Koshi",
+        "region": "Mountain",
+        "population": 222000,
+        "area_sq_km": 2452.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              87.7833,
+              27.0833
+            ],
+            [
+              88.0833,
+              27.0833
+            ],
+            [
+              88.0833,
+              27.3833
+            ],
+            [
+              87.7833,
+              27.3833
+            ],
+            [
+              87.7833,
+              27.0833
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 3,
+        "name": "Ilam",
+        "province": "Koshi",
+        "region": "Hill",
+        "population": 299000,
+        "area_sq_km": 1937.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.7833,
+              26.5833
+            ],
+            [
+              87.0833,
+              26.5833
+            ],
+            [
+              87.0833,
+              26.8833
+            ],
+            [
+              86.7833,
+              26.8833
+            ],
+            [
+              86.7833,
+              26.5833
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 4,
+        "name": "Jhapa",
+        "province": "Koshi",
+        "region": "Terai",
+        "population": 811000,
+        "area_sq_km": 2523.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              87.9167,
+              26.4833
+            ],
+            [
+              88.2167,
+              26.4833
+            ],
+            [
+              88.2167,
+              26.7833
+            ],
+            [
+              87.9167,
+              26.7833
+            ],
+            [
+              87.9167,
+              26.4833
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 5,
+        "name": "Morang",
+        "province": "Koshi",
+        "region": "Terai",
+        "population": 968000,
+        "area_sq_km": 2513.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              87.1833,
+              26.4167
+            ],
+            [
+              87.4833,
+              26.4167
+            ],
+            [
+              87.4833,
+              26.7167
+            ],
+            [
+              87.1833,
+              26.7167
+            ],
+            [
+              87.1833,
+              26.4167
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 6,
+        "name": "Sunsari",
+        "province": "Koshi",
+        "region": "Terai",
+        "population": 532000,
+        "area_sq_km": 2066.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              87.0167,
+              26.5667
+            ],
+            [
+              87.3167,
+              26.5667
+            ],
+            [
+              87.3167,
+              26.8667
+            ],
+            [
+              87.0167,
+              26.8667
+            ],
+            [
+              87.0167,
+              26.5667
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 7,
+        "name": "Dhankuta",
+        "province": "Koshi",
+        "region": "Hill",
+        "population": 227000,
+        "area_sq_km": 1506.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.8833,
+              26.8333
+            ],
+            [
+              87.1833,
+              26.8333
+            ],
+            [
+              87.1833,
+              27.1333
+            ],
+            [
+              86.8833,
+              27.1333
+            ],
+            [
+              86.8833,
+              26.8333
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 8,
+        "name": "Sankhuwasabha",
+        "province": "Koshi",
+        "region": "Mountain",
+        "population": 67000,
+        "area_sq_km": 3119.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              87.0167,
+              27.8833
+            ],
+            [
+              87.3167,
+              27.8833
+            ],
+            [
+              87.3167,
+              28.1833
+            ],
+            [
+              87.0167,
+              28.1833
+            ],
+            [
+              87.0167,
+              27.8833
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 9,
+        "name": "Bhojpur",
+        "province": "Koshi",
+        "region": "Hill",
+        "population": 183000,
+        "area_sq_km": 3129.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              87.0,
+              27.0667
+            ],
+            [
+              87.3,
+              27.0667
+            ],
+            [
+              87.3,
+              27.3667
+            ],
+            [
+              87.0,
+              27.3667
+            ],
+            [
+              87.0,
+              27.0667
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 10,
+        "name": "Okhaldhunga",
+        "province": "Koshi",
+        "region": "Hill",
+        "population": 195000,
+        "area_sq_km": 2003.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.6,
+              27.1333
+            ],
+            [
+              86.9,
+              27.1333
+            ],
+            [
+              86.9,
+              27.4333
+            ],
+            [
+              86.6,
+              27.4333
+            ],
+            [
+              86.6,
+              27.1333
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 11,
+        "name": "Khotang",
+        "province": "Koshi",
+        "region": "Hill",
+        "population": 164000,
+        "area_sq_km": 2714.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.45,
+              27.1667
+            ],
+            [
+              86.75,
+              27.1667
+            ],
+            [
+              86.75,
+              27.4667
+            ],
+            [
+              86.45,
+              27.4667
+            ],
+            [
+              86.45,
+              27.1667
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 12,
+        "name": "Solukhumbu",
+        "province": "Koshi",
+        "region": "Mountain",
+        "population": 102000,
+        "area_sq_km": 3640.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.5167,
+              27.4667
+            ],
+            [
+              86.8167,
+              27.4667
+            ],
+            [
+              86.8167,
+              27.7667
+            ],
+            [
+              86.5167,
+              27.7667
+            ],
+            [
+              86.5167,
+              27.4667
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 13,
+        "name": "Udayapur",
+        "province": "Koshi",
+        "region": "Hill",
+        "population": 219000,
+        "area_sq_km": 2263.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.6667,
+              27.0667
+            ],
+            [
+              86.9667,
+              27.0667
+            ],
+            [
+              86.9667,
+              27.3667
+            ],
+            [
+              86.6667,
+              27.3667
+            ],
+            [
+              86.6667,
+              27.0667
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 14,
+        "name": "Saptari",
+        "province": "Madhesh",
+        "region": "Terai",
+        "population": 811000,
+        "area_sq_km": 1231.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.3833,
+              26.5333
+            ],
+            [
+              86.6833,
+              26.5333
+            ],
+            [
+              86.6833,
+              26.8333
+            ],
+            [
+              86.3833,
+              26.8333
+            ],
+            [
+              86.3833,
+              26.5333
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 15,
+        "name": "Siraha",
+        "province": "Madhesh",
+        "region": "Terai",
+        "population": 612000,
+        "area_sq_km": 1368.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              85.8667,
+              26.4833
+            ],
+            [
+              86.1667,
+              26.4833
+            ],
+            [
+              86.1667,
+              26.7833
+            ],
+            [
+              85.8667,
+              26.7833
+            ],
+            [
+              85.8667,
+              26.4833
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 16,
+        "name": "Mahottari",
+        "province": "Madhesh",
+        "region": "Terai",
+        "population": 525000,
+        "area_sq_km": 852.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              85.6,
+              26.7
+            ],
+            [
+              85.9,
+              26.7
+            ],
+            [
+              85.9,
+              27.0
+            ],
+            [
+              85.6,
+              27.0
+            ],
+            [
+              85.6,
+              26.7
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 17,
+        "name": "Dhading",
+        "province": "Bagmati",
+        "region": "Hill",
+        "population": 253000,
+        "area_sq_km": 2138.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              84.6,
+              27.8833
+            ],
+            [
+              84.9,
+              27.8833
+            ],
+            [
+              84.9,
+              28.1833
+            ],
+            [
+              84.6,
+              28.1833
+            ],
+            [
+              84.6,
+              27.8833
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 18,
+        "name": "Gorkha",
+        "province": "Bagmati",
+        "region": "Hill",
+        "population": 203000,
+        "area_sq_km": 1926.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              84.7333,
+              27.9667
+            ],
+            [
+              85.0333,
+              27.9667
+            ],
+            [
+              85.0333,
+              28.2667
+            ],
+            [
+              84.7333,
+              28.2667
+            ],
+            [
+              84.7333,
+              27.9667
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 19,
+        "name": "Manang",
+        "province": "Bagmati",
+        "region": "Mountain",
+        "population": 32000,
+        "area_sq_km": 4136.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              83.8833,
+              28.4833
+            ],
+            [
+              84.1833,
+              28.4833
+            ],
+            [
+              84.1833,
+              28.7833
+            ],
+            [
+              83.8833,
+              28.7833
+            ],
+            [
+              83.8833,
+              28.4833
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 20,
+        "name": "Narayani",
+        "province": "Bagmati",
+        "region": "Terai",
+        "population": 642000,
+        "area_sq_km": 2282.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              83.9,
+              27.4333
+            ],
+            [
+              84.2,
+              27.4333
+            ],
+            [
+              84.2,
+              27.7333
+            ],
+            [
+              83.9,
+              27.7333
+            ],
+            [
+              83.9,
+              27.4333
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 21,
+        "name": "Kathmandu",
+        "province": "Bagmati",
+        "region": "Hill",
+        "population": 1200000,
+        "area_sq_km": 899.25
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              85.174,
+              27.5672
+            ],
+            [
+              85.474,
+              27.5672
+            ],
+            [
+              85.474,
+              27.8672
+            ],
+            [
+              85.174,
+              27.8672
+            ],
+            [
+              85.174,
+              27.5672
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 22,
+        "name": "Lalitpur",
+        "province": "Bagmati",
+        "region": "Hill",
+        "population": 441000,
+        "area_sq_km": 385.2
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              85.1483,
+              27.4833
+            ],
+            [
+              85.4483,
+              27.4833
+            ],
+            [
+              85.4483,
+              27.7833
+            ],
+            [
+              85.1483,
+              27.7833
+            ],
+            [
+              85.1483,
+              27.4833
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 23,
+        "name": "Bhaktapur",
+        "province": "Bagmati",
+        "region": "Hill",
+        "population": 266000,
+        "area_sq_km": 119.36
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              85.2397,
+              27.5019
+            ],
+            [
+              85.5397,
+              27.5019
+            ],
+            [
+              85.5397,
+              27.8019
+            ],
+            [
+              85.2397,
+              27.8019
+            ],
+            [
+              85.2397,
+              27.5019
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 24,
+        "name": "Chitwan",
+        "province": "Bagmati",
+        "region": "Terai",
+        "population": 653000,
+        "area_sq_km": 1339.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              84.1333,
+              27.3833
+            ],
+            [
+              84.4333,
+              27.3833
+            ],
+            [
+              84.4333,
+              27.6833
+            ],
+            [
+              84.1333,
+              27.6833
+            ],
+            [
+              84.1333,
+              27.3833
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 25,
+        "name": "Parbat",
+        "province": "Bagmati",
+        "region": "Hill",
+        "population": 223000,
+        "area_sq_km": 1219.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              83.7667,
+              27.7833
+            ],
+            [
+              84.0667,
+              27.7833
+            ],
+            [
+              84.0667,
+              28.0833
+            ],
+            [
+              83.7667,
+              28.0833
+            ],
+            [
+              83.7667,
+              27.7833
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 26,
+        "name": "Kaski",
+        "province": "Bagmati",
+        "region": "Hill",
+        "population": 344000,
+        "area_sq_km": 2349.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              83.8167,
+              28.05
+            ],
+            [
+              84.1167,
+              28.05
+            ],
+            [
+              84.1167,
+              28.35
+            ],
+            [
+              83.8167,
+              28.35
+            ],
+            [
+              83.8167,
+              28.05
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 27,
+        "name": "Mustang",
+        "province": "Bagmati",
+        "region": "Mountain",
+        "population": 115000,
+        "area_sq_km": 3029.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              83.3167,
+              28.6167
+            ],
+            [
+              83.6167,
+              28.6167
+            ],
+            [
+              83.6167,
+              28.9167
+            ],
+            [
+              83.3167,
+              28.9167
+            ],
+            [
+              83.3167,
+              28.6167
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 28,
+        "name": "Myagdi",
+        "province": "Bagmati",
+        "region": "Hill",
+        "population": 145000,
+        "area_sq_km": 2258.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              83.4833,
+              28.5
+            ],
+            [
+              83.7833,
+              28.5
+            ],
+            [
+              83.7833,
+              28.8
+            ],
+            [
+              83.4833,
+              28.8
+            ],
+            [
+              83.4833,
+              28.5
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 29,
+        "name": "Pokhara",
+        "province": "Bagmati",
+        "region": "Hill",
+        "population": 384000,
+        "area_sq_km": 2376.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              83.8167,
+              28.05
+            ],
+            [
+              84.1167,
+              28.05
+            ],
+            [
+              84.1167,
+              28.35
+            ],
+            [
+              83.8167,
+              28.35
+            ],
+            [
+              83.8167,
+              28.05
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 30,
+        "name": "Baglung",
+        "province": "Bagmati",
+        "region": "Hill",
+        "population": 236000,
+        "area_sq_km": 1898.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              83.5,
+              28.1167
+            ],
+            [
+              83.8,
+              28.1167
+            ],
+            [
+              83.8,
+              28.4167
+            ],
+            [
+              83.5,
+              28.4167
+            ],
+            [
+              83.5,
+              28.1167
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 31,
+        "name": "Gorkha2",
+        "province": "Gandaki",
+        "region": "Hill",
+        "population": 121000,
+        "area_sq_km": 2329.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              84.15,
+              27.95
+            ],
+            [
+              84.45,
+              27.95
+            ],
+            [
+              84.45,
+              28.25
+            ],
+            [
+              84.15,
+              28.25
+            ],
+            [
+              84.15,
+              27.95
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 32,
+        "name": "Lamachaur",
+        "province": "Gandaki",
+        "region": "Hill",
+        "population": 45000,
+        "area_sq_km": 494.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              83.8333,
+              28.1333
+            ],
+            [
+              84.1333,
+              28.1333
+            ],
+            [
+              84.1333,
+              28.4333
+            ],
+            [
+              83.8333,
+              28.4333
+            ],
+            [
+              83.8333,
+              28.1333
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 33,
+        "name": "Syangja",
+        "province": "Gandaki",
+        "region": "Hill",
+        "population": 319000,
+        "area_sq_km": 2311.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              83.6833,
+              27.8833
+            ],
+            [
+              83.9833,
+              27.8833
+            ],
+            [
+              83.9833,
+              28.1833
+            ],
+            [
+              83.6833,
+              28.1833
+            ],
+            [
+              83.6833,
+              27.8833
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 34,
+        "name": "Kaski2",
+        "province": "Gandaki",
+        "region": "Hill",
+        "population": 285000,
+        "area_sq_km": 2349.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              83.8167,
+              28.05
+            ],
+            [
+              84.1167,
+              28.05
+            ],
+            [
+              84.1167,
+              28.35
+            ],
+            [
+              83.8167,
+              28.35
+            ],
+            [
+              83.8167,
+              28.05
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 35,
+        "name": "Manang2",
+        "province": "Gandaki",
+        "region": "Mountain",
+        "population": 32000,
+        "area_sq_km": 4136.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              83.8833,
+              28.4833
+            ],
+            [
+              84.1833,
+              28.4833
+            ],
+            [
+              84.1833,
+              28.7833
+            ],
+            [
+              83.8833,
+              28.7833
+            ],
+            [
+              83.8833,
+              28.4833
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 36,
+        "name": "Mustang2",
+        "province": "Gandaki",
+        "region": "Mountain",
+        "population": 110000,
+        "area_sq_km": 3029.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              83.3167,
+              28.6167
+            ],
+            [
+              83.6167,
+              28.6167
+            ],
+            [
+              83.6167,
+              28.9167
+            ],
+            [
+              83.3167,
+              28.9167
+            ],
+            [
+              83.3167,
+              28.6167
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 37,
+        "name": "Myagdi2",
+        "province": "Gandaki",
+        "region": "Hill",
+        "population": 140000,
+        "area_sq_km": 2258.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              83.4833,
+              28.5
+            ],
+            [
+              83.7833,
+              28.5
+            ],
+            [
+              83.7833,
+              28.8
+            ],
+            [
+              83.4833,
+              28.8
+            ],
+            [
+              83.4833,
+              28.5
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 38,
+        "name": "Baglung2",
+        "province": "Gandaki",
+        "region": "Hill",
+        "population": 215000,
+        "area_sq_km": 1898.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              83.5,
+              28.1167
+            ],
+            [
+              83.8,
+              28.1167
+            ],
+            [
+              83.8,
+              28.4167
+            ],
+            [
+              83.5,
+              28.4167
+            ],
+            [
+              83.5,
+              28.1167
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 39,
+        "name": "Nawalpur",
+        "province": "Gandaki",
+        "region": "Hill",
+        "population": 224000,
+        "area_sq_km": 1206.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              84.0333,
+              27.5667
+            ],
+            [
+              84.3333,
+              27.5667
+            ],
+            [
+              84.3333,
+              27.8667
+            ],
+            [
+              84.0333,
+              27.8667
+            ],
+            [
+              84.0333,
+              27.5667
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 40,
+        "name": "Parbat2",
+        "province": "Gandaki",
+        "region": "Hill",
+        "population": 200000,
+        "area_sq_km": 1219.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              83.7667,
+              27.7833
+            ],
+            [
+              84.0667,
+              27.7833
+            ],
+            [
+              84.0667,
+              28.0833
+            ],
+            [
+              83.7667,
+              28.0833
+            ],
+            [
+              83.7667,
+              27.7833
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 41,
+        "name": "Rolpa",
+        "province": "Gandaki",
+        "region": "Hill",
+        "population": 149000,
+        "area_sq_km": 1224.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              82.55,
+              27.8667
+            ],
+            [
+              82.85,
+              27.8667
+            ],
+            [
+              82.85,
+              28.1667
+            ],
+            [
+              82.55,
+              28.1667
+            ],
+            [
+              82.55,
+              27.8667
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 42,
+        "name": "Pyuthan",
+        "province": "Gandaki",
+        "region": "Hill",
+        "population": 224000,
+        "area_sq_km": 1794.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              82.8667,
+              27.8667
+            ],
+            [
+              83.1667,
+              27.8667
+            ],
+            [
+              83.1667,
+              28.1667
+            ],
+            [
+              82.8667,
+              28.1667
+            ],
+            [
+              82.8667,
+              27.8667
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 43,
+        "name": "Rupandehi",
+        "province": "Lumbini",
+        "region": "Terai",
+        "population": 869000,
+        "area_sq_km": 1476.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              82.9667,
+              27.4667
+            ],
+            [
+              83.2667,
+              27.4667
+            ],
+            [
+              83.2667,
+              27.7667
+            ],
+            [
+              82.9667,
+              27.7667
+            ],
+            [
+              82.9667,
+              27.4667
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 44,
+        "name": "Kapilbastu",
+        "province": "Lumbini",
+        "region": "Terai",
+        "population": 574000,
+        "area_sq_km": 1741.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              82.7333,
+              27.2833
+            ],
+            [
+              83.0333,
+              27.2833
+            ],
+            [
+              83.0333,
+              27.5833
+            ],
+            [
+              82.7333,
+              27.5833
+            ],
+            [
+              82.7333,
+              27.2833
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 45,
+        "name": "Palpa",
+        "province": "Lumbini",
+        "region": "Hill",
+        "population": 209000,
+        "area_sq_km": 1279.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              82.9333,
+              27.5667
+            ],
+            [
+              83.2333,
+              27.5667
+            ],
+            [
+              83.2333,
+              27.8667
+            ],
+            [
+              82.9333,
+              27.8667
+            ],
+            [
+              82.9333,
+              27.5667
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 46,
+        "name": "Nawalparasi",
+        "province": "Lumbini",
+        "region": "Terai",
+        "population": 656000,
+        "area_sq_km": 1789.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              82.5167,
+              27.6833
+            ],
+            [
+              82.8167,
+              27.6833
+            ],
+            [
+              82.8167,
+              27.9833
+            ],
+            [
+              82.5167,
+              27.9833
+            ],
+            [
+              82.5167,
+              27.6833
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 47,
+        "name": "Dang",
+        "province": "Lumbini",
+        "region": "Hill",
+        "population": 456000,
+        "area_sq_km": 2226.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              82.0,
+              27.8667
+            ],
+            [
+              82.3,
+              27.8667
+            ],
+            [
+              82.3,
+              28.1667
+            ],
+            [
+              82.0,
+              28.1667
+            ],
+            [
+              82.0,
+              27.8667
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 48,
+        "name": "Baitadi",
+        "province": "Lumbini",
+        "region": "Hill",
+        "population": 166000,
+        "area_sq_km": 2064.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.4167,
+              29.2667
+            ],
+            [
+              80.7167,
+              29.2667
+            ],
+            [
+              80.7167,
+              29.5667
+            ],
+            [
+              80.4167,
+              29.5667
+            ],
+            [
+              80.4167,
+              29.2667
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 49,
+        "name": "Pythan",
+        "province": "Lumbini",
+        "region": "Hill",
+        "population": 122000,
+        "area_sq_km": 1330.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              81.85,
+              28.2
+            ],
+            [
+              82.15,
+              28.2
+            ],
+            [
+              82.15,
+              28.5
+            ],
+            [
+              81.85,
+              28.5
+            ],
+            [
+              81.85,
+              28.2
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 50,
+        "name": "Rolpa2",
+        "province": "Lumbini",
+        "region": "Hill",
+        "population": 121000,
+        "area_sq_km": 1224.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              82.55,
+              27.8833
+            ],
+            [
+              82.85,
+              27.8833
+            ],
+            [
+              82.85,
+              28.1833
+            ],
+            [
+              82.55,
+              28.1833
+            ],
+            [
+              82.55,
+              27.8833
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 51,
+        "name": "Humla",
+        "province": "Karnali",
+        "region": "Mountain",
+        "population": 55000,
+        "area_sq_km": 4673.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              81.45,
+              29.55
+            ],
+            [
+              81.75,
+              29.55
+            ],
+            [
+              81.75,
+              29.85
+            ],
+            [
+              81.45,
+              29.85
+            ],
+            [
+              81.45,
+              29.55
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 52,
+        "name": "Mugu",
+        "province": "Karnali",
+        "region": "Mountain",
+        "population": 125000,
+        "area_sq_km": 5546.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              81.6833,
+              29.35
+            ],
+            [
+              81.9833,
+              29.35
+            ],
+            [
+              81.9833,
+              29.65
+            ],
+            [
+              81.6833,
+              29.65
+            ],
+            [
+              81.6833,
+              29.35
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 53,
+        "name": "Jumla",
+        "province": "Karnali",
+        "region": "Hill",
+        "population": 121000,
+        "area_sq_km": 2274.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              82.0167,
+              29.1167
+            ],
+            [
+              82.3167,
+              29.1167
+            ],
+            [
+              82.3167,
+              29.4167
+            ],
+            [
+              82.0167,
+              29.4167
+            ],
+            [
+              82.0167,
+              29.1167
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 54,
+        "name": "Dolpa",
+        "province": "Karnali",
+        "region": "Mountain",
+        "population": 37000,
+        "area_sq_km": 2831.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              82.85,
+              29.15
+            ],
+            [
+              83.15,
+              29.15
+            ],
+            [
+              83.15,
+              29.45
+            ],
+            [
+              82.85,
+              29.45
+            ],
+            [
+              82.85,
+              29.15
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 55,
+        "name": "Dailekh",
+        "province": "Karnali",
+        "region": "Hill",
+        "population": 195000,
+        "area_sq_km": 2066.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              81.4833,
+              28.8167
+            ],
+            [
+              81.7833,
+              28.8167
+            ],
+            [
+              81.7833,
+              29.1167
+            ],
+            [
+              81.4833,
+              29.1167
+            ],
+            [
+              81.4833,
+              28.8167
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 56,
+        "name": "Kalikot",
+        "province": "Karnali",
+        "region": "Hill",
+        "population": 140000,
+        "area_sq_km": 2077.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              81.1833,
+              28.65
+            ],
+            [
+              81.4833,
+              28.65
+            ],
+            [
+              81.4833,
+              28.95
+            ],
+            [
+              81.1833,
+              28.95
+            ],
+            [
+              81.1833,
+              28.65
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 57,
+        "name": "Achham",
+        "province": "Karnali",
+        "region": "Hill",
+        "population": 254000,
+        "area_sq_km": 1554.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.85,
+              28.8
+            ],
+            [
+              81.15,
+              28.8
+            ],
+            [
+              81.15,
+              29.1
+            ],
+            [
+              80.85,
+              29.1
+            ],
+            [
+              80.85,
+              28.8
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 58,
+        "name": "Bajura",
+        "province": "Karnali",
+        "region": "Hill",
+        "population": 100000,
+        "area_sq_km": 2067.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              81.0167,
+              29.4
+            ],
+            [
+              81.3167,
+              29.4
+            ],
+            [
+              81.3167,
+              29.7
+            ],
+            [
+              81.0167,
+              29.7
+            ],
+            [
+              81.0167,
+              29.4
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 59,
+        "name": "Bajhang",
+        "province": "Karnali",
+        "region": "Hill",
+        "population": 171000,
+        "area_sq_km": 1839.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.85,
+              29.35
+            ],
+            [
+              81.15,
+              29.35
+            ],
+            [
+              81.15,
+              29.65
+            ],
+            [
+              80.85,
+              29.65
+            ],
+            [
+              80.85,
+              29.35
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 60,
+        "name": "Kailali",
+        "province": "Sudurpashchim",
+        "region": "Terai",
+        "population": 799000,
+        "area_sq_km": 3135.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.6,
+              28.5167
+            ],
+            [
+              80.9,
+              28.5167
+            ],
+            [
+              80.9,
+              28.8167
+            ],
+            [
+              80.6,
+              28.8167
+            ],
+            [
+              80.6,
+              28.5167
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 61,
+        "name": "Kanchanpur",
+        "province": "Sudurpashchim",
+        "region": "Terai",
+        "population": 553000,
+        "area_sq_km": 2346.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.1167,
+              28.6167
+            ],
+            [
+              80.4167,
+              28.6167
+            ],
+            [
+              80.4167,
+              28.9167
+            ],
+            [
+              80.1167,
+              28.9167
+            ],
+            [
+              80.1167,
+              28.6167
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 62,
+        "name": "Doti",
+        "province": "Sudurpashchim",
+        "region": "Hill",
+        "population": 220000,
+        "area_sq_km": 2177.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.6833,
+              29.05
+            ],
+            [
+              80.9833,
+              29.05
+            ],
+            [
+              80.9833,
+              29.35
+            ],
+            [
+              80.6833,
+              29.35
+            ],
+            [
+              80.6833,
+              29.05
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 63,
+        "name": "Baitadi2",
+        "province": "Sudurpashchim",
+        "region": "Hill",
+        "population": 160000,
+        "area_sq_km": 2064.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.4167,
+              29.2667
+            ],
+            [
+              80.7167,
+              29.2667
+            ],
+            [
+              80.7167,
+              29.5667
+            ],
+            [
+              80.4167,
+              29.5667
+            ],
+            [
+              80.4167,
+              29.2667
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 64,
+        "name": "Darchula",
+        "province": "Sudurpashchim",
+        "region": "Mountain",
+        "population": 115000,
+        "area_sq_km": 2224.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.1333,
+              29.3167
+            ],
+            [
+              80.4333,
+              29.3167
+            ],
+            [
+              80.4333,
+              29.6167
+            ],
+            [
+              80.1333,
+              29.6167
+            ],
+            [
+              80.1333,
+              29.3167
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 65,
+        "name": "Bajhang2",
+        "province": "Sudurpashchim",
+        "region": "Hill",
+        "population": 136000,
+        "area_sq_km": 1839.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.85,
+              29.35
+            ],
+            [
+              81.15,
+              29.35
+            ],
+            [
+              81.15,
+              29.65
+            ],
+            [
+              80.85,
+              29.65
+            ],
+            [
+              80.85,
+              29.35
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 66,
+        "name": "Bajura2",
+        "province": "Sudurpashchim",
+        "region": "Hill",
+        "population": 91000,
+        "area_sq_km": 2067.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              81.0167,
+              29.4
+            ],
+            [
+              81.3167,
+              29.4
+            ],
+            [
+              81.3167,
+              29.7
+            ],
+            [
+              81.0167,
+              29.7
+            ],
+            [
+              81.0167,
+              29.4
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 67,
+        "name": "Mahakali",
+        "province": "Sudurpashchim",
+        "region": "Terai",
+        "population": 414000,
+        "area_sq_km": 2344.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.0333,
+              28.6667
+            ],
+            [
+              80.3333,
+              28.6667
+            ],
+            [
+              80.3333,
+              28.9667
+            ],
+            [
+              80.0333,
+              28.9667
+            ],
+            [
+              80.0333,
+              28.6667
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 68,
+        "name": "Kailali2",
+        "province": "Sudurpashchim",
+        "region": "Terai",
+        "population": 751000,
+        "area_sq_km": 3135.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.6,
+              28.5167
+            ],
+            [
+              80.9,
+              28.5167
+            ],
+            [
+              80.9,
+              28.8167
+            ],
+            [
+              80.6,
+              28.8167
+            ],
+            [
+              80.6,
+              28.5167
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 69,
+        "name": "Doti2",
+        "province": "Sudurpashchim",
+        "region": "Hill",
+        "population": 200000,
+        "area_sq_km": 2177.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.6833,
+              29.05
+            ],
+            [
+              80.9833,
+              29.05
+            ],
+            [
+              80.9833,
+              29.35
+            ],
+            [
+              80.6833,
+              29.35
+            ],
+            [
+              80.6833,
+              29.05
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 70,
+        "name": "Kanchanpur2",
+        "province": "Sudurpashchim",
+        "region": "Terai",
+        "population": 528000,
+        "area_sq_km": 2346.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.1167,
+              28.6167
+            ],
+            [
+              80.4167,
+              28.6167
+            ],
+            [
+              80.4167,
+              28.9167
+            ],
+            [
+              80.1167,
+              28.9167
+            ],
+            [
+              80.1167,
+              28.6167
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 71,
+        "name": "Kasgari",
+        "province": "Karnali",
+        "region": "Hill",
+        "population": 48000,
+        "area_sq_km": 1146.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              82.55,
+              27.95
+            ],
+            [
+              82.85,
+              27.95
+            ],
+            [
+              82.85,
+              28.25
+            ],
+            [
+              82.55,
+              28.25
+            ],
+            [
+              82.55,
+              27.95
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 72,
+        "name": "Salyan",
+        "province": "Karnali",
+        "region": "Hill",
+        "population": 175000,
+        "area_sq_km": 1764.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              82.15,
+              28.05
+            ],
+            [
+              82.45,
+              28.05
+            ],
+            [
+              82.45,
+              28.35
+            ],
+            [
+              82.15,
+              28.35
+            ],
+            [
+              82.15,
+              28.05
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 73,
+        "name": "Bara",
+        "province": "Madhesh",
+        "region": "Terai",
+        "population": 662000,
+        "area_sq_km": 1072.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              83.8,
+              27.1
+            ],
+            [
+              84.1,
+              27.1
+            ],
+            [
+              84.1,
+              27.4
+            ],
+            [
+              83.8,
+              27.4
+            ],
+            [
+              83.8,
+              27.1
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 74,
+        "name": "Rautahat",
+        "province": "Madhesh",
+        "region": "Terai",
+        "population": 720000,
+        "area_sq_km": 1290.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              85.8167,
+              26.6167
+            ],
+            [
+              86.1167,
+              26.6167
+            ],
+            [
+              86.1167,
+              26.9167
+            ],
+            [
+              85.8167,
+              26.9167
+            ],
+            [
+              85.8167,
+              26.6167
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 75,
+        "name": "Parsa",
+        "province": "Madhesh",
+        "region": "Terai",
+        "population": 630000,
+        "area_sq_km": 1449.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              84.2,
+              26.9833
+            ],
+            [
+              84.5,
+              26.9833
+            ],
+            [
+              84.5,
+              27.2833
+            ],
+            [
+              84.2,
+              27.2833
+            ],
+            [
+              84.2,
+              26.9833
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 76,
+        "name": "Dhanusa",
+        "province": "Madhesh",
+        "region": "Terai",
+        "population": 693000,
+        "area_sq_km": 2430.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              85.7677,
+              26.5789
+            ],
+            [
+              86.0677,
+              26.5789
+            ],
+            [
+              86.0677,
+              26.8789
+            ],
+            [
+              85.7677,
+              26.8789
+            ],
+            [
+              85.7677,
+              26.5789
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 77,
+        "name": "Maharajgunj",
+        "province": "Madhesh",
+        "region": "Terai",
+        "population": 572000,
+        "area_sq_km": 917.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              86.1,
+              26.4333
+            ],
+            [
+              86.4,
+              26.4333
+            ],
+            [
+              86.4,
+              26.7333
+            ],
+            [
+              86.1,
+              26.7333
+            ],
+            [
+              86.1,
+              26.4333
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

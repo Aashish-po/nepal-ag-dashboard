@@ -1,0 +1,36 @@
+id,name,fao_code,category,unit,is_export_crop,is_subsistence
+1,Rice,F0027,Cereal,MT,False,True
+2,Wheat,F0015,Cereal,MT,False,True
+3,Maize,F0056,Cereal,MT,False,True
+4,Barley,F0012,Cereal,MT,False,True
+5,Millet,F0083,Cereal,MT,False,True
+6,Sorghum,F0055,Cereal,MT,False,True
+7,Cassava,F0076,Cereal,MT,False,True
+8,Potato,F0055,Vegetable,MT,False,True
+9,Onion,F0064,Vegetable,MT,False,True
+10,Tomato,F0056,Vegetable,MT,False,True
+11,Cauliflower,F0057,Vegetable,MT,False,False
+12,Cabbage,F0058,Vegetable,MT,False,False
+13,Eggplant,F0059,Vegetable,MT,False,False
+14,Cucumber,F0060,Vegetable,MT,False,False
+15,Bitter Gourd,F0061,Vegetable,MT,False,False
+16,Apple,F0071,Fruit,MT,False,False
+17,Orange,F0072,Fruit,MT,False,False
+18,Mango,F0073,Fruit,MT,False,False
+19,Banana,F0074,Fruit,MT,False,True
+20,Pomegranate,F0740,Fruit,MT,False,False
+21,Lentils,F0211,Legume,MT,False,True
+22,Mung Beans,F0046,Legume,MT,False,True
+23,Black-eyed Peas,F0041,Legume,MT,False,True
+24,Chickpeas,F0031,Legume,MT,False,True
+25,Soybean,F0327,Oilseed,MT,False,False
+26,Mustard,F0319,Oilseed,MT,False,False
+27,Sesame,F0328,Oilseed,MT,False,False
+28,Cardamom,F0717,Spice,MT,True,False
+29,Ginger,F0719,Spice,MT,True,False
+30,Black Pepper,F0349,Spice,MT,True,False
+31,Cumin,F0339,Spice,MT,False,False
+32,Turmeric,F0360,Spice,MT,False,False
+33,Tea,F0667,Export,MT,True,False
+34,Coffee,F0767,Export,MT,True,False
+35,Sugarcane,F0611,Cash,MT,False,False

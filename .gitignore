@@ -1,4 +1,6 @@
-/plans 
+/plans
+/node_modules
+.kilo
 
 # Byte-compiled files
 __pycache__/
@@ -52,7 +54,7 @@ coverage/
 # Jupyter
 .ipynb_checkpoints
 
-# Pyre
+# Type checking
 .mypy_cache/
 .dmypy.json
 dmypy.json

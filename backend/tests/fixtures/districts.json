@@ -1,0 +1,7 @@
+{"districts": [
+  {"id": 1, "name": "Kathmandu", "province": "Bagmati", "region": "Hill", "latitude": 27.7172, "longitude": 85.3240, "population": 1200000, "area_sq_km": 899.25},
+  {"id": 2, "name": "Bhaktapur", "province": "Bagmati", "region": "Hill", "latitude": 27.6519, "longitude": 85.3897, "population": 266000, "area_sq_km": 119.36},
+  {"id": 5, "name": "Morang", "province": "Koshi", "region": "Terai", "latitude": 26.5667, "longitude": 87.3333, "population": 968000, "area_sq_km": 2513.00},
+  {"id": 14, "name": "Saptari", "province": "Madhesh", "region": "Terai", "latitude": 26.6833, "longitude": 86.5333, "population": 811000, "area_sq_km": 1231.00},
+  {"id": 43, "name": "Rupandehi", "province": "Lumbini", "region": "Terai", "latitude": 27.6167, "longitude": 83.1167, "population": 869000, "area_sq_km": 1476.00}
+]}

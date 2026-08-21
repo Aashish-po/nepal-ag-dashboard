@@ -3,6 +3,8 @@ import { create } from 'zustand'
 export interface FilterState {
   districts: number[]
   crops: number[]
+  selectedDistrict: number | null
+  selectedCrop: number | null
   yearStart: number | null
   yearEnd: number | null
   province: string
@@ -12,6 +14,8 @@ export interface FilterState {
   compareDistricts: number[]
   setDistricts: (ids: number[]) => void
   setCrops: (ids: number[]) => void
+  setSelectedDistrict: (id: number | null) => void
+  setSelectedCrop: (id: number | null) => void
   setYearStart: (year: number | null) => void
   setYearEnd: (year: number | null) => void
   setProvince: (province: string) => void
@@ -25,6 +29,8 @@ export interface FilterState {
 const initialState = {
   districts: [] as number[],
   crops: [] as number[],
+  selectedDistrict: null as number | null,
+  selectedCrop: null as number | null,
   yearStart: null as number | null,
   yearEnd: null as number | null,
   province: '',
@@ -38,6 +44,8 @@ export const useFilterStore = create<FilterState>((set) => ({
   ...initialState,
   setDistricts: (districts) => set({ districts }),
   setCrops: (crops) => set({ crops }),
+  setSelectedDistrict: (selectedDistrict) => set({ selectedDistrict }),
+  setSelectedCrop: (selectedCrop) => set({ selectedCrop }),
   setYearStart: (yearStart) => set({ yearStart }),
   setYearEnd: (yearEnd) => set({ yearEnd }),
   setProvince: (province) => set({ province }),

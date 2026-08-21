@@ -1,39 +1,178 @@
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-import { Button } from '@/shadcn/button'
-import { Card, CardHeader, CardTitle, CardContent } from '@/shadcn/card'
-import { TableSkeleton } from '@/components/Loading'
-import { formatCubicMeters } from '@/lib/utils'
-
-const mockData = [
-  { year: 2018, yield: 3200, district: 'Kathmandu' },
-  { year: 2019, yield: 3350, district: 'Kathmandu' },
-  { year: 2020, yield: 3280, district: 'Kathmandu' },
-  { year: 2021, yield: 3420, district: 'Kathmandu' },
-  { year: 2022, yield: 3510, district: 'Kathmandu' },
-  { year: 2023, yield: 3480, district: 'Kathmandu' },
-  { year: 2024, yield: 3600, district: 'Kathmandu' },
-]
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+import { Button } from "@/shadcn/button";
+import { Card, CardHeader, CardTitle, CardContent } from "@/shadcn/card";
+import { formatNumber } from "@/lib/utils";
+import { getYields, downloadYieldsCsv } from "@/lib/api";
+import { useFilterStore } from "@/hooks/useFilters";
+import { FilterBar } from "@/components/FilterBar";
+import { downloadBlob } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
 
 export function Yields() {
-  const handleExport = () => {
-    alert('Export CSV triggered')
+  const { selectedDistrict, selectedCrop, yearStart, yearEnd } =
+    useFilterStore();
+
+  const {
+    data: yieldsData,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["yields", selectedDistrict, selectedCrop, yearStart, yearEnd],
+    queryFn: () =>
+      getYields(
+        selectedDistrict!,
+        selectedCrop!,
+        yearStart || undefined,
+        yearEnd || undefined,
+      ),
+    enabled: !!selectedDistrict && !!selectedCrop,
+    staleTime: 300000,
+  });
+
+  if (error) {
+    return (
+      <div className="max-w-[1400px] mx-auto p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-h1 font-bold">Yield Analysis</h1>
+          <Button variant="outline" onClick={() => downloadYields()}>
+            Export CSV
+          </Button>
+        </div>
+        <FilterBar showCropSelector showYearRange />
+        <div className="text-center py-12">
+          <p className="text-text-secondary">Could not load yield data.</p>
+        </div>
+      </div>
+    );
   }
 
+  if (!selectedDistrict || !selectedCrop) {
+    return (
+      <div className="max-w-[1400px] mx-auto p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-h1 font-bold">Yield Analysis</h1>
+          <Button variant="outline" onClick={() => downloadYields()}>
+            Export CSV
+          </Button>
+        </div>
+        <FilterBar showCropSelector showYearRange />
+        <div className="text-center py-12">
+          <p className="text-text-secondary">
+            Select a district and crop to view yield trends.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isLoading && yieldsData === undefined) {
+    return (
+      <div className="max-w-[1400px] mx-auto p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-h1 font-bold">Yield Analysis</h1>
+          <Button variant="outline" onClick={() => downloadYields()}>
+            Export CSV
+          </Button>
+        </div>
+        <FilterBar showCropSelector showYearRange />
+        <div className="text-center py-12">
+          <p className="text-text-secondary">Loading yield data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!yieldsData) {
+    return (
+      <div className="max-w-[1400px] mx-auto p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-h1 font-bold">Yield Analysis</h1>
+          <Button variant="outline" onClick={() => downloadYields()}>
+            Export CSV
+          </Button>
+        </div>
+        <FilterBar showCropSelector showYearRange />
+        <div className="text-center py-12">
+          <p className="text-text-secondary">
+            No yield data available for the selected filters.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const { timeseries, statistics, district_name, crop_name } = yieldsData;
+
+  const chartData = timeseries.map((t: any) => ({
+    year: t.year,
+    yield: t.yield_kg_ha,
+    production: t.production_mt,
+  }));
+
+const downloadYields = async () => {
+     try {
+       const blob = await downloadYieldsCsv({
+         district_id: selectedDistrict,
+         crop_id: selectedCrop,
+         year_start: yearStart,
+         year_end: yearEnd,
+       });
+       downloadBlob(blob, `yields_${district_name}_${crop_name}.csv`);
+     } catch (err) {
+       console.error("Download failed:", err);
+       alert('Failed to download CSV. Please try again.');
+     }
+   };
+
   const stats = [
-    { label: 'Average Yield', value: '3,486 kg/ha' },
-    { label: 'Highest', value: '3,600 kg/ha' },
-    { label: 'Lowest', value: '3,200 kg/ha' },
-    { label: 'Volatility (σ)', value: '125 kg/ha' },
-  ]
+    {
+      label: "Average Yield",
+      value:
+        statistics?.avg_yield_kg_ha != null
+          ? `${formatNumber(statistics.avg_yield_kg_ha)} kg/ha`
+          : "-",
+    },
+    {
+      label: "Highest",
+      value:
+        statistics?.max_yield_kg_ha != null
+          ? `${formatNumber(statistics.max_yield_kg_ha)} kg/ha`
+          : "-",
+    },
+    {
+      label: "Lowest",
+      value:
+        statistics?.min_yield_kg_ha != null
+          ? `${formatNumber(statistics.min_yield_kg_ha)} kg/ha`
+          : "-",
+    },
+    {
+      label: "Volatility (σ)",
+      value:
+        statistics?.volatility != null
+          ? `${formatNumber(statistics.volatility)} kg/ha`
+          : "-",
+    },
+  ];
 
   return (
     <div className="max-w-[1400px] mx-auto p-6">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-h1 font-bold">Yield Analysis</h1>
-        <Button variant="outline" onClick={handleExport}>
+        <Button variant="outline" onClick={downloadYields}>
           Export CSV
         </Button>
       </div>
+      <FilterBar showCropSelector showYearRange />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {stats.map((stat) => (
@@ -48,29 +187,46 @@ export function Yields() {
 
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle>Yield Trends</CardTitle>
+          <CardTitle>
+            {crop_name} — {district_name} Yield Trends
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={350}>
-            <LineChart data={mockData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border-light)" />
-              <XAxis dataKey="year" stroke="var(--color-text-muted)" fontSize={12} />
-              <YAxis stroke="var(--color-text-muted)" fontSize={12} tickFormatter={formatCubicMeters} />
+            <LineChart data={chartData}>
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke="var(--color-border-light)"
+              />
+              <XAxis
+                dataKey="year"
+                stroke="var(--color-text-muted)"
+                fontSize={12}
+              />
+              <YAxis
+                stroke="var(--color-text-muted)"
+                fontSize={12}
+                tickFormatter={(v) => formatNumber(v)}
+              />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: 'var(--color-bg-primary)',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: 'var(--radius-md)',
+                  backgroundColor: "var(--color-bg-primary)",
+                  border: "1px solid var(--color-border)",
+                  borderRadius: "var(--radius-md)",
                 }}
               />
               <Legend />
-              <Line type="monotone" dataKey="yield" stroke="var(--color-primary)" strokeWidth={2} name="Yield (kg/ha)" />
+              <Line
+                type="monotone"
+                dataKey="yield"
+                stroke="var(--color-primary)"
+                strokeWidth={2}
+                name="Yield (kg/ha)"
+              />
             </LineChart>
           </ResponsiveContainer>
         </CardContent>
       </Card>
-
-      <TableSkeleton rows={5} />
     </div>
-  )
+  );
 }

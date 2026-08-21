@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { renderHook, waitFor } from '@testing-library/react'
+import { renderHook, waitFor, act } from '@testing-library/react'
 
 // Mock the useApi hook's dependencies are self-contained,
 // so we can test it directly by simulating an API call.
@@ -21,11 +21,14 @@ describe('useApi hook', () => {
 
     const { result } = renderHook(() => useApi(mockCall))
 
-    const promise = result.current.execute()
-    // while pending, loading should be true
+    let returnedPromise: Promise<unknown> | undefined
+    await act(async () => {
+      returnedPromise = result.current.execute()
+    })
+
     expect(result.current.loading).toBe(true)
 
-    await promise
+    if (returnedPromise) await returnedPromise
 
     await waitFor(() => {
       expect(result.current.loading).toBe(false)
@@ -41,7 +44,12 @@ describe('useApi hook', () => {
 
     const { result } = renderHook(() => useApi(mockCall))
 
-    await expect(result.current.execute()).rejects.toThrow('Network error')
+    let returnedPromise: Promise<unknown> | undefined
+    await act(async () => {
+      returnedPromise = result.current.execute()
+    })
+
+    await expect(returnedPromise).rejects.toThrow('Network error')
 
     await waitFor(() => {
       expect(result.current.loading).toBe(false)
@@ -57,10 +65,14 @@ describe('useApi hook', () => {
 
     const { result } = renderHook(() => useApi(mockCall))
 
-    await result.current.execute()
+    await act(async () => {
+      await result.current.execute()
+    })
     expect(result.current.data).toEqual(mockData)
 
-    result.current.reset()
+    await act(async () => {
+      result.current.reset()
+    })
     expect(result.current.data).toBeNull()
     expect(result.current.error).toBeNull()
     expect(result.current.loading).toBe(false)

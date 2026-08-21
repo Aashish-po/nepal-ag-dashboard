@@ -1,121 +1,174 @@
-import { useState } from 'react'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-import { Button } from '@/shadcn/button'
-import { Card, CardHeader, CardTitle, CardContent } from '@/shadcn/card'
-import { Table, TableBody, TableRow, TableCell } from '@/shadcn/table'
-
-const mockData = [
-  { year: 2018, production: 4200, revenue: 12500000 }, { year: 2019, production: 4800, revenue: 14400000 },
-  { year: 2020, production: 5100, revenue: 15300000 }, { year: 2021, production: 5500, revenue: 17600000 },
-  { year: 2022, production: 5900, revenue: 18880000 }, { year: 2023, production: 6200, revenue: 19840000 },
-  { year: 2024, production: 6800, revenue: 21760000 },
-]
-
-const districtData = [
-  { district: 'Ilam', production: 1850, share: 27.2, revenue: 5920000 },
-  { district: 'Panchthar', production: 1420, share: 20.9, revenue: 4544000 },
-  { district: 'Tehrathum', production: 980, share: 14.4, revenue: 3136000 },
-  { district: 'Sankhuwasabha', production: 720, share: 10.6, revenue: 2304000 },
-  { district: 'Bhojpur', production: 540, share: 7.9, revenue: 1728000 },
-]
+import { useQuery } from "@tanstack/react-query";
+import { getExportCrops } from "@/lib/api";
+import { useFilterStore } from "@/hooks/useFilters";
+import { FilterBar } from "@/components/FilterBar";
+import { TableSkeleton } from "@/components/Loading";
+import { formatNumber } from "@/lib/utils";
 
 export function ExportCrops() {
-  const [selectedCrop, setSelectedCrop] = useState('cardamom')
+  const { selectedDistrict, yearStart, yearEnd } = useFilterStore();
 
-  const handleExport = () => {
-    alert('Download report triggered')
+  const {
+    data: exportData,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["export-crops", selectedDistrict, yearStart, yearEnd],
+    queryFn: () => getExportCrops(selectedDistrict ?? 1, yearStart, yearEnd),
+    enabled: !!selectedDistrict,
+    staleTime: 300000,
+  });
+
+  if (!selectedDistrict) {
+    return (
+      <div className="max-w-[1400px] mx-auto p-6">
+        <FilterBar showCropSelector showYearRange={true} />
+        <div className="text-center py-12">
+          <p className="text-text-secondary">
+            Select a district to view export crop data.
+          </p>
+        </div>
+      </div>
+    );
   }
+
+  if (error) {
+    return (
+      <div className="max-w-[1400px] mx-auto p-6">
+        <FilterBar showCropSelector showYearRange={true} />
+        <div className="text-center py-12">
+          <p className="text-text-secondary">
+            Could not load export crop data.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isLoading || !exportData) {
+    return (
+      <div className="max-w-[1400px] mx-auto p-6">
+        <FilterBar showCropSelector showYearRange={true} />
+        <TableSkeleton rows={5} />
+      </div>
+    );
+  }
+
+  const exportCrops = exportData.export_crops || [];
+  const districtName = exportData.district_name || "Unknown District";
+
+  const productionTrend = exportData.production_trend || [];
+  const totalRevenue = exportCrops.reduce(
+    (sum: number, c: any) => sum + (c.estimated_revenue_usd || 0),
+    0,
+  );
+
+  const stats = [
+    {
+      label: "Total Export Revenue (USD)",
+      value: `$${formatNumber(totalRevenue)}`,
+    },
+    {
+      label: "Number of Export Crops",
+      value: exportCrops.length,
+    },
+    {
+      label: "Average Yield (kg/ha)",
+      value:
+        exportCrops.length > 0
+          ? formatNumber(
+              exportCrops.reduce(
+                (sum: number, c: any) => sum + (c.yield_kg_ha || 0),
+                0,
+              ) / exportCrops.length,
+            )
+          : "-",
+    },
+  ];
 
   return (
     <div className="max-w-[1400px] mx-auto p-6">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-h1 font-bold">Export Crops</h1>
-        <Button variant="outline" onClick={handleExport}>
+        <button
+          className="px-4 py-2 border border-border rounded-md text-sm hover:bg-bg-tertiary"
+          onClick={() =>
+            alert("Report download feature is not implemented yet.")
+          }
+        >
           Download Report
-        </Button>
+        </button>
       </div>
 
-      <div className="flex gap-2 mb-6">
-        {['cardamom', 'ginger', 'tea'].map((crop) => (
-          <Button
-            key={crop}
-            variant={selectedCrop === crop ? 'default' : 'outline'}
-            onClick={() => setSelectedCrop(crop)}
-            className="capitalize"
+      <FilterBar showCropSelector={false} showYearRange={true} />
+
+      <p className="text-sm text-text-secondary mb-4">
+        Showing export crop analysis for {districtName}
+      </p>
+
+      {productionTrend.length > 0 && (
+        <div className="bg-white border border-border rounded-lg p-4 mb-6">
+          <h3 className="text-lg font-semibold mb-4">Production Trend (MT)</h3>
+          <div className="text-center py-8">
+            <p className="text-text-secondary">
+              Production trend chart is not implemented yet.
+            </p>
+          </div>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        {stats.map((stat) => (
+          <div
+            key={stat.label}
+            className="bg-white border border-border rounded-lg p-4"
           >
-            {crop}
-          </Button>
+            <p className="text-sm text-text-secondary">{stat.label}</p>
+            <p className="text-2xl font-bold mt-1">{stat.value}</p>
+          </div>
         ))}
       </div>
 
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>Production Trend (MT)</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={350}>
-            <LineChart data={mockData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border-light)" />
-              <XAxis dataKey="year" stroke="var(--color-text-muted)" fontSize={12} />
-              <YAxis stroke="var(--color-text-muted)" fontSize={12} />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: 'var(--color-bg-primary)',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: 'var(--radius-md)',
-                }}
-              />
-              <Legend />
-              <Line type="monotone" dataKey="production" stroke="var(--color-warning)" strokeWidth={2} name="Production (MT)" />
-            </LineChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-sm text-text-secondary">Avg Price</p>
-            <p className="text-2xl font-bold mt-1">$8,450 / MT</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-sm text-text-secondary">Est. Total Revenue</p>
-            <p className="text-2xl font-bold mt-1">$21.8M / year</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-sm text-text-secondary">Peak Export</p>
-            <p className="text-2xl font-bold mt-1">Sept–Dec</p>
-          </CardContent>
-        </Card>
+      <div className="bg-white border border-border rounded-lg p-4">
+        <h3 className="text-lg font-semibold mb-4">Export Crop Details</h3>
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-border">
+              <th className="text-left p-2 font-medium">Crop</th>
+              <th className="text-left p-2 font-medium">Production (MT)</th>
+              <th className="text-left p-2 font-medium">Area (ha)</th>
+              <th className="text-left p-2 font-medium">Yield (kg/ha)</th>
+              <th className="text-left p-2 font-medium">Est. Revenue (USD)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {exportCrops.map((item: any, idx: number) => (
+              <tr
+                key={item.crop_id || idx}
+                className="border-b border-border-light"
+              >
+                <td className="p-2 font-medium">{item.crop_name}</td>
+                <td className="p-2">
+                  {formatNumber(item.production_mt || 0)} MT
+                </td>
+                <td className="p-2">
+                  {formatNumber(item.area_harvested_ha || 0)} ha
+                </td>
+                <td className="p-2">
+                  {item.yield_kg_ha != null
+                    ? `${formatNumber(item.yield_kg_ha)} kg/ha`
+                    : "-"}
+                </td>
+                <td className="p-2">
+                  {item.estimated_revenue_usd != null
+                    ? `${formatNumber(item.estimated_revenue_usd)}`
+                    : "-"}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Top Producing Districts</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableBody>
-              {districtData.map((item, idx) => (
-                <TableRow key={item.district}>
-                  <TableCell className="font-medium">#{idx + 1} {item.district}</TableCell>
-                  <TableCell>{item.production.toLocaleString()} MT</TableCell>
-                  <TableCell>
-                    <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary text-primary-foreground hover:bg-primary/80">
-                      {item.share}%
-                    </span>
-                  </TableCell>
-                  <TableCell>${item.revenue.toLocaleString()}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
     </div>
-  )
+  );
 }

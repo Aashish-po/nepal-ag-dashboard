@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: nepal-ag-backend
+    runtime: python
+    plan: free
+
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT
+
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: ENVIRONMENT
+        value: production
+      - key: REDIS_URL
+        sync: false
+      - key: SENTRY_DSN
+        sync: false
+      - key: CORS_ORIGINS
+        value: https://nepal-ag-dashboard.vercel.app
+
+    healthCheckPath: /health
+    autoDeploy: true
+
+  - type: cron
+    name: health-check-ping
+    runtime: python
+    plan: starter
+
+    schedule: "*/15 * * * *"
+
+    buildCommand: echo "No build dependencies needed for cron job"
+    startCommand: curl --max-time 10 --connect-timeout 5 -f https://nepal-ag-backend.onrender.com/health

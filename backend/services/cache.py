@@ -27,6 +27,7 @@ def _json_default(obj):
         return obj.isoformat()
     return str(obj)
 
+
 logger = logging.getLogger(__name__)
 
 REDIS_URL = os.environ.get("REDIS_URL", "")

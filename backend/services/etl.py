@@ -61,9 +61,7 @@ def load_districts_csv(filepath: str | None = None) -> int:
     return _upsert_table_rows("districts", rows, conflict_cols=["id"])
 
 
-def load_districts_csv_async(filepath: str | None = None):
-    """Async wrapper for load_districts_csv."""
-    return _run_sync(lambda: load_districts_csv(filepath))
+
 
 
 # --------------------------------------------------------------------------- #
@@ -248,7 +246,7 @@ def validate_yields(df: pd.DataFrame) -> dict[str, list[str]]:
         bad = df[df["area_harvested_ha"] <= 0]
         if len(bad) > 0:
             report["errors"].append(
-                f"{len(bad)} rows with non-positive area_harvested_ha"
+                f"{len(bad)} rows with zero or negative area_harvested_ha"
             )
 
     if all(
@@ -336,14 +334,13 @@ def validate_climate(df: pd.DataFrame) -> dict[str, list[str]]:
 def _upsert_table_rows(
     table_name: str, rows: list[dict], conflict_cols: list[str]
 ) -> int:
-    """Bulk upsert rows into a table using PostgreSQL INSERT ... ON CONFLICT."""
+    """Bulk upsert rows into a table using dialect-specific INSERT ... ON CONFLICT."""
     from sqlalchemy import create_engine
     from sqlalchemy.dialects.postgresql import insert as pg_insert
+    from sqlalchemy.dialects.sqlite import insert as sqlite_insert
     from api.models.db_models import Base, MISSING_DATA_SOURCE
 
-    db_url = os.environ.get(
-        "DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/nepal_ag_dev"
-    )
+    db_url = os.environ.get("DATABASE_URL", "postgresql://localhost:5432/nepal_ag_dev")
     # Convert async URL to sync URL for pandas/pyodbc
     if "postgresql+asyncpg" in db_url:
         db_url = db_url.replace("postgresql+asyncpg://", "postgresql://")
@@ -377,24 +374,41 @@ def _upsert_table_rows(
             )
 
         records = cast(list[Mapping[str, Any]], df.to_dict("records"))
-        insert_stmt = pg_insert(table).values(records)
-        update_cols = {
-            column: getattr(insert_stmt.excluded, column)
-            for column in df.columns
-            if column not in conflict_cols
-        }
-        stmt = (
-            insert_stmt.on_conflict_do_update(
-                index_elements=conflict_cols,
-                set_=update_cols,
-            )
-            if update_cols
-            else insert_stmt.on_conflict_do_nothing(index_elements=conflict_cols)
-        )
+
+        # Select dialect-specific insert constructor
+        dialect_name = engine.dialect.name
+        if dialect_name == "sqlite":
+            insert_factory = sqlite_insert
+        else:
+            insert_factory = pg_insert
+
+        # Determine batch size based on dialect (SQLite has ~999 variable limit)
+        is_sqlite = dialect_name == "sqlite"
+        num_cols = len(df.columns)
+        if is_sqlite:
+            batch_size = max(1, 999 // num_cols)
+        else:
+            batch_size = len(records)
 
         with engine.connect() as conn:
             logger.info("Upserting %d rows into %s", len(df), table_name)
-            conn.execute(stmt)
+            for i in range(0, len(records), batch_size):
+                batch = records[i : i + batch_size]
+                batch_stmt = insert_factory(table).values(batch)
+                final_update_cols = {
+                    column: getattr(batch_stmt.excluded, column)
+                    for column in df.columns
+                    if column not in conflict_cols
+                }
+                batch_full_stmt = (
+                    batch_stmt.on_conflict_do_update(
+                        index_elements=conflict_cols,
+                        set_=final_update_cols,
+                    )
+                    if final_update_cols
+                    else batch_stmt.on_conflict_do_nothing(index_elements=conflict_cols)
+                )
+                conn.execute(batch_full_stmt)
             conn.commit()
     finally:
         engine.dispose()

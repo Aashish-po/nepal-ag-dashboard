@@ -45,7 +45,7 @@ id,name,province,region,latitude,longitude,population,area_sq_km
 44,Darchula,Sudurpashchim,Mountain,29.4667,80.2833,115000,2224.00
 45,Bajhang,Sudurpashchim,Hill,29.5000,81.0000,171000,1839.00
 46,Bajura,Sudurpashchim,Hill,29.5500,81.1667,100000,2067.00
-47,Diyalghadh,Bagmati,Hill,27.9833,85.3167,45000,405.00)
+47,Diyalghadh,Bagmati,Hill,27.9833,85.3167,45000,405.00
 48,Humla,Karnali,Mountain,29.7000,81.6000,55000,4673.00
 49,Mugu,Karnali,Mountain,29.5000,81.8333,125000,5546.00
 50,Jumla,Karnali,Hill,29.2667,82.1667,121000,2274.00
@@ -67,12 +67,12 @@ id,name,province,region,latitude,longitude,population,area_sq_km
 66,Myagdi2,Gandaki,Hill,28.6500,83.6333,155000,2258.00
 67,Baglung2,Gandaki,Hill,28.2667,83.6500,240000,1898.00
 68,Gorkha3,Gandaki,Hill,28.1000,84.3000,135000,1926.00
-69,Lamachaur,Gandaki,Hill,28.2833,83.9833,48000,512.00)
+69,Lamachaur,Gandaki,Hill,28.2833,83.9833,48000,512.00
 70,Baitadi,Sudurpashchim,Hill,29.4167,80.5667,166000,2064.00
 71,Kailali2,Sudurpashchim,Terai,28.6667,80.7500,751000,3135.00
 72,Kanchanpur2,Sudurpashchim,Terai,28.7667,80.2667,528000,2346.00
 73,Sarlahi,Madhesh,Terai,27.3667,85.4333,628000,1224.00
 74,Dhanusha2,Madhesh,Terai,26.7289,85.9177,693000,2430.00
 75,Maharajgunj,Madhesh,Terai,26.5833,86.2500,572000,917.00
-76,Jalaripati,Bagmati,Hill,27.7500,85.2833,420000,749.00)
+76,Jalaripati,Bagmati,Hill,27.7500,85.2833,420000,749.00
 77,Nuwakot3,Bagmati,Hill,28.0000,85.1000,200000,2400.00

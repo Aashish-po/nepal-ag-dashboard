@@ -26,6 +26,55 @@ def client():
     # Mock database session
     mock_session = MagicMock()
 
+    # Pre-built test fixtures for db.get()
+    lookup = {
+        (Districts, 1): Districts(
+            id=1,
+            name="Kathmandu",
+            province="Bagmati",
+            region="Hill",
+            latitude=27.7172,
+            longitude=85.3240,
+            population=1200000,
+            area_sq_km=899.25,
+        ),
+        (Districts, 2): Districts(
+            id=2,
+            name="Bhaktapur",
+            province="Bagmati",
+            region="Hill",
+            latitude=27.6519,
+            longitude=85.3897,
+            population=266000,
+            area_sq_km=119.36,
+        ),
+        (Crops, 1): Crops(
+            id=1,
+            name="Rice",
+            fao_code="F0027",
+            category="Cereal",
+            is_export_crop=False,
+            is_subsistence=True,
+        ),
+        (Crops, 5): Crops(
+            id=5,
+            name="Cardamom",
+            fao_code="F0717",
+            category="Spice",
+            is_export_crop=True,
+            is_subsistence=False,
+        ),
+    }
+
+    def mock_get(*args, **kwargs):
+        entity = args[0] if len(args) >= 1 else kwargs.get("entity")
+        pk = args[1] if len(args) >= 2 else kwargs.get("pk")
+        if isinstance(entity, type) and (entity, pk) in lookup:
+            return lookup[(entity, pk)]
+        return None
+
+    mock_session.get = mock_get
+
     def create_mock_execute(result_rows, return_type="scalars"):
         mock_result = MagicMock()
         if return_type == "scalars":
@@ -44,7 +93,83 @@ def client():
     def get_table_name(stmt: Any) -> str | None:
         table = getattr(stmt, "table", None)
         name = getattr(table, "name", None)
-        return name if isinstance(name, str) else None
+        if isinstance(name, str):
+            return name
+        try:
+            for col in stmt.selected_columns:
+                t = getattr(col, "table", None)
+                n = getattr(t, "name", None)
+                if isinstance(n, str):
+                    return n
+        except Exception:
+            pass
+        try:
+            for col in getattr(stmt, "_raw_columns", []):
+                t = getattr(col, "table", None)
+                n = getattr(t, "name", None)
+                if isinstance(n, str):
+                    return n
+        except Exception:
+            pass
+        return None
+
+    def apply_where(stmt, rows):
+        """Filter rows based on WHERE clause in the select statement."""
+        where = getattr(stmt, "whereclause", None)
+        if where is None:
+            return rows
+        try:
+            pass
+        except Exception:
+            pass
+
+        from sqlalchemy.sql.elements import BindParameter
+
+        clause_list = getattr(where, "clauses", [where])
+
+        for condition in clause_list:
+            col = getattr(condition, "left", None)
+            col_name = getattr(col, "key", None)
+            if col_name is None:
+                continue
+
+            right = getattr(condition, "right", None)
+            if right is None:
+                continue
+
+            # Use BindParameter.value for literal API filters
+            if isinstance(right, BindParameter):
+                right = right.value
+
+            # Safely unwrap SQLAlchemy values
+            if right is not None:
+                right = getattr(right, "_value", right)
+
+            op = getattr(condition, "operator", None)
+            op_name = getattr(op, "__name__", "")
+
+            rows = _apply_op(rows, col_name, op_name, right)
+
+        return rows
+
+    def _apply_op(rows, col_name, op_name, value):
+        import operator as op_mod
+
+        ops = {
+            "eq": op_mod.eq,
+            "ne": op_mod.ne,
+            "ge": op_mod.ge,
+            "le": op_mod.le,
+            "gt": op_mod.gt,
+            "lt": op_mod.lt,
+        }
+        func = ops.get(op_name)
+        if func is None:
+            raise ValueError(f"Unsupported operator: {op_name}")
+        try:
+            return [r for r in rows if func(getattr(r, col_name, None), value)]
+        except Exception as e:
+            raise ValueError(f"Comparison error for {col_name} {op_name} {value}: {e}")
 
     def mock_execute_side_effect(*args, **kwargs):
         stmt = args[0] if args else kwargs.get("statement")
@@ -73,9 +198,18 @@ def client():
                     population=266000,
                     area_sq_km=119.36,
                 ),
+                Districts(
+                    id=3,
+                    name="Dhanusa",
+                    province="Madhesh",
+                    region="Terai",
+                    latitude=26.7289,
+                    longitude=85.9177,
+                    population=693000,
+                    area_sq_km=2430.49,
+                ),
             ]
-            filtered = test_districts
-            return create_mock_execute(filtered)
+            return create_mock_execute(apply_where(stmt, test_districts))
 
         # Handle crop queries
         if table_name == "crops":
@@ -85,6 +219,7 @@ def client():
                     name="Rice",
                     fao_code="F0027",
                     category="Cereal",
+                    unit="MT",
                     is_export_crop=False,
                     is_subsistence=True,
                 ),
@@ -93,11 +228,12 @@ def client():
                     name="Cardamom",
                     fao_code="F0717",
                     category="Spice",
+                    unit="MT",
                     is_export_crop=True,
                     is_subsistence=False,
                 ),
             ]
-            return create_mock_execute(test_crops)
+            return create_mock_execute(apply_where(stmt, test_crops))
 
         # Handle yield queries
         if table_name == "yields":
@@ -125,7 +261,7 @@ def client():
                     data_quality="Official",
                 ),
             ]
-            return create_mock_execute(test_yields)
+            return create_mock_execute(apply_where(stmt, test_yields))
 
         # Default empty result
         return create_mock_execute([])
@@ -206,12 +342,20 @@ class TestDistrictsEndpoint:
         response = client.get("/api/v1/districts?province=Bagmati")
         assert response.status_code == 200
         data = response.json()
+        # Should return only Kathmandu and Bhaktapur (both Bagmati)
+        assert len(data["districts"]) == 2
+        district_ids = [d["id"] for d in data["districts"]]
+        assert set(district_ids) == {1, 2}
         assert all(d["province"] == "Bagmati" for d in data["districts"])
 
     def test_filter_by_region(self, client):
         response = client.get("/api/v1/districts?region=Hill")
         assert response.status_code == 200
         data = response.json()
+        # Should return only Kathmandu and Bhaktapur (both Hill region)
+        assert len(data["districts"]) == 2
+        district_ids = [d["id"] for d in data["districts"]]
+        assert set(district_ids) == {1, 2}
         assert all(d["region"] == "Hill" for d in data["districts"])
 
 
@@ -251,13 +395,17 @@ class TestYieldsEndpoint:
         assert "statistics" in data
         assert isinstance(data["timeseries"], list)
 
-    def test_yields_year_filter(self, client):
-        """year_start and year_end should filter results."""
-        response = client.get("/api/v1/yields/1/1?year_start=2018&year_end=2020")
-        assert response.status_code == 200
-        data = response.json()
-        for ts in data["timeseries"]:
-            assert 2018 <= ts["year"] <= 2020
+def test_yields_year_filter(self, client):
+    """year_start and year_end should filter results."""
+    # Test data has years 2023, 2024; request range 2024-2024
+    response = client.get("/api/v1/yields/1/1?year_start=2024&year_end=2024")
+    assert response.status_code == 200
+    data = response.json()
+    for ts in data["timeseries"]:
+        assert ts["year"] == 2024
+    # Should return only the 2024 record
+    assert len(data["timeseries"]) == 1
+    assert data["timeseries"][0]["year"] == 2024
 
     def test_yields_nonexistent_district(self, client):
         """Non-existent district should return 404."""

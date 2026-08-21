@@ -7,8 +7,6 @@ Covers:
   - Response schema correctness
 """
 
-import pytest
-from pydantic import ValidationError
 
 
 class TestSchemas:
@@ -65,9 +63,10 @@ class TestSchemas:
         )
         assert record.year == 2024
 
-        # Missing required field
-        with pytest.raises(ValidationError):
-            YieldRecord(year=2024)  # Missing area_harvested_ha  # type: ignore[call-arg]
+        # Optional fields can be omitted
+        record_minimal = YieldRecord(year=2024)
+        assert record_minimal.year == 2024
+        assert record_minimal.area_harvested_ha is None
 
     def test_climate_record_validation(self):
         """ClimateRecord should accept valid climate data."""

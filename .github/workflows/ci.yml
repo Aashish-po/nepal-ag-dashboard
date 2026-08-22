@@ -1,4 +1,9 @@
 name: CI
+
+permissions:
+  contents: read
+  actions: read
+
 on:
   pull_request:
   push:
@@ -43,3 +48,53 @@ jobs:
       - run: cd frontend && pnpm tsc --noEmit
       - run: cd frontend && pnpm test --run
       - run: cd frontend && pnpm build
+
+  create_issue:
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    if: failure()
+    permissions:
+      issues: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create GitHub issue on failure
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const repo = context.repo.repo;
+            const owner = context.repo.owner;
+            const runUrl = context.payload.repository.html_url + "/actions/runs/" + context.runId;
+
+            const failedJobs = [];
+            if (context.payload.jobs) {
+              for (const [name, job] of Object.entries(context.payload.jobs)) {
+                if (job.conclusion === 'failure') {
+                  failedJobs.push(name);
+                }
+              }
+            }
+
+            const title = `CI failure: ${failedJobs.join(', ')}`;
+            const body = `## CI Failure Report
+
+            **Workflow:** ${context.workflow}
+            **Branch:** ${context.payload.ref}
+            **Commit:** ${context.payload.head_commit.id}
+            **Failed jobs:** ${failedJobs.join(', ') || 'unknown'}
+
+            **Run URL:** ${runUrl}
+
+            ### Steps to reproduce
+            1. Check the run logs linked above
+            2. Identify failing job and step
+            3. Fix and push a new commit`;
+
+            await github.rest.issues.create({
+              owner,
+              repo,
+              title,
+              body,
+              labels: ['ci-failure', 'bug']
+            });

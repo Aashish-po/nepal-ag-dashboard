@@ -62,7 +62,9 @@ if ENVIRONMENT == "production":
     # Ensure we're using the configured origins in production
     allow_origins = [o.strip() for o in CORS_ORIGINS if o.strip()]
     if not allow_origins:
-        raise RuntimeError("CORS_ORIGINS must be set to non-empty explicit origins in production")
+        raise RuntimeError(
+            "CORS_ORIGINS must be set to non-empty explicit origins in production"
+        )
 
 app.add_middleware(
     CORSMiddleware,

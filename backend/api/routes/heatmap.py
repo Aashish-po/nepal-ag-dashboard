@@ -71,7 +71,9 @@ def get_heatmap(
     c_results = db.execute(c_stmt).all()
 
     # Fetch district names
-    district_stmt = select(Districts.id, Districts.name).where(Districts.id.in_(district_ids))
+    district_stmt = select(Districts.id, Districts.name).where(
+        Districts.id.in_(district_ids)
+    )
     district_rows = db.execute(district_stmt).all()
     district_names = {row.id: row.name for row in district_rows}
 
@@ -80,10 +82,14 @@ def get_heatmap(
 
     yields_by_dc: dict[tuple[int, int], list[tuple[int, float]]] = defaultdict(list)
     for row in y_results:
-        yields_by_dc[(row.district_id, row.crop_id)].append((row.year, float(row.yield_kg_ha)))
+        yields_by_dc[(row.district_id, row.crop_id)].append(
+            (row.year, float(row.yield_kg_ha))
+        )
 
     # Group climate by district_id
-    climate_by_district: dict[int, dict[int, tuple[float | None, float | None, float | None]]] = defaultdict(dict)
+    climate_by_district: dict[
+        int, dict[int, tuple[float | None, float | None, float | None]]
+    ] = defaultdict(dict)
     for row in c_results:
         district_id = row.district_id
         year = int(row.yr)  # Cast to int for matching with yield years
@@ -96,7 +102,9 @@ def get_heatmap(
 
     for crop_id, crop_name in crop_names.items():
         # Get unique districts for this crop
-        crop_districts = set(d_id for (d_id, c_id) in yields_by_dc.keys() if c_id == crop_id)
+        crop_districts = set(
+            d_id for (d_id, c_id) in yields_by_dc.keys() if c_id == crop_id
+        )
 
         for district_id in crop_districts:
             district_name = district_names.get(district_id, f"District {district_id}")

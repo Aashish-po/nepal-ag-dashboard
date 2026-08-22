@@ -75,6 +75,7 @@ def get_forecasts(
 
     # Join back to get full forecast records for the latest forecast_date per month
     from datetime import date, datetime
+
     current_month_start = date(datetime.now().year, datetime.now().month, 1)
     forecast_stmt = (
         select(Forecasts)

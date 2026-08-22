@@ -133,7 +133,10 @@ class Yields(Base):
     area_harvested_ha: Mapped[Optional[float]] = mapped_column(DECIMAL(15, 2))
     yield_kg_ha: Mapped[Optional[float]] = mapped_column(DECIMAL(10, 2))
     data_source: Mapped[str] = mapped_column(
-        String(100), nullable=False, server_default=MISSING_DATA_SOURCE, default=MISSING_DATA_SOURCE
+        String(100),
+        nullable=False,
+        server_default=MISSING_DATA_SOURCE,
+        default=MISSING_DATA_SOURCE,
     )
     data_quality: Mapped[str] = mapped_column(String(20), default="Estimated")
     created_at: Mapped[Optional[datetime]] = mapped_column(
@@ -179,7 +182,10 @@ class Climate(Base):
     temperature_mean_c: Mapped[Optional[float]] = mapped_column(DECIMAL(5, 2))
     solar_radiation_mj_m2: Mapped[Optional[float]] = mapped_column(DECIMAL(8, 2))
     data_source: Mapped[str] = mapped_column(
-        String(100), nullable=False, server_default=MISSING_DATA_SOURCE, default=MISSING_DATA_SOURCE
+        String(100),
+        nullable=False,
+        server_default=MISSING_DATA_SOURCE,
+        default=MISSING_DATA_SOURCE,
     )
     created_at: Mapped[Optional[datetime]] = mapped_column(
         DateTime(timezone=True),
@@ -206,7 +212,6 @@ class Climate(Base):
 
 
 class ExportCrops(Base):
-
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     crop_id: Mapped[int] = mapped_column(
         ForeignKey("crops.id", ondelete="CASCADE"), unique=True, nullable=False
@@ -232,7 +237,6 @@ class ExportCrops(Base):
 
 
 class CommercializationIndex(Base):
-
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     district_id: Mapped[int] = mapped_column(
         ForeignKey("districts.id", ondelete="CASCADE")

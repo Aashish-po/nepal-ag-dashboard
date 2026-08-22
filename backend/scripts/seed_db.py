@@ -90,9 +90,9 @@ def generate_synthetic_data():
                         "area_harvested_ha": round(area, 2),
                         "yield_kg_ha": round(yield_val, 2),
                         "data_source": "FAOSTAT",
-                        "data_quality": "Official"
-                        if random.random() > 0.2
-                        else "Estimated",
+                        "data_quality": (
+                            "Official" if random.random() > 0.2 else "Estimated"
+                        ),
                     }
                 )
 

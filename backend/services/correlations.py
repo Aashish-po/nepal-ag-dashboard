@@ -252,14 +252,12 @@ async def compute_yield_climate_correlation(
         return None
 
     # Fetch climate data for this district
-    climate_stmt = text(
-        """
+    climate_stmt = text("""
             SELECT observation_date, rainfall_mm, temperature_mean_c, solar_radiation_mj_m2
             FROM climate
             WHERE district_id = :district_id
             ORDER BY observation_date
-            """
-    )
+            """)
     climate_result = await db.execute(climate_stmt, {"district_id": district_id})
     climate_rows = climate_result.fetchall()
 

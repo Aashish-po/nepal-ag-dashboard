@@ -83,7 +83,10 @@ def get_yields(
             self.yield_kg_ha = yield_kg_ha
 
     yield_points = [
-        YieldPoint(year=r.year, yield_kg_ha=float(r.yield_kg_ha) if r.yield_kg_ha is not None else None)
+        YieldPoint(
+            year=r.year,
+            yield_kg_ha=float(r.yield_kg_ha) if r.yield_kg_ha is not None else None,
+        )
         for r in results
     ]
     stats_dict = calculate_yield_statistics(yield_points)
@@ -152,7 +155,10 @@ def get_district_yields(
                 self.yield_kg_ha = yield_kg_ha
 
         yield_points = [
-            YieldPoint(year=r.year, yield_kg_ha=float(r.yield_kg_ha) if r.yield_kg_ha is not None else None)
+            YieldPoint(
+                year=r.year,
+                yield_kg_ha=float(r.yield_kg_ha) if r.yield_kg_ha is not None else None,
+            )
             for r in crop_history
         ]
         stats_dict = calculate_yield_statistics(yield_points)
@@ -162,12 +168,12 @@ def get_district_yields(
             {
                 "crop_id": y.crop_id,
                 "crop_name": c.name,
-                "yield_kg_ha": float(y.yield_kg_ha)
-                if y.yield_kg_ha is not None
-                else None,
-                "production_mt": float(y.production_mt)
-                if y.production_mt is not None
-                else None,
+                "yield_kg_ha": (
+                    float(y.yield_kg_ha) if y.yield_kg_ha is not None else None
+                ),
+                "production_mt": (
+                    float(y.production_mt) if y.production_mt is not None else None
+                ),
                 "trend": stats.trend or "INSUFFICIENT_DATA",
                 "cagr_pct": stats.cagr_pct,
             }

@@ -13,8 +13,8 @@ from collections.abc import Sequence
 from typing import Any
 
 import numpy as np
-from statsmodels.tsa.arima.model import ARIMA
-from statsmodels.tsa.holtwinters import ExponentialSmoothing
+from statsmodels.tsa.arima.model import ARIMA  # type: ignore
+from statsmodels.tsa.holtwinters import ExponentialSmoothing  # type: ignore
 
 logger = logging.getLogger(__name__)
 

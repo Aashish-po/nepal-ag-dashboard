@@ -74,7 +74,9 @@ async def get_correlation(
         )
 
     yield_years = [int(r.year) for r in yield_results]
-    yield_values = [float(r.yield_kg_ha) for r in yield_results if r.yield_kg_ha is not None]
+    yield_values = [
+        float(r.yield_kg_ha) for r in yield_results if r.yield_kg_ha is not None
+    ]
 
     # Compute correlation using service functions
     from services.correlations import compute_yield_climate_correlation

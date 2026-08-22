@@ -221,9 +221,9 @@ def compute_climate_summary(records: list[dict]) -> dict:
     monsoon_end = ((best_start - 1 + 2) % 12) + 1
 
     return {
-        "annual_rainfall_mm": round(annual_rain.get(latest_year, 0), 2)
-        if latest_year
-        else None,
+        "annual_rainfall_mm": (
+            round(annual_rain.get(latest_year, 0), 2) if latest_year else None
+        ),
         "avg_temperature_c": round(avg_temp, 2) if avg_temp is not None else None,
         "monsoon_start_month": monsoon_start,
         "monsoon_end_month": monsoon_end,

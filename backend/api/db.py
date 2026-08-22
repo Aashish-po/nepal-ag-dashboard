@@ -19,14 +19,19 @@ from api.models.db_models import Base
 
 logger = logging.getLogger(__name__)
 
-DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql://localhost:5432/nepal_ag_dev")
+DATABASE_URL: str = os.environ.get(
+    "DATABASE_URL", "postgresql://localhost:5432/nepal_ag_dev"
+)
 
 # Normalize scheme: support postgresql://, postgres://, and sqlite://
 # Also recognize driver-qualified schemes like postgresql+psycopg://, postgresql+asyncpg://, mysql+pymysql://
-_normalized_db_url = DATABASE_URL
+_normalized_db_url: str = DATABASE_URL
 if _normalized_db_url.startswith("postgres://"):
     _normalized_db_url = _normalized_db_url.replace("postgres://", "postgresql://", 1)
-elif _normalized_db_url.startswith("postgresql://") or "+" in _normalized_db_url.split("://")[0]:
+elif (
+    _normalized_db_url.startswith("postgresql://")
+    or "+" in _normalized_db_url.split("://")[0]
+):
     # Already normalized or driver-qualified (e.g., postgresql+psycopg://)
     pass
 elif _normalized_db_url.startswith("sqlite://"):
@@ -39,14 +44,21 @@ DATABASE_URL = _normalized_db_url
 
 # Convert to async URL if using postgresql (asyncpg)
 # SQLite is sync-only
+ASYNC_DATABASE_URL: str | None = None
 if _normalized_db_url.startswith("postgresql://"):
-    ASYNC_DATABASE_URL = _normalized_db_url.replace("postgresql://", "postgresql+asyncpg://", 1)
-elif "+" in _normalized_db_url.split("://")[0] and _normalized_db_url.split("://")[0].startswith("postgresql"):
+    ASYNC_DATABASE_URL = _normalized_db_url.replace(
+        "postgresql://", "postgresql+asyncpg://", 1
+    )
+elif "+" in _normalized_db_url.split("://")[0] and _normalized_db_url.split("://")[
+    0
+].startswith("postgresql"):
     # Already has a driver, replace with asyncpg driver if it's a postgresql variant
     base_scheme = _normalized_db_url.split("://")[0]
     if base_scheme.startswith("postgresql+"):
         # Replace the driver part with asyncpg
-        ASYNC_DATABASE_URL = _normalized_db_url.replace(base_scheme, "postgresql+asyncpg", 1)
+        ASYNC_DATABASE_URL = _normalized_db_url.replace(
+            base_scheme, "postgresql+asyncpg", 1
+        )
     else:
         ASYNC_DATABASE_URL = None
 else:

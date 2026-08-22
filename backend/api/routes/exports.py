@@ -87,8 +87,16 @@ def export_yields(
                 row.crop,
                 row.year,
                 round(float(row.yield_kg_ha), 2) if row.yield_kg_ha is not None else "",
-                round(float(row.production_mt), 2) if row.production_mt is not None else "",
-                round(float(row.area_harvested_ha), 2) if row.area_harvested_ha is not None else "",
+                (
+                    round(float(row.production_mt), 2)
+                    if row.production_mt is not None
+                    else ""
+                ),
+                (
+                    round(float(row.area_harvested_ha), 2)
+                    if row.area_harvested_ha is not None
+                    else ""
+                ),
                 row.data_source or "",
                 row.data_quality or "",
             ]
@@ -103,7 +111,9 @@ def export_forecasts(
     db: Session = Depends(get_db),
     district_id: int = Query(..., description="Required: district ID"),
     crop_id: int = Query(..., description="Required: crop ID"),
-    months_ahead: int = Query(12, ge=1, le=36, description="Forecast horizon (1-36 months)"),
+    months_ahead: int = Query(
+        12, ge=1, le=36, description="Forecast horizon (1-36 months)"
+    ),
     format: str = Query("excel", description="Only 'excel' supported"),
 ):
     if format != "excel":

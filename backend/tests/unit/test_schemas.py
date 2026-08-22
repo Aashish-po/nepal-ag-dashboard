@@ -8,7 +8,6 @@ Covers:
 """
 
 
-
 class TestSchemas:
     """Tests for Pydantic response schemas."""
 

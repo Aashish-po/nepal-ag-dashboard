@@ -15,10 +15,10 @@ from __future__ import annotations
 import logging
 import os
 import asyncio
+from collections.abc import Callable
 from typing import Any, Mapping, cast
 
 import pandas as pd
-
 
 logger = logging.getLogger(__name__)
 
@@ -59,9 +59,6 @@ def load_districts_csv(filepath: str | None = None) -> int:
     rows = df.to_dict("records")
     logger.info("Loading %d districts from %s", len(rows), filepath)
     return _upsert_table_rows("districts", rows, conflict_cols=["id"])
-
-
-
 
 
 # --------------------------------------------------------------------------- #
@@ -367,16 +364,17 @@ def _upsert_table_rows(
             raise ValueError(
                 f"Unknown columns for {table_name}: {sorted(invalid_columns)}"
             )
+        records = cast(list[Mapping[str, Any]], df.to_dict("records"))
+
         invalid_conflicts = set(conflict_cols) - set(table.columns.keys())
         if invalid_conflicts:
             raise ValueError(
                 f"Unknown conflict columns for {table_name}: {sorted(invalid_conflicts)}"
             )
 
-        records = cast(list[Mapping[str, Any]], df.to_dict("records"))
-
         # Select dialect-specific insert constructor
         dialect_name = engine.dialect.name
+        insert_factory: Callable[[Any], Any]
         if dialect_name == "sqlite":
             insert_factory = sqlite_insert
         else:

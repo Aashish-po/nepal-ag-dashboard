@@ -395,6 +395,7 @@ class TestYieldsEndpoint:
         assert "statistics" in data
         assert isinstance(data["timeseries"], list)
 
+
 def test_yields_year_filter(self, client):
     """year_start and year_end should filter results."""
     # Test data has years 2023, 2024; request range 2024-2024

@@ -1,6 +1,7 @@
 /plans
 /node_modules
 .kilo
+.claude
 
 # Byte-compiled files
 __pycache__/

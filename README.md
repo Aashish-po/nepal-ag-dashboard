@@ -15,7 +15,7 @@ The Nepal Agricultural Intelligence Dashboard provides data-driven insights into
 ### Screens
 
 | # | Screen | What You Can Do |
-|---|--------|-----------------|
+| --- | -------- | ----------------- |
 | 1 | **Home** | Browse featured insights and navigate to any analysis |
 | 2 | **Yield Analysis** | Filter by district/crop/year; view yield timeseries, trends, and CAGR |
 | 3 | **Climate Intelligence** | Explore rainfall, temperature, and solar radiation by district and date range |
@@ -32,7 +32,7 @@ The Nepal Agricultural Intelligence Dashboard provides data-driven insights into
 ## Tech Stack
 
 | Layer | Technology |
-|-------|-----------|
+| ------- | ----------- |
 | Frontend | React 18 + TypeScript, Vite, Tailwind CSS, shadcn/ui, Recharts, react-leaflet |
 | Backend | Python 3.11, FastAPI, SQLAlchemy, Statsmodels |
 | Database | PostgreSQL (Supabase) |
@@ -114,7 +114,7 @@ All endpoints are public (read-only) in v1.
 ### Key Endpoints
 
 | Method | Endpoint | Description |
-|--------|----------|-------------|
+| -------- | ---------- | ------------- |
 | GET | `/health` | Health check (DB connectivity) |
 | GET | `/api/v1/districts` | List all 77 districts (filter by province/region) |
 | GET | `/api/v1/crops` | List all crop types (filter by category/export) |
@@ -143,7 +143,7 @@ curl https://nepal-ag-backend.onrender.com/api/v1/export/yields?district_id=1&cr
 ## Data Sources
 
 | Source | Data | Update Frequency |
-|--------|------|------------------|
+| -------- | ------ | ------------------ |
 | FAOSTAT | Crop production, yields, exports | Weekly via ETL |
 | NASA POWER | Temperature, solar radiation | Weekly via ETL |
 | CHIRPS | Satellite rainfall estimates | Weekly via ETL |
@@ -156,7 +156,7 @@ All seed data is committed in `backend/data/`. A weekly ETL pipeline (APSchedule
 
 ## Project Structure
 
-```
+```text
 nepal-ag-dashboard/
 ├── frontend/
 │   ├── index.html
@@ -320,4 +320,3 @@ MIT License — see [LICENSE](LICENSE) file for details.
 ---
 
 *This project is built for public good. All data shown is publicly available agricultural statistics.*
-# nepal-ag-dashboard

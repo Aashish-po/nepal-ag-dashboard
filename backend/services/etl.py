@@ -394,17 +394,17 @@ def _upsert_table_rows(
                 batch = records[i : i + batch_size]
                 batch_stmt = insert_factory(table).values(batch)
                 final_update_cols = {
-                    column: getattr(batch_stmt.excluded, column)
+                    column: getattr(batch_stmt.excluded, column)  # type: ignore[attr-defined]
                     for column in df.columns
                     if column not in conflict_cols
                 }
                 batch_full_stmt = (
-                    batch_stmt.on_conflict_do_update(
+                    batch_stmt.on_conflict_do_update(  # type: ignore[attr-defined]
                         index_elements=conflict_cols,
                         set_=final_update_cols,
                     )
                     if final_update_cols
-                    else batch_stmt.on_conflict_do_nothing(index_elements=conflict_cols)
+                    else batch_stmt.on_conflict_do_nothing(index_elements=conflict_cols)  # type: ignore[attr-defined]
                 )
                 conn.execute(batch_full_stmt)
             conn.commit()

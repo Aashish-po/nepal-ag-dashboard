@@ -16,7 +16,7 @@ from collections import defaultdict
 from typing import Any, Optional, Protocol, Sequence, cast
 
 from sqlalchemy import text
-from scipy import stats
+from scipy import stats  # type: ignore[import-untyped]
 
 logger = logging.getLogger(__name__)
 

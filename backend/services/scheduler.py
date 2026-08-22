@@ -85,7 +85,8 @@ def weekly_etl() -> None:
         # 2. Compute forecasts (Phase 4 will populate forecasts table)
         # For now, log that forecast training is pending
         # 3. Refresh materialized views
-        from sqlalchemy import create_engine, text as sql_text
+        from sqlalchemy import create_engine
+        from sqlalchemy import text as sql_text
 
         db_url = os.environ.get("DATABASE_URL", "")
         if "asyncpg" in db_url:

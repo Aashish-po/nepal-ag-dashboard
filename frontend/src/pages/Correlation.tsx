@@ -1,12 +1,3 @@
-import {
-  ScatterChart,
-  Scatter,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/shadcn/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/shadcn/card";
@@ -144,7 +135,7 @@ export function Correlation() {
                 </div>
                 <p className="text-sm text-text-secondary">
                   Correlation coefficient (r)
-                </div>
+                </p>
                 <p className="text-xs text-text-muted">
                   {correlations?.rainfall_mm?.significant
                     ? "Statistically significant"
@@ -164,7 +155,7 @@ export function Correlation() {
                 </div>
                 <p className="text-sm text-text-secondary">
                   Correlation coefficient (r)
-                </div>
+                </p>
                 <p className="text-xs text-text-muted">
                   {correlations?.temperature_mean_c?.significant
                     ? "Statistically significant"
@@ -184,7 +175,7 @@ export function Correlation() {
                 </div>
                 <p className="text-sm text-text-secondary">
                   Correlation coefficient (r)
-                </div>
+                </p>
                 <p className="text-xs text-text-muted">
                   {correlations?.solar_radiation_mj_m2?.significant
                     ? "Statistically significant"

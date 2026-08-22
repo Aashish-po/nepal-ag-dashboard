@@ -13,10 +13,11 @@ from __future__ import annotations
 import logging
 import math
 from collections import defaultdict
-from typing import Any, Optional, Protocol, Sequence, cast
+from collections.abc import Sequence
+from typing import Any, Protocol, cast
 
-from sqlalchemy import text
 from scipy import stats  # type: ignore[import-untyped]
+from sqlalchemy import text
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +31,7 @@ class YieldLike(Protocol):
     """Structural type for rows with yield stats fields."""
 
     year: Any
-    yield_kg_ha: Optional[float]
+    yield_kg_ha: float | None
 
 
 def calculate_yield_statistics(yield_rows: Sequence[YieldLike]) -> dict[str, Any]:
@@ -119,7 +120,7 @@ def calculate_yield_statistics(yield_rows: Sequence[YieldLike]) -> dict[str, Any
 
 def compute_pearson(
     x: Sequence[float | None], y: Sequence[float | None]
-) -> Optional[float]:
+) -> float | None:
     """Compute Pearson correlation coefficient.
 
     Args:
@@ -225,10 +226,10 @@ async def compute_yield_climate_correlation(
     district_id: int,
     crop_id: int,
     yield_years: Sequence[int],
-    yield_values: Sequence[Optional[float]],
+    yield_values: Sequence[float | None],
     lag_months: int = 0,
     db=None,
-) -> Optional[dict]:
+) -> dict | None:
     """Compute Pearson correlations between yield and climate variables.
 
     For each climate variable (rainfall, temperature, solar), computes:

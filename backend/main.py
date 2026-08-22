@@ -8,21 +8,20 @@ import logging
 import os
 from datetime import datetime, timezone
 
+from api.db import check_db_connection, init_db
+from api.models.schemas import HealthResponse
+from api.routes.climate import router as climate_router
+from api.routes.commercialization import router as commercialization_router
+from api.routes.correlation import router as correlation_router
+from api.routes.crops import router as crops_router
+from api.routes.districts import router as districts_router
+from api.routes.exports import router as exports_router
+from api.routes.forecasts import router as forecasts_router
+from api.routes.heatmap import router as heatmap_router
+from api.routes.yields import router as yields_router
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-
-from api.db import check_db_connection, init_db
-from api.models.schemas import HealthResponse
-from api.routes.districts import router as districts_router
-from api.routes.crops import router as crops_router
-from api.routes.yields import router as yields_router
-from api.routes.climate import router as climate_router
-from api.routes.correlation import router as correlation_router
-from api.routes.commercialization import router as commercialization_router
-from api.routes.forecasts import router as forecasts_router
-from api.routes.exports import router as exports_router
-from api.routes.heatmap import router as heatmap_router
 
 logging.basicConfig(
     level=logging.INFO,

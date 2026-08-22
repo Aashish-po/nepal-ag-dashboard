@@ -12,11 +12,11 @@ or the seed_db.py CLI script.
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import os
-import asyncio
-from collections.abc import Callable
-from typing import Any, Mapping, cast
+from collections.abc import Callable, Mapping
+from typing import Any, cast
 
 import pandas as pd
 
@@ -264,8 +264,8 @@ def validate_yields(df: pd.DataFrame) -> dict[str, list[str]]:
 
     if "year" in df.columns:
         from api.models.db_models import (
-            MIN_SUPPORTED_HARVEST_YEAR,
             MAX_SUPPORTED_HARVEST_YEAR,
+            MIN_SUPPORTED_HARVEST_YEAR,
         )
 
         valid_years = df[
@@ -332,10 +332,10 @@ def _upsert_table_rows(
     table_name: str, rows: list[dict], conflict_cols: list[str]
 ) -> int:
     """Bulk upsert rows into a table using dialect-specific INSERT ... ON CONFLICT."""
+    from api.models.db_models import MISSING_DATA_SOURCE, Base
     from sqlalchemy import create_engine
     from sqlalchemy.dialects.postgresql import insert as pg_insert
     from sqlalchemy.dialects.sqlite import insert as sqlite_insert
-    from api.models.db_models import Base, MISSING_DATA_SOURCE
 
     db_url = os.environ.get("DATABASE_URL", "postgresql://localhost:5432/nepal_ag_dev")
     # Convert async URL to sync URL for pandas/pyodbc

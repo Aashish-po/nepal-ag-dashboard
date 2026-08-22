@@ -8,13 +8,12 @@ and the shared ``Base`` used by both the ORM models and the ETL upsert logic.
 from __future__ import annotations
 
 from datetime import date, datetime
-from typing import Optional
 
 from sqlalchemy import (
     ARRAY,
+    DECIMAL,
     Boolean,
     DateTime,
-    DECIMAL,
     ForeignKey,
     Integer,
     MetaData,
@@ -26,23 +25,23 @@ from sqlalchemy import (
 from sqlalchemy.orm import (
     DeclarativeBase,
     Mapped,
+    declared_attr,
     mapped_column,
     relationship,
-    declared_attr,
 )
 
 __all__ = [
-    "Base",
-    "MISSING_DATA_SOURCE",
-    "MIN_SUPPORTED_HARVEST_YEAR",
     "MAX_SUPPORTED_HARVEST_YEAR",
-    "Districts",
-    "Crops",
-    "Yields",
+    "MIN_SUPPORTED_HARVEST_YEAR",
+    "MISSING_DATA_SOURCE",
+    "Base",
     "Climate",
-    "ExportCrops",
     "CommercializationIndex",
+    "Crops",
+    "Districts",
+    "ExportCrops",
     "Forecasts",
+    "Yields",
 ]
 
 # ---------------------------------------------------------------------------
@@ -87,12 +86,12 @@ class Districts(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     province: Mapped[str] = mapped_column(String(50), nullable=False)
-    region: Mapped[Optional[str]] = mapped_column(String(50))
-    latitude: Mapped[Optional[float]] = mapped_column(DECIMAL(10, 8))
-    longitude: Mapped[Optional[float]] = mapped_column(DECIMAL(11, 8))
-    population: Mapped[Optional[int]] = mapped_column(Integer)
-    area_sq_km: Mapped[Optional[float]] = mapped_column(DECIMAL(10, 2))
-    created_at: Mapped[Optional[datetime]] = mapped_column(
+    region: Mapped[str | None] = mapped_column(String(50))
+    latitude: Mapped[float | None] = mapped_column(DECIMAL(10, 8))
+    longitude: Mapped[float | None] = mapped_column(DECIMAL(11, 8))
+    population: Mapped[int | None] = mapped_column(Integer)
+    area_sq_km: Mapped[float | None] = mapped_column(DECIMAL(10, 2))
+    created_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
     )
@@ -106,12 +105,12 @@ class Districts(Base):
 class Crops(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
-    fao_code: Mapped[Optional[str]] = mapped_column(String(10))
-    category: Mapped[Optional[str]] = mapped_column(String(50))
+    fao_code: Mapped[str | None] = mapped_column(String(10))
+    category: Mapped[str | None] = mapped_column(String(50))
     unit: Mapped[str] = mapped_column(String(20), default="MT")
     is_export_crop: Mapped[bool] = mapped_column(Boolean, default=False)
     is_subsistence: Mapped[bool] = mapped_column(Boolean, default=False)
-    created_at: Mapped[Optional[datetime]] = mapped_column(
+    created_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
     )
@@ -129,9 +128,9 @@ class Yields(Base):
     )
     crop_id: Mapped[int] = mapped_column(ForeignKey("crops.id", ondelete="CASCADE"))
     year: Mapped[int] = mapped_column(Integer, nullable=False)
-    production_mt: Mapped[Optional[float]] = mapped_column(DECIMAL(15, 2))
-    area_harvested_ha: Mapped[Optional[float]] = mapped_column(DECIMAL(15, 2))
-    yield_kg_ha: Mapped[Optional[float]] = mapped_column(DECIMAL(10, 2))
+    production_mt: Mapped[float | None] = mapped_column(DECIMAL(15, 2))
+    area_harvested_ha: Mapped[float | None] = mapped_column(DECIMAL(15, 2))
+    yield_kg_ha: Mapped[float | None] = mapped_column(DECIMAL(10, 2))
     data_source: Mapped[str] = mapped_column(
         String(100),
         nullable=False,
@@ -139,20 +138,18 @@ class Yields(Base):
         default=MISSING_DATA_SOURCE,
     )
     data_quality: Mapped[str] = mapped_column(String(20), default="Estimated")
-    created_at: Mapped[Optional[datetime]] = mapped_column(
+    created_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
     )
-    updated_at: Mapped[Optional[datetime]] = mapped_column(
+    updated_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
         onupdate=func.now(),
     )
 
-    district: Mapped[Optional["Districts"]] = relationship(
-        "Districts", backref="yields"
-    )
-    crop: Mapped[Optional["Crops"]] = relationship("Crops", backref="yields")
+    district: Mapped[Districts | None] = relationship("Districts", backref="yields")
+    crop: Mapped[Crops | None] = relationship("Crops", backref="yields")
 
     __table_args__ = (
         UniqueConstraint(
@@ -176,25 +173,23 @@ class Climate(Base):
         ForeignKey("districts.id", ondelete="CASCADE")
     )
     observation_date: Mapped[date] = mapped_column(nullable=False)
-    rainfall_mm: Mapped[Optional[float]] = mapped_column(DECIMAL(10, 2))
-    temperature_min_c: Mapped[Optional[float]] = mapped_column(DECIMAL(5, 2))
-    temperature_max_c: Mapped[Optional[float]] = mapped_column(DECIMAL(5, 2))
-    temperature_mean_c: Mapped[Optional[float]] = mapped_column(DECIMAL(5, 2))
-    solar_radiation_mj_m2: Mapped[Optional[float]] = mapped_column(DECIMAL(8, 2))
+    rainfall_mm: Mapped[float | None] = mapped_column(DECIMAL(10, 2))
+    temperature_min_c: Mapped[float | None] = mapped_column(DECIMAL(5, 2))
+    temperature_max_c: Mapped[float | None] = mapped_column(DECIMAL(5, 2))
+    temperature_mean_c: Mapped[float | None] = mapped_column(DECIMAL(5, 2))
+    solar_radiation_mj_m2: Mapped[float | None] = mapped_column(DECIMAL(8, 2))
     data_source: Mapped[str] = mapped_column(
         String(100),
         nullable=False,
         server_default=MISSING_DATA_SOURCE,
         default=MISSING_DATA_SOURCE,
     )
-    created_at: Mapped[Optional[datetime]] = mapped_column(
+    created_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
     )
 
-    district: Mapped[Optional["Districts"]] = relationship(
-        "Districts", backref="climate"
-    )
+    district: Mapped[Districts | None] = relationship("Districts", backref="climate")
 
     __table_args__ = (
         UniqueConstraint(
@@ -216,19 +211,19 @@ class ExportCrops(Base):
     crop_id: Mapped[int] = mapped_column(
         ForeignKey("crops.id", ondelete="CASCADE"), unique=True, nullable=False
     )
-    main_export_countries: Mapped[Optional[list[str]]] = mapped_column(
+    main_export_countries: Mapped[list[str] | None] = mapped_column(
         ARRAY(String), nullable=True
     )
-    avg_price_usd_per_mt: Mapped[Optional[float]] = mapped_column(DECIMAL(10, 2))
-    export_season_start_month: Mapped[Optional[int]] = mapped_column(Integer)
-    export_season_end_month: Mapped[Optional[int]] = mapped_column(Integer)
-    notes: Mapped[Optional[str]] = mapped_column(Text())
-    created_at: Mapped[Optional[datetime]] = mapped_column(
+    avg_price_usd_per_mt: Mapped[float | None] = mapped_column(DECIMAL(10, 2))
+    export_season_start_month: Mapped[int | None] = mapped_column(Integer)
+    export_season_end_month: Mapped[int | None] = mapped_column(Integer)
+    notes: Mapped[str | None] = mapped_column(Text())
+    created_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
     )
 
-    crop: Mapped[Optional["Crops"]] = relationship("Crops", backref="export_crop")
+    crop: Mapped[Crops | None] = relationship("Crops", backref="export_crop")
 
 
 # ---------------------------------------------------------------------------
@@ -242,17 +237,17 @@ class CommercializationIndex(Base):
         ForeignKey("districts.id", ondelete="CASCADE")
     )
     year: Mapped[int] = mapped_column(Integer, nullable=False)
-    export_crop_area_pct: Mapped[Optional[float]] = mapped_column(DECIMAL(5, 2))
-    subsistence_area_pct: Mapped[Optional[float]] = mapped_column(DECIMAL(5, 2))
-    avg_holding_size_ha: Mapped[Optional[float]] = mapped_column(DECIMAL(10, 2))
-    export_volume_ratio: Mapped[Optional[float]] = mapped_column(DECIMAL(5, 2))
-    commercialization_score: Mapped[Optional[float]] = mapped_column(DECIMAL(5, 2))
-    created_at: Mapped[Optional[datetime]] = mapped_column(
+    export_crop_area_pct: Mapped[float | None] = mapped_column(DECIMAL(5, 2))
+    subsistence_area_pct: Mapped[float | None] = mapped_column(DECIMAL(5, 2))
+    avg_holding_size_ha: Mapped[float | None] = mapped_column(DECIMAL(10, 2))
+    export_volume_ratio: Mapped[float | None] = mapped_column(DECIMAL(5, 2))
+    commercialization_score: Mapped[float | None] = mapped_column(DECIMAL(5, 2))
+    created_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
     )
 
-    district: Mapped[Optional["Districts"]] = relationship(
+    district: Mapped[Districts | None] = relationship(
         "Districts", backref="commercialization_index"
     )
 
@@ -277,22 +272,20 @@ class Forecasts(Base):
     )
     crop_id: Mapped[int] = mapped_column(ForeignKey("crops.id", ondelete="CASCADE"))
     forecast_month: Mapped[date] = mapped_column(nullable=False)
-    forecast_yield_kg_ha: Mapped[Optional[float]] = mapped_column(DECIMAL(10, 2))
-    lower_ci_95: Mapped[Optional[float]] = mapped_column(DECIMAL(10, 2))
-    upper_ci_95: Mapped[Optional[float]] = mapped_column(DECIMAL(10, 2))
-    forecast_model: Mapped[Optional[str]] = mapped_column(String(50))
-    rmse_kg_ha: Mapped[Optional[float]] = mapped_column(DECIMAL(10, 2))
-    mae_kg_ha: Mapped[Optional[float]] = mapped_column(DECIMAL(10, 2))
-    mape_pct: Mapped[Optional[float]] = mapped_column(DECIMAL(5, 2))
-    forecast_date: Mapped[Optional[datetime]] = mapped_column(
+    forecast_yield_kg_ha: Mapped[float | None] = mapped_column(DECIMAL(10, 2))
+    lower_ci_95: Mapped[float | None] = mapped_column(DECIMAL(10, 2))
+    upper_ci_95: Mapped[float | None] = mapped_column(DECIMAL(10, 2))
+    forecast_model: Mapped[str | None] = mapped_column(String(50))
+    rmse_kg_ha: Mapped[float | None] = mapped_column(DECIMAL(10, 2))
+    mae_kg_ha: Mapped[float | None] = mapped_column(DECIMAL(10, 2))
+    mape_pct: Mapped[float | None] = mapped_column(DECIMAL(5, 2))
+    forecast_date: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
     )
 
-    district: Mapped[Optional["Districts"]] = relationship(
-        "Districts", backref="forecasts"
-    )
-    crop: Mapped[Optional["Crops"]] = relationship("Crops", backref="forecasts")
+    district: Mapped[Districts | None] = relationship("Districts", backref="forecasts")
+    crop: Mapped[Crops | None] = relationship("Crops", backref="forecasts")
 
     __table_args__ = (
         UniqueConstraint(

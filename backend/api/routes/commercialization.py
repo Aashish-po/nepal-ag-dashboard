@@ -4,15 +4,15 @@ from sqlalchemy.orm import Session
 
 from api.db import get_db
 from api.models.db_models import (
-    Districts,
-    CommercializationIndex,
-    MIN_SUPPORTED_HARVEST_YEAR,
     MAX_SUPPORTED_HARVEST_YEAR,
+    MIN_SUPPORTED_HARVEST_YEAR,
+    CommercializationIndex,
+    Districts,
 )
 from api.models.schemas import (
     CommercializationComponents,
-    CommercializationRankResponse,
     CommercializationRankingsResponse,
+    CommercializationRankResponse,
     CommercializationResponse,
 )
 

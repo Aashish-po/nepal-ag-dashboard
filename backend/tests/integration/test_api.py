@@ -12,7 +12,6 @@ from typing import Any
 
 import pytest
 from fastapi.testclient import TestClient
-
 from main import app
 
 
@@ -20,8 +19,9 @@ from main import app
 def client():
     """Create a TestClient for the production application with dependency overrides."""
     from unittest.mock import MagicMock
+
     from api.db import get_db
-    from api.models.db_models import Districts, Crops, Yields
+    from api.models.db_models import Crops, Districts, Yields
 
     # Mock database session
     mock_session = MagicMock()

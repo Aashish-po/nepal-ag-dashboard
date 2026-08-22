@@ -4,7 +4,6 @@ module.exports = {
     browser: true,
     es2020: true,
     node: true,
-    'vitest-globals/env': true,
   },
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -12,13 +11,12 @@ module.exports = {
     sourceType: 'module',
     ecmaFeatures: { jsx: true },
   },
-  plugins: ['@typescript-eslint', 'react-refresh', 'react-hooks'],
+  plugins: ['@typescript-eslint', 'react-hooks'],
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
-    'plugin:react-refresh/recommended',
     'prettier',
   ],
   settings: {
@@ -37,7 +35,7 @@ module.exports = {
   overrides: [
     {
       files: ['**/*.test.{ts,tsx}', '**/*.spec.{ts,tsx}'],
-      env: { node: true, 'vitest-globals/env': true },
+      env: { node: true },
       rules: { 'no-restricted-imports': 'off' },
     },
   ],

@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, Query
+from services.correlations import compute_full_correlation
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from api.db import get_db
 from api.models.db_models import Climate, Crops, Districts, Yields
-from api.models.schemas import HeatmapRow, HeatmapResponse
-from services.correlations import compute_full_correlation
+from api.models.schemas import HeatmapResponse, HeatmapRow
 
 router = APIRouter()
 
@@ -102,9 +102,7 @@ def get_heatmap(
 
     for crop_id, crop_name in crop_names.items():
         # Get unique districts for this crop
-        crop_districts = set(
-            d_id for (d_id, c_id) in yields_by_dc.keys() if c_id == crop_id
-        )
+        crop_districts = set(d_id for (d_id, c_id) in yields_by_dc if c_id == crop_id)
 
         for district_id in crop_districts:
             district_name = district_names.get(district_id, f"District {district_id}")

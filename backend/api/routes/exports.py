@@ -1,9 +1,9 @@
 import csv
 import re
 import unicodedata
+from collections.abc import Sequence
 from datetime import date, datetime
 from io import BytesIO, StringIO
-from typing import Optional, Sequence, Tuple
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
@@ -34,8 +34,8 @@ def _safe_filename_part(value: str) -> str:
 @router.get("/export/yields")
 def export_yields(
     db: Session = Depends(get_db),
-    district_id: Optional[int] = Query(None),
-    crop_id: Optional[int] = None,
+    district_id: int | None = Query(None),
+    crop_id: int | None = None,
     year_start: int = Query(2014),
     year_end: int = Query(2024),
     format: str = Query("csv", description="Only 'csv' supported"),
@@ -169,15 +169,15 @@ def export_forecasts(
 
     fc_results: Sequence[
         Row[
-            Tuple[
+            tuple[
                 date,
-                Optional[float],
-                Optional[float],
-                Optional[float],
-                Optional[str],
-                Optional[float],
-                Optional[float],
-                Optional[float],
+                float | None,
+                float | None,
+                float | None,
+                str | None,
+                float | None,
+                float | None,
+                float | None,
             ]
         ]
     ] = db.execute(fc_stmt).all()

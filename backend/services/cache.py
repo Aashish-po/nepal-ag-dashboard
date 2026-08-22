@@ -12,7 +12,7 @@ import logging
 import os
 from datetime import date, datetime
 from decimal import Decimal
-from typing import Any, Optional, cast
+from typing import Any, cast
 
 import redis.asyncio as redis
 
@@ -36,10 +36,10 @@ REDIS_URL = os.environ.get("REDIS_URL", "")
 # Redis client (lazily initialised)
 # --------------------------------------------------------------------------- #
 
-_redis_client: Optional[redis.Redis] = None
+_redis_client: redis.Redis | None = None
 
 
-def _get_redis_client() -> Optional[redis.Redis]:
+def _get_redis_client() -> redis.Redis | None:
     """Return a Redis client instance, or None if Redis is not configured."""
     global _redis_client
     if REDIS_URL and _redis_client is None:
@@ -56,7 +56,7 @@ def _get_redis_client() -> Optional[redis.Redis]:
 # --------------------------------------------------------------------------- #
 
 
-async def get_cached(key: str, db=None) -> Optional[dict]:
+async def get_cached(key: str, db=None) -> dict | None:
     """Retrieve a cached value from Redis.
 
     Args:

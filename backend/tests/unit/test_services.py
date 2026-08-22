@@ -102,8 +102,8 @@ class TestDataValidation:
 
     def test_yields_validation_negative_production(self):
         """Negative production should be flagged as error."""
-        from services.etl import validate_yields
         import pandas as pd
+        from services.etl import validate_yields
 
         df = pd.DataFrame(
             {
@@ -124,8 +124,8 @@ class TestDataValidation:
 
     def test_yields_validation_zero_area(self):
         """Zero area should be flagged as error."""
-        from services.etl import validate_yields
         import pandas as pd
+        from services.etl import validate_yields
 
         df = pd.DataFrame(
             {
@@ -146,8 +146,8 @@ class TestDataValidation:
 
     def test_yields_validation_valid_data(self):
         """Valid yield data should produce no errors."""
-        from services.etl import validate_yields
         import pandas as pd
+        from services.etl import validate_yields
 
         df = pd.DataFrame(
             {
@@ -167,8 +167,8 @@ class TestDataValidation:
 
     def test_yields_validation_year_range(self):
         """Years outside 2014-2024 should be flagged."""
-        from services.etl import validate_yields
         import pandas as pd
+        from services.etl import validate_yields
 
         df = pd.DataFrame(
             {
@@ -188,8 +188,8 @@ class TestDataValidation:
 
     def test_climate_validation_negative_rainfall(self):
         """Negative rainfall should be flagged."""
-        from services.etl import validate_climate
         import pandas as pd
+        from services.etl import validate_climate
 
         df = pd.DataFrame(
             {
@@ -209,8 +209,8 @@ class TestDataValidation:
 
     def test_climate_validation_temp_order(self):
         """Min temp >= max temp should be flagged."""
-        from services.etl import validate_climate
         import pandas as pd
+        from services.etl import validate_climate
 
         df = pd.DataFrame(
             {
@@ -239,7 +239,7 @@ class TestCacheService:
 
     def test_cache_functions_exist(self):
         """Cache service should expose get_cached, set_cached, invalidate_cache."""
-        import services.cache as cache
+        from services import cache
 
         assert hasattr(cache, "get_cached")
         assert hasattr(cache, "set_cached")

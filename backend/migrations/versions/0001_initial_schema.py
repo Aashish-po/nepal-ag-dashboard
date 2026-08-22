@@ -3,9 +3,8 @@
 from __future__ import annotations
 
 from alembic import op
-from sqlalchemy import ARRAY, JSON
-
 from api.models.db_models import Base
+from sqlalchemy import ARRAY, JSON
 
 revision = "0001_initial_schema"
 down_revision = None

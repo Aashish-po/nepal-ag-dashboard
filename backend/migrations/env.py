@@ -9,6 +9,7 @@ from pathlib import Path
 
 from alembic import context
 from sqlalchemy import engine_from_config, pool
+from api.models.db_models import Base
 
 config = context.config
 
@@ -19,8 +20,6 @@ repo_root = Path(config.config_file_name or ".").resolve().parent.parent
 backend_root = repo_root / "backend"
 sys.path.insert(0, str(repo_root))
 sys.path.insert(0, str(backend_root))
-
-from api.models.db_models import Base  # noqa: E402
 
 target_metadata = Base.metadata
 

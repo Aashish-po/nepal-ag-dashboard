@@ -1,16 +1,17 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException, Query
+from services.correlations import calculate_yield_statistics
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from api.db import get_db
 from api.models.db_models import (
+    MAX_SUPPORTED_HARVEST_YEAR,
+    MIN_SUPPORTED_HARVEST_YEAR,
     Crops,
     Districts,
     Yields,
-    MIN_SUPPORTED_HARVEST_YEAR,
-    MAX_SUPPORTED_HARVEST_YEAR,
 )
 from api.models.schemas import (
     DistrictYieldsResponse,
@@ -18,7 +19,6 @@ from api.models.schemas import (
     YieldStatistics,
     YieldTimeseriesResponse,
 )
-from services.correlations import calculate_yield_statistics
 
 router = APIRouter()
 

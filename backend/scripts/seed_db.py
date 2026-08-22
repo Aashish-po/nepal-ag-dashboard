@@ -18,7 +18,7 @@ import sys
 # Ensure backend directory is on the path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from api.db import init_db, check_db_connection
+from api.db import check_db_connection, init_db
 from services.etl import load_all
 
 logging.basicConfig(

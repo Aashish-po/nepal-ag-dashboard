@@ -47,7 +47,7 @@ class TestTrendDetection:
 
     def test_increasing_trend_detected(self):
         """Increasing yields over time should produce 'INCREASING' trend."""
-        from services.correlations import calculate_yield_statistics, YieldLike
+        from services.correlations import YieldLike, calculate_yield_statistics
 
         class FakeYield(YieldLike):
             def __init__(self, year: int, yield_val: float):
@@ -73,7 +73,7 @@ class TestTrendDetection:
 
     def test_decreasing_trend_detected(self):
         """Decreasing yields should produce 'DECREASING' trend."""
-        from services.correlations import calculate_yield_statistics, YieldLike
+        from services.correlations import YieldLike, calculate_yield_statistics
 
         class FakeYield(YieldLike):
             def __init__(self, year: int, yield_val: float):
@@ -98,7 +98,7 @@ class TestTrendDetection:
 
     def test_stable_trend_detected(self):
         """Flat yields should produce 'STABLE' trend."""
-        from services.correlations import calculate_yield_statistics, YieldLike
+        from services.correlations import YieldLike, calculate_yield_statistics
 
         class FakeYield(YieldLike):
             def __init__(self, year: int, yield_val: float):
@@ -118,7 +118,7 @@ class TestTrendDetection:
 
     def test_insufficient_data_handling(self):
         """Less than 2 data points should return INSUFFICIENT_DATA."""
-        from services.correlations import calculate_yield_statistics, YieldLike
+        from services.correlations import YieldLike, calculate_yield_statistics
 
         class FakeYield(YieldLike):
             def __init__(self, year: int, yield_val: float):
@@ -142,7 +142,7 @@ class TestCAGR:
 
     def test_positive_cagr(self):
         """Positive yield growth should produce positive CAGR."""
-        from services.correlations import calculate_yield_statistics, YieldLike
+        from services.correlations import YieldLike, calculate_yield_statistics
 
         class FakeYield(YieldLike):
             def __init__(self, year: int, yield_val: float):
@@ -170,7 +170,7 @@ class TestCAGR:
 
     def test_zero_cagr(self):
         """Flat yields should produce ~0% CAGR."""
-        from services.correlations import calculate_yield_statistics, YieldLike
+        from services.correlations import YieldLike, calculate_yield_statistics
 
         class FakeYield(YieldLike):
             def __init__(self, year: int, yield_val: float):

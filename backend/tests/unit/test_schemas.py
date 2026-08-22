@@ -69,8 +69,9 @@ class TestSchemas:
 
     def test_climate_record_validation(self):
         """ClimateRecord should accept valid climate data."""
-        from api.models.schemas import ClimateRecord
         from datetime import date
+
+        from api.models.schemas import ClimateRecord
 
         record = ClimateRecord(
             observation_date=date(2024, 1, 1),

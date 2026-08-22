@@ -17,7 +17,7 @@ export function About() {
           <CardContent className="space-y-4 text-text-secondary leading-relaxed">
             <p>
               The Nepal Agricultural Intelligence Dashboard is a data-driven platform providing
-              insights into agricultural productivity across Nepal's 77 districts. It integrates
+              insights into agricultural productivity across Nepal&apos;s 77 districts. It integrates
               crop yield data, climate records, and predictive models to support evidence-based
               decision making for policymakers, researchers, and development organizations.
             </p>

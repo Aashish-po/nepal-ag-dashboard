@@ -20,9 +20,9 @@ jobs:
       - run: ruff check .
       - run: ruff format --check .
       - run: mypy .
-      - run: bandit -r app
+      - run: bandit -r backend
       - run: pip-audit
-      - run: pytest --cov=app
+      - run: pytest --cov=backend
 
   frontend:
     runs-on: ubuntu-latest

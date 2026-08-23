@@ -8,20 +8,6 @@ export const apiClient = axios.create({
   },
 })
 
-apiClient.interceptors.request.use((config) => {
-  return config
-})
-
-apiClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response) {
-      return Promise.reject(error)
-    }
-    return Promise.reject(error)
-  }
-)
-
 export async function getDistricts(params?: { province?: string }) {
   const response = await apiClient.get('/api/v1/districts', { params })
   return response.data
@@ -67,11 +53,6 @@ export async function getCommercialization(districtId: number, year?: number) {
   return response.data
 }
 
-export async function getCommercializationHeatmap() {
-  const response = await apiClient.get('/api/v1/heatmap/yield-climate-correlation')
-  return response.data
-}
-
 export async function getCommercializationList(year?: number, province?: string) {
   const response = await apiClient.get('/api/v1/commercialization', { params: { year, province } })
   return response.data
@@ -81,11 +62,6 @@ export async function getForecasts(districtId: number, cropId: number, monthsAhe
   const response = await apiClient.get(`/api/v1/forecasts/${districtId}/${cropId}`, {
     params: { months_ahead: monthsAhead },
   })
-  return response.data
-}
-
-export async function getDistrictSummaries(params?: { metric?: string; cropId?: number; year?: number }) {
-  const response = await apiClient.get('/api/v1/district-summaries', { params })
   return response.data
 }
 
@@ -102,10 +78,5 @@ export async function downloadForecastsExcel(params: Record<string, unknown>) {
     params,
     responseType: 'blob',
   })
-  return response.data
-}
-
-export async function getHealth() {
-  const response = await apiClient.get('/health')
   return response.data
 }

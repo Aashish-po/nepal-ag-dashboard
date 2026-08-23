@@ -17,37 +17,6 @@ export function Loading({ className, height = '20px', width = '100%' }: Skeleton
   )
 }
 
-export function CardSkeleton() {
-  return (
-    <div className="card">
-      <div className="space-y-3">
-        <Loading height="16px" width="60%" />
-        <Loading height="24px" width="40%" />
-        <Loading height="16px" width="80%" />
-      </div>
-    </div>
-  )
-}
-
-export function ChartSkeleton() {
-  return (
-    <div className="card">
-      <Loading height="20px" width="120px" className="mb-4" />
-      <div className="space-y-4">
-        <div className="flex items-end gap-2 h-[300px]">
-          {Array.from({ length: 12 }).map((_, i) => (
-            <div
-              key={i}
-              className="flex-1 bg-bg-tertiary rounded-t"
-              style={{ height: `${Math.random() * 60 + 20}%` }}
-            />
-          ))}
-        </div>
-      </div>
-    </div>
-  )
-}
-
 export function TableSkeleton({ rows = 5 }: { rows?: number }) {
   return (
     <div className="card overflow-hidden">

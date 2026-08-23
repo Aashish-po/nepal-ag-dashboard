@@ -101,8 +101,8 @@ export function Compare() {
     "var(--color-chart-5)",
   ];
 
-  const allYears = Array.from(
-    new Set(compareData.flatMap((d: any) => d.timeseries.map((t: any) => t.year))),
+  const allYears: number[] = Array.from(
+    new Set<number>(compareData.flatMap((d: any) => d.timeseries.map((t: any) => t.year))),
   ).sort((a, b) => a - b);
 
   const chartData = allYears.map((year) => {

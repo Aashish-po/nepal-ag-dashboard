@@ -1,22 +1,23 @@
-/plans
+# Dependencies
 /node_modules
-.kilo
-.claude
 
-# Byte-compiled files
+# Project Files
+/plans
+/.kilo
+/.claude
+CLAUDE.md
+
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 
-# C extensions
-*.c
-
-# Distribution / packaging
+# Build & Packaging
 .Python
 build/
-develop-eggs/
 dist/
+develop-eggs/
 downloads/
 eggs/
 .eggs/
@@ -26,55 +27,60 @@ parts/
 sdist/
 var/
 wheels/
-*.egg-info/
 *.egg
+*.egg-info/
 
-# Virtual environments
+# Virtual Environments
 .venv/
 venv/
-ENV/
 env/
+ENV/
 
-# Installer
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
+# Testing & Coverage
 htmlcov/
 .tox/
 .coverage
 .coverage.*
 .cache
-nosetests.xml
+coverage/
 coverage.xml
+nosetests.xml
 *.cover
 .hypothesis/
 .pytest_cache/
+
+# Databases
 .alembic-dev.db
 backend/.alembic-dev.db
 backend/.alembic-validation.db
-coverage/
 
 # Jupyter
-.ipynb_checkpoints
+.ipynb_checkpoints/
 
-# Type checking
+# Type Checking
 .mypy_cache/
 .dmypy.json
 dmypy.json
 
-# Environment variables
+# Environment Variables
 .env
 .env.local
 .env.*.local
 
-# IDE
+# IDE & Editor
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+
+# Logs
+*.log
+
+# OS Files
 .DS_Store
+Thumbs.db
+Desktop.ini
 
 # Executables
 *.exe

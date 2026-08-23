@@ -10,6 +10,10 @@ updates:
     directory: "/frontend"
     schedule:
       interval: "daily"
+    # TS 7 (native port) breaks eslint 8 / @typescript-eslint 7. Hold at 5.x until the lint toolchain supports it.
+    ignore:
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "github-actions"
     directory: "/"

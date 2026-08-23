@@ -1,4 +1,5 @@
 fastapi>=0.109.1
+starlette>=1.3.1  # security floor; CVEs in starlette <1.3.1 (pulled transitively by fastapi)
 uvicorn[standard]==0.24.0
 sqlalchemy==2.0.23
 alembic==1.13.1
@@ -21,5 +22,5 @@ requests==2.33.0
 openpyxl==3.1.5
 python-multipart==0.0.31
 
-pydantic==2.5.3
+pydantic>=2.9.0  # fastapi>=0.141 requires pydantic>=2.9; old ==2.5.3 pin forced a vulnerable starlette
 pydantic-settings==2.1.0

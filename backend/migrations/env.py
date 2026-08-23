@@ -9,17 +9,17 @@ from pathlib import Path
 
 from alembic import context
 from sqlalchemy import engine_from_config, pool
+
+# env.py lives in backend/migrations/; put backend/ on sys.path before importing
+# app modules so `from api...` resolves regardless of the caller's cwd.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 from api.models.db_models import Base
 
 config = context.config
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
-
-repo_root = Path(config.config_file_name or ".").resolve().parent.parent
-backend_root = repo_root / "backend"
-sys.path.insert(0, str(repo_root))
-sys.path.insert(0, str(backend_root))
 
 target_metadata = Base.metadata
 

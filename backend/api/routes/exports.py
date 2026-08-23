@@ -2,8 +2,9 @@ import csv
 import re
 import unicodedata
 from collections.abc import Sequence
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from io import BytesIO, StringIO
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
@@ -33,7 +34,7 @@ def _safe_filename_part(value: str) -> str:
 
 @router.get("/export/yields")
 def export_yields(
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
     district_id: int | None = Query(None),
     crop_id: int | None = None,
     year_start: int = Query(2014),
@@ -102,13 +103,13 @@ def export_yields(
             ]
         )
 
-    filename = f"yields_{datetime.now().strftime('%Y%m%d')}.csv"
+    filename = f"yields_{datetime.now(tz=timezone.utc).strftime('%Y%m%d')}.csv"
     return _csv_response(output.getvalue(), filename)
 
 
 @router.get("/export/forecasts")
 def export_forecasts(
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
     district_id: int = Query(..., description="Required: district ID"),
     crop_id: int = Query(..., description="Required: crop ID"),
     months_ahead: int = Query(
@@ -215,28 +216,6 @@ def export_forecasts(
         ]
     )
 
-    for hist_row in hist_results:
-        ws_hist.append(
-            [
-                hist_row[0],
-                _num(hist_row[1]),
-                _num(hist_row[2]),
-            ]
-        )
-
-    # Sheet 2: Forecasts
-    ws_fc = wb.create_sheet("Forecasts")
-    assert ws_fc is not None
-    ws_fc.append(
-        [
-            "Forecast Month",
-            "Forecast Yield (kg/ha)",
-            "Lower 95% CI",
-            "Upper 95% CI",
-            "Model",
-        ]
-    )
-
     for forecast_row in fc_results[:months_ahead]:
         ws_fc.append(
             [
@@ -308,7 +287,7 @@ def export_forecasts(
     filename = (
         f"forecast_{_safe_filename_part(district.name)}"
         f"_{_safe_filename_part(crop.name)}"
-        f"_{datetime.now().strftime('%Y%m%d')}.xlsx"
+        f"_{datetime.now(tz=timezone.utc).strftime('%Y%m%d')}.xlsx"
     )
 
     return StreamingResponse(

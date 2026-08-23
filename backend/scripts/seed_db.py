@@ -66,10 +66,7 @@ def generate_synthetic_data():
     for _, district in districts.iterrows():
         for _, crop in crops.iterrows():
             category = crop["category"]
-            if category in category_ranges:
-                lo, hi = category_ranges[category]
-            else:
-                lo, hi = 1500, 4000
+            lo, hi = category_ranges.get(category, (1500, 4000))
 
             for year in range(2014, 2025):
                 # Add trend and noise
@@ -118,8 +115,6 @@ def generate_synthetic_data():
     # Generate climate data
     climate_rows = []
     for _, district in districts.iterrows():
-        district["latitude"]
-        district["longitude"]
         # Approximate climate based on region
         region = district["region"]
         if region == "Mountain":

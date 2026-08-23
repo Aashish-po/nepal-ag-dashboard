@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -11,7 +13,7 @@ router = APIRouter()
 
 @router.get("/crops", response_model=CropListResponse)
 def get_crops(
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
     category: str | None = Query(None, description="Filter by category"),
     is_export_crop: bool | None = Query(None, description="Filter by export status"),
 ):

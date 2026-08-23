@@ -238,22 +238,16 @@ class TestCacheService:
     """Tests for the Redis cache service (mocking not required for basic import)."""
 
     def test_cache_functions_exist(self):
-        """Cache service should expose get_cached, set_cached, invalidate_cache."""
+        """Cache service should expose invalidate_cache and invalidate_all_cache."""
         from services import cache
 
-        assert hasattr(cache, "get_cached")
-        assert hasattr(cache, "set_cached")
         assert hasattr(cache, "invalidate_cache")
         assert hasattr(cache, "invalidate_all_cache")
 
-    def test_cache_returns_none_when_no_redis(self):
-        """When Redis is not configured, get_cached should return None."""
-        from services.cache import get_cached
-
-        # Without REDIS_URL set, should return None
-        result = get_cached.__wrapped__ if hasattr(get_cached, "__wrapped__") else None
-        # The function is async; test it returns None when Redis unavailable
+    def test_invalidate_cache_noop_when_no_redis(self):
+        """Without REDIS_URL configured, invalidate_cache returns 0."""
         import asyncio
 
-        result = asyncio.run(get_cached("test:key"))
-        assert result is None
+        from services.cache import invalidate_cache
+
+        assert asyncio.run(invalidate_cache("cache:test:*")) == 0

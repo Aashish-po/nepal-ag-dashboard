@@ -22,6 +22,7 @@ from api.routes.yields import router as yields_router
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from sqlalchemy.exc import SQLAlchemyError
 
 logging.basicConfig(
     level=logging.INFO,
@@ -77,7 +78,7 @@ app.add_middleware(
 if ENVIRONMENT == "development":
     try:
         init_db()
-    except Exception as exc:
+    except SQLAlchemyError as exc:
         logger.warning("init_db skipped (no DB available): %s", exc)
 
 
@@ -96,7 +97,7 @@ async def startup_event():
         try:
             start_scheduler()
             logger.info("Background scheduler started")
-        except Exception as exc:
+        except SQLAlchemyError as exc:
             logger.error("Failed to start scheduler: %s", exc)
 
 
@@ -121,7 +122,7 @@ def health():
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
-    logger.error("Unhandled error on %s: %s", request.url.path, exc, exc_info=True)
+    logger.error("Unhandled error on %s: %s", request.url.path, exc)
     return JSONResponse(
         status_code=500,
         content={
@@ -147,4 +148,4 @@ app.include_router(heatmap_router, prefix="/api/v1")
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 8000)))
+    uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", "8000")))  # nosec B104 - bind all interfaces intentionally for container deploy

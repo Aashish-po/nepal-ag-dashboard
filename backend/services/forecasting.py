@@ -53,7 +53,7 @@ def _fit_arima_aic(values: Sequence[float]) -> float:
             model = ARIMA(values, order=(1, 1, 1))
             fitted = model.fit(method_kwargs={"warn_convergence": False})
             return float(fitted.aic)
-    except Exception:
+    except (ValueError, np.linalg.LinAlgError):
         return float("inf")
 
 
@@ -83,7 +83,7 @@ def _fit_ets_aic(values: Sequence[float]) -> float:
             else:
                 aic_proxy = float("inf")
             return float(aic_proxy)
-    except Exception:
+    except (ValueError, np.linalg.LinAlgError):
         return float("inf")
 
 
@@ -150,8 +150,8 @@ def forecast_arima(
                 "mae": mae,
                 "mape": mape,
             }
-    except Exception as e:
-        logger.warning("ARIMA forecast failed: %s", e)
+    except (ValueError, np.linalg.LinAlgError):
+        logger.warning("ARIMA forecast failed")
         return _empty_forecast("ARIMA", periods)
 
 
@@ -206,8 +206,8 @@ def forecast_exp_smoothing(
                 "mae": mae,
                 "mape": mape,
             }
-    except Exception as e:
-        logger.warning("Exponential Smoothing forecast failed: %s", e)
+    except (ValueError, np.linalg.LinAlgError):
+        logger.warning("Exponential Smoothing forecast failed")
         return _empty_forecast("ExponentialSmoothing", periods)
 
 

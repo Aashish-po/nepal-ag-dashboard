@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import logging
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
@@ -74,7 +74,7 @@ def weekly_etl() -> None:
     retrains forecasts, and invalidates cache.
     """
     logger.info("=== Weekly ETL pipeline started ===")
-    start_time = datetime.utcnow()
+    start_time = datetime.now(timezone.utc)
     import asyncio
 
     try:
@@ -110,9 +110,9 @@ def weekly_etl() -> None:
         # 4. Invalidate cache
         asyncio.run(invalidate_all_cache())
 
-        elapsed = (datetime.utcnow() - start_time).total_seconds()
+        elapsed = (datetime.now(timezone.utc) - start_time).total_seconds()
         logger.info("=== Weekly ETL pipeline completed in %.1f seconds ===", elapsed)
 
-    except Exception as e:
-        logger.error("Weekly ETL pipeline failed: %s", e, exc_info=True)
+    except Exception:
+        logger.exception("Weekly ETL pipeline failed")
         raise

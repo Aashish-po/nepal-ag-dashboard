@@ -187,23 +187,6 @@ def load_climate_from_chirps(
         logger.warning("Climate validation errors: %s", validation_report["errors"][:5])
 
     rows = df.to_dict("records")
-    if "main_export_countries" in df.columns:
-
-        def normalize_countries(value: Any) -> list[str] | None:
-            if value is None or pd.isna(value):
-                return None
-            countries = [part.strip() for part in str(value).split("|") if part.strip()]
-            return countries or None
-
-        rows = [
-            {
-                **row,
-                "main_export_countries": normalize_countries(
-                    row.get("main_export_countries")
-                ),
-            }
-            for row in rows
-        ]
     logger.info("Loaded %d climate records from %s", len(rows), filepath)
     return _upsert_table_rows(
         "climate",
@@ -412,14 +395,6 @@ def _upsert_table_rows(
         engine.dispose()
 
     return len(rows)
-
-
-def _run_sync(func, *args, **kwargs):
-    """Run a sync function in a thread."""
-    import concurrent.futures
-
-    with concurrent.futures.ThreadPoolExecutor() as pool:
-        return pool.submit(func, *args, **kwargs).result()
 
 
 async def load_all(seed_dir: str | None = None, strict: bool = False) -> dict[str, int]:

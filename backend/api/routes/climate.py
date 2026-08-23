@@ -1,4 +1,5 @@
 from datetime import date
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from services.climate import compute_climate_summary
@@ -15,7 +16,7 @@ router = APIRouter()
 @router.get("/climate/{district_id}", response_model=ClimateResponse)
 def get_climate(
     district_id: int,
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
     date_start: str | None = Query(
         None, pattern=r"^\d{4}-(0[1-9]|1[0-2])$", description="Start date (YYYY-MM)"
     ),
@@ -42,17 +43,18 @@ def get_climate(
         params["date_end"] = next_month.isoformat()
 
     where_clause = " AND ".join(conditions)
-    query = text(
-        """
-        SELECT observation_date, rainfall_mm, temperature_min_c,
-               temperature_max_c, temperature_mean_c, solar_radiation_mj_m2,
-               data_source
-        FROM climate
-        WHERE district_id = :district_id
-        """
-        + (f"  AND {where_clause}" if where_clause else "")
-        + " ORDER BY observation_date"
+    sql = (
+        "SELECT observation_date, rainfall_mm, temperature_min_c, "
+        "temperature_max_c, temperature_mean_c, solar_radiation_mj_m2, "
+        "data_source "
+        "FROM climate WHERE district_id = :district_id"
     )
+    if where_clause:
+        sql += f" AND {where_clause}"
+    sql += " ORDER BY observation_date"
+    # where_clause is built only from the fixed literal predicates above; every
+    # user value is passed via bound params, so this is not SQL injection.
+    query = text(sql)  # nosec B608
 
     results = db.execute(query, params).fetchall()
 

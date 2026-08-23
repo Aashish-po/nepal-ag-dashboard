@@ -31,7 +31,7 @@ class YieldLike(Protocol):
     """Structural type for rows with yield stats fields."""
 
     year: Any
-    yield_kg_ha: float | None
+    yield_kg_ha: Any
 
 
 def calculate_yield_statistics(yield_rows: Sequence[YieldLike]) -> dict[str, Any]:
@@ -99,8 +99,7 @@ def calculate_yield_statistics(yield_rows: Sequence[YieldLike]) -> dict[str, Any
                 trend = "DECREASING"
             else:
                 trend = "STABLE"
-
-        except Exception:
+        except ValueError:
             pass
 
     return {
@@ -222,7 +221,7 @@ def aggregate_annual_climate(rows: Sequence[Any]) -> dict[str, dict[int, float]]
 # --------------------------------------------------------------------------- #
 
 
-async def compute_yield_climate_correlation(
+def compute_yield_climate_correlation(
     district_id: int,
     crop_id: int,
     yield_years: Sequence[int],
@@ -243,7 +242,7 @@ async def compute_yield_climate_correlation(
         yield_years: List of years with yield data.
         yield_values: List of yield values (kg/ha).
         lag_months: Number of months climate leads yield.
-        db: AsyncSession for database queries.
+        db: Session for database queries.
 
     Returns:
         Dict with correlations, r_squared, interpretation.
@@ -259,7 +258,7 @@ async def compute_yield_climate_correlation(
             WHERE district_id = :district_id
             ORDER BY observation_date
             """)
-    climate_result = await db.execute(climate_stmt, {"district_id": district_id})
+    climate_result = db.execute(climate_stmt, {"district_id": district_id})
     climate_rows = climate_result.fetchall()
 
     if not climate_rows:
@@ -342,9 +341,8 @@ def _generate_interpretation(rain_corr: dict, temp_corr: dict, solar_corr: dict)
         elif temp_c < -0.4:
             parts.append("Temperature negatively correlates with yield")
 
-    if solar_c is not None:
-        if solar_c > 0.3:
-            parts.append("Solar radiation supports yield growth")
+    if solar_c is not None and solar_c > 0.3:
+        parts.append("Solar radiation supports yield growth")
 
     if not parts:
         return "Weak correlations detected; multiple factors may influence yield."

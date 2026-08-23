@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -11,7 +13,7 @@ router = APIRouter()
 
 @router.get("/districts", response_model=DistrictListResponse)
 def get_districts(
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
     province: str | None = Query(None, description="Filter by province"),
     region: str | None = Query(None, description="Filter by region"),
 ):
@@ -28,8 +30,8 @@ def get_districts(
 
 @router.get("/districts/search", response_model=DistrictListResponse)
 def search_districts(
+    db: Annotated[Session, Depends(get_db)],
     q: str = Query(..., min_length=1, max_length=100, description="Search query"),
-    db: Session = Depends(get_db),
 ):
     pattern = q.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
     stmt = select(Districts).where(Districts.name.ilike(f"%{pattern}%", escape="\\"))

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from services.correlations import calculate_yield_statistics
 from sqlalchemy import select
@@ -27,7 +29,7 @@ router = APIRouter()
 def get_yields(
     district_id: int,
     crop_id: int,
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
     year_start: int = Query(
         2014,
         ge=MIN_SUPPORTED_HARVEST_YEAR,
@@ -76,20 +78,8 @@ def get_yields(
 
     timeseries = [YieldRecord.model_validate(r) for r in results_for_response]
 
-    # Convert to compatible format for statistics calculation (chronological order)
-    class YieldPoint:
-        def __init__(self, year: int, yield_kg_ha: float | None):
-            self.year = year
-            self.yield_kg_ha = yield_kg_ha
-
-    yield_points = [
-        YieldPoint(
-            year=r.year,
-            yield_kg_ha=float(r.yield_kg_ha) if r.yield_kg_ha is not None else None,
-        )
-        for r in results
-    ]
-    stats_dict = calculate_yield_statistics(yield_points)
+    # results are ORM Yields (chronological); stats fn reads .year/.yield_kg_ha directly
+    stats_dict = calculate_yield_statistics(results)
     statistics = YieldStatistics(**stats_dict)
 
     return YieldTimeseriesResponse(
@@ -105,7 +95,7 @@ def get_yields(
 @router.get("/yields/{district_id}", response_model=DistrictYieldsResponse)
 def get_district_yields(
     district_id: int,
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
     year: int = Query(
         2024,
         ge=MIN_SUPPORTED_HARVEST_YEAR,
@@ -149,19 +139,7 @@ def get_district_yields(
         # Get full history for this crop
         crop_history = yields_by_crop.get(y.crop_id, [])
 
-        class YieldPoint:
-            def __init__(self, year: int, yield_kg_ha: float | None):
-                self.year = year
-                self.yield_kg_ha = yield_kg_ha
-
-        yield_points = [
-            YieldPoint(
-                year=r.year,
-                yield_kg_ha=float(r.yield_kg_ha) if r.yield_kg_ha is not None else None,
-            )
-            for r in crop_history
-        ]
-        stats_dict = calculate_yield_statistics(yield_points)
+        stats_dict = calculate_yield_statistics(crop_history)
         stats = YieldStatistics(**stats_dict)
 
         crops_data.append(

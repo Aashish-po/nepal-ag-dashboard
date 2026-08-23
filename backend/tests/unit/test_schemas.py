@@ -84,14 +84,6 @@ class TestSchemas:
         )
         assert record.rainfall_mm == 45.2
 
-    def test_correlation_result_validation(self):
-        """CorrelationResult should handle None coefficient."""
-        from api.models.schemas import CorrelationResult
-
-        result = CorrelationResult()
-        assert result.coefficient is None
-        assert result.significant is False
-
     def test_forecast_month_validation(self):
         """ForecastMonth should serialize month as string."""
         from api.models.schemas import ForecastMonth

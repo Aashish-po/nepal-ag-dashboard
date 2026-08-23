@@ -16,7 +16,6 @@ from sqlalchemy import (
     DateTime,
     ForeignKey,
     Integer,
-    MetaData,
     String,
     Text,
     UniqueConstraint,
@@ -55,16 +54,6 @@ MAX_SUPPORTED_HARVEST_YEAR: int = 2024
 # ---------------------------------------------------------------------------
 # Declarative base
 # ---------------------------------------------------------------------------
-
-convention = {
-    "ix": "ix_%(table_name)s_%(column_0_name)s",
-    "uq": "uq_%(table_name)s_%(column_0_name)s",
-    "ck": "ck_%(table_name)s_%(constraint_name)s",
-    "fk": "fk_%(table_name)s_%(referred_table_name)s_%(column_0_name)s",
-    "pk": "pk_%(table_name)s",
-}
-
-metadata = MetaData(naming_convention=convention)
 
 
 class Base(DeclarativeBase):

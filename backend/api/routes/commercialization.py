@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -17,13 +19,6 @@ from api.models.schemas import (
 )
 
 router = APIRouter()
-
-_COMMERCIALIZATION_LEVELS = {
-    0: "SUBSISTENCE",
-    25: "MIXED",
-    50: "COMMERCIAL",
-    75: "HIGHLY_COMMERCIAL",
-}
 
 
 def _level(score: float) -> str:
@@ -50,7 +45,7 @@ def _level(score: float) -> str:
 )
 def get_commercialization(
     district_id: int,
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
     year: int = Query(
         2024, ge=MIN_SUPPORTED_HARVEST_YEAR, le=MAX_SUPPORTED_HARVEST_YEAR
     ),
@@ -103,7 +98,7 @@ def get_commercialization(
 
 @router.get("/commercialization", response_model=CommercializationRankingsResponse)
 def get_commercialization_rankings(
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
     year: int = Query(
         2024, ge=MIN_SUPPORTED_HARVEST_YEAR, le=MAX_SUPPORTED_HARVEST_YEAR
     ),

@@ -13,14 +13,6 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, field_validator
 
-
-def _serialize_decimal(v: Any) -> Any:
-    """Convert Decimal to float for JSON serialization."""
-    if isinstance(v, Decimal):
-        return float(v)
-    return v
-
-
 # ---------------------------------------------------------------------------
 # Shared config
 # ---------------------------------------------------------------------------
@@ -176,14 +168,6 @@ class ClimateResponse(SchemaBase):
 class CorrelationComponent(SchemaBase):
     coefficient: float | None = None
     p_value: float | None = None
-    significant: bool = False
-
-
-class CorrelationResult(SchemaBase):
-    coefficient: float | None = None
-    p_value: float | None = None
-    r_squared: float | None = None
-    sample_size: int | None = None
     significant: bool = False
 
 

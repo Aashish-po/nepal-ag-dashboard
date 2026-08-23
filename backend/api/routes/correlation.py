@@ -1,8 +1,10 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func, select
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
 
-from api.db import get_async_db
+from api.db import get_db
 from api.models.db_models import Crops, Districts, Yields
 from api.models.schemas import CorrelationComponent, CorrelationResponse
 
@@ -10,9 +12,9 @@ router = APIRouter()
 
 
 @router.get("/correlation/{district_id}", response_model=CorrelationResponse)
-async def get_correlation(
+def get_correlation(
     district_id: int,
-    db: AsyncSession = Depends(get_async_db),
+    db: Annotated[Session, Depends(get_db)],
     crop_id: int | None = Query(
         None, description="Crop ID (defaults to top crop for district)"
     ),
@@ -25,13 +27,13 @@ async def get_correlation(
             status_code=400, detail="lag_months must be a multiple of 12"
         )
 
-    district = await db.get(Districts, district_id)
+    district = db.get(Districts, district_id)
     if not district:
         raise HTTPException(
             status_code=404, detail=f"District with ID {district_id} not found"
         )
 
-    # Determine crop
+    # Determine crop (default to the district's most-recorded crop)
     if crop_id is None:
         stmt = (
             select(Yields.crop_id)
@@ -41,19 +43,13 @@ async def get_correlation(
             .order_by(func.count(Yields.year).desc())
             .limit(1)
         )
-        crop_id = (await db.execute(stmt)).scalar()
+        crop_id = db.execute(stmt).scalar()
         if not crop_id:
             raise HTTPException(
                 status_code=404, detail="No yield data for this district"
             )
-    else:
-        crop = await db.get(Crops, crop_id)
-        if not crop:
-            raise HTTPException(
-                status_code=404, detail=f"Crop with ID {crop_id} not found"
-            )
 
-    crop = await db.get(Crops, crop_id)
+    crop = db.get(Crops, crop_id)
     if not crop:
         raise HTTPException(status_code=404, detail=f"Crop with ID {crop_id} not found")
 
@@ -65,7 +61,7 @@ async def get_correlation(
         .where(Yields.yield_kg_ha.isnot(None))
         .order_by(Yields.year)
     )
-    yield_results = (await db.execute(yield_stmt)).scalars().all()
+    yield_results = db.execute(yield_stmt).scalars().all()
 
     if len(yield_results) < 3:
         raise HTTPException(
@@ -81,7 +77,7 @@ async def get_correlation(
     # Compute correlation using service functions
     from services.correlations import compute_yield_climate_correlation
 
-    result = await compute_yield_climate_correlation(
+    result = compute_yield_climate_correlation(
         district_id=district_id,
         crop_id=crop_id,
         yield_years=yield_years,

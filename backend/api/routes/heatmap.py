@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, Query
 from services.correlations import compute_full_correlation
 from sqlalchemy import func, select
@@ -14,7 +16,7 @@ router = APIRouter()
 
 @router.get("/heatmap/yield-climate-correlation", response_model=HeatmapResponse)
 def get_heatmap(
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
     limit: int = Query(10, ge=1, le=50, description="Top N crops by data completeness"),
 ):
     # Get top N crops by data completeness (number of years with yield data)
@@ -54,7 +56,7 @@ def get_heatmap(
     y_results = db.execute(y_stmt).all()
 
     # Fetch all climate aggregates for all relevant districts in one query
-    district_ids = list(set(row.district_id for row in y_results))
+    district_ids = list({row.district_id for row in y_results})
     year_col = func.extract("year", Climate.observation_date)
     c_stmt = (
         select(
@@ -102,7 +104,7 @@ def get_heatmap(
 
     for crop_id, crop_name in crop_names.items():
         # Get unique districts for this crop
-        crop_districts = set(d_id for (d_id, c_id) in yields_by_dc if c_id == crop_id)
+        crop_districts = {d_id for (d_id, c_id) in yields_by_dc if c_id == crop_id}
 
         for district_id in crop_districts:
             district_name = district_names.get(district_id, f"District {district_id}")

@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from services.correlations import calculate_yield_statistics
 from sqlalchemy import func, select
@@ -28,7 +30,7 @@ def _recommendation(trend: str | None, forecasts: list[ForecastMonth]) -> str:
 def get_forecasts(
     district_id: int,
     crop_id: int,
-    db: Session = Depends(get_db),
+    db: Annotated[Session, Depends(get_db)],
     months_ahead: int = Query(12, ge=1, le=36),
 ):
     district = db.get(Districts, district_id)
@@ -42,13 +44,13 @@ def get_forecasts(
         raise HTTPException(status_code=404, detail=f"Crop with ID {crop_id} not found")
 
     historical_stmt = (
-        select(Yields.yield_kg_ha, Yields.year)
+        select(Yields)
         .where(Yields.district_id == district_id)
         .where(Yields.crop_id == crop_id)
         .where(Yields.yield_kg_ha.isnot(None))
         .order_by(Yields.year)
     )
-    historical = db.execute(historical_stmt).all()
+    historical = db.execute(historical_stmt).scalars().all()
     years_of_data = len({int(row.year) for row in historical})
 
     if years_of_data < 5:
@@ -74,9 +76,10 @@ def get_forecasts(
     )
 
     # Join back to get full forecast records for the latest forecast_date per month
-    from datetime import date, datetime
+    from datetime import date, datetime, timezone
 
-    current_month_start = date(datetime.now().year, datetime.now().month, 1)
+    now = datetime.now(tz=timezone.utc)
+    current_month_start = date(now.year, now.month, 1)
     forecast_stmt = (
         select(Forecasts)
         .join(
@@ -111,16 +114,7 @@ def get_forecasts(
     mape = _f(first.mape_pct) if first else None
 
     # Calculate statistics from historical data for recommendation
-    class YieldPoint:
-        def __init__(self, year: int, yield_kg_ha: float | None):
-            self.year = year
-            self.yield_kg_ha = yield_kg_ha
-
-    fake_yields = [
-        YieldPoint(year=int(yr), yield_kg_ha=float(val) if val is not None else None)
-        for val, yr in historical
-    ]
-    stats = calculate_yield_statistics(fake_yields)
+    stats = calculate_yield_statistics(historical)
 
     recommendation = _recommendation(stats.get("trend"), forecasts_list)
 

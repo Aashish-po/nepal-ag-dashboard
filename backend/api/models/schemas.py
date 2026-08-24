@@ -208,6 +208,7 @@ class ExportCropInfo(SchemaBase):
 
 class ExportCropsResponse(SchemaBase):
     district_id: int
+    district_name: str
     year: int
     export_crops: list[ExportCropInfo]
     total_export_revenue_usd: float | None = None

@@ -16,9 +16,13 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 })
 
-// ResizeObserver mock for chart components
-;(globalThis as any).ResizeObserver = vi.fn().mockImplementation(() => ({
-  observe: vi.fn(),
-  unobserve: vi.fn(),
-  disconnect: vi.fn(),
-}))
+// ResizeObserver mock for chart components (Recharts).
+// A plain class, not a vi.fn(): the config's mockReset/restoreMocks would
+// otherwise wipe a spy-based mock after the first test, breaking every
+// chart-rendering test that runs after it.
+class ResizeObserverMock {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+;(globalThis as any).ResizeObserver = ResizeObserverMock

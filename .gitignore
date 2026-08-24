@@ -48,6 +48,7 @@ nosetests.xml
 *.cover
 .hypothesis/
 .pytest_cache/
+.ruff_cache/
 
 # Databases
 .alembic-dev.db

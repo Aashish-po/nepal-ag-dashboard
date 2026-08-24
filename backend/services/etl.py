@@ -423,32 +423,18 @@ async def load_all(seed_dir: str | None = None, strict: bool = False) -> dict[st
         load_crops_csv, os.path.join(seed_dir, "crops.csv")
     )
 
-    # 3. Yields
-    yields_df = await asyncio.to_thread(
-        pd.read_csv, os.path.join(seed_dir, "faostat_2014_2024.csv")
-    )
-    yields_report = validate_yields(yields_df)
-    if strict and yields_report["errors"]:
-        raise ValueError(f"Yield validation errors: {yields_report['errors']}")
+    # 3. Yields (loader reads + validates; raises on strict when errors exist)
     results["yields"] = await asyncio.to_thread(
         load_yields_from_faostat,
         os.path.join(seed_dir, "faostat_2014_2024.csv"),
         strict,
-        yields_df,
     )
 
-    # 4. Climate
-    climate_df = await asyncio.to_thread(
-        pd.read_csv, os.path.join(seed_dir, "chirps_2014_2024.csv")
-    )
-    climate_report = validate_climate(climate_df)
-    if strict and climate_report["errors"]:
-        raise ValueError(f"Climate validation errors: {climate_report['errors']}")
+    # 4. Climate (loader reads + validates; raises on strict when errors exist)
     results["climate"] = await asyncio.to_thread(
         load_climate_from_chirps,
         os.path.join(seed_dir, "chirps_2014_2024.csv"),
         strict,
-        climate_df,
     )
 
     # 5. Export crops

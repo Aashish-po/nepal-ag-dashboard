@@ -16,7 +16,7 @@ import { getYields, downloadYieldsCsv } from "@/lib/api";
 import { useFilterStore } from "@/hooks/useFilters";
 import { FilterBar } from "@/components/FilterBar";
 import { TableSkeleton } from "@/components/Loading";
-import { formatNumber } from "@/lib/utils";
+import { formatNumber, downloadBlob } from "@/lib/utils";
 
 export function Compare() {
   const { compareDistricts, selectedCrop, yearStart, yearEnd } =
@@ -147,16 +147,10 @@ export function Compare() {
       }
       
       const csvContent = allData.join('\n');
-      const blob = new Blob([csvContent], { type: 'text/csv' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `comparison_${compareDistricts.join("_")}.csv`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      // Defer revocation until after download starts
-      setTimeout(() => window.URL.revokeObjectURL(url), 1000);
+      downloadBlob(
+        new Blob([csvContent], { type: 'text/csv' }),
+        `comparison_${compareDistricts.join('_')}.csv`,
+      );
     } catch (error) {
       console.error('Export failed:', error);
       alert('Failed to export comparison data');

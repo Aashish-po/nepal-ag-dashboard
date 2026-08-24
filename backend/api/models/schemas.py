@@ -8,10 +8,9 @@ objects can be serialized directly via ``model_validate``.
 from __future__ import annotations
 
 from datetime import date, datetime
-from decimal import Decimal
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, field_validator
+from pydantic import BaseModel, ConfigDict
 
 # ---------------------------------------------------------------------------
 # Shared config
@@ -24,26 +23,6 @@ class SchemaBase(BaseModel):
         arbitrary_types_allowed=True,
         protected_namespaces=(),
     )
-
-
-class DecimalFloatMixin:
-    @field_validator(
-        "yield_kg_ha",
-        "production_mt",
-        "area_harvested_ha",
-        "rmse_kg_ha",
-        "mae_kg_ha",
-        "mape_pct",
-        mode="before",
-        check_fields=False,
-    )
-    @classmethod
-    def _convert_decimal(cls, v: Any) -> Any:
-        if isinstance(v, Decimal):
-            return float(v)
-        if v is None:
-            return None
-        return v
 
 
 # ---------------------------------------------------------------------------
@@ -89,7 +68,7 @@ class CropListResponse(SchemaBase):
 # ---------------------------------------------------------------------------
 
 
-class YieldRecord(DecimalFloatMixin, SchemaBase):
+class YieldRecord(SchemaBase):
     id: int | None = None
     district_id: int | None = None
     crop_id: int | None = None
@@ -133,7 +112,7 @@ class DistrictYieldsResponse(SchemaBase):
 # ---------------------------------------------------------------------------
 
 
-class ClimateRecord(DecimalFloatMixin, SchemaBase):
+class ClimateRecord(SchemaBase):
     id: int | None = None
     district_id: int | None = None
     observation_date: str | date

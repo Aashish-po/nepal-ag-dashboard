@@ -38,7 +38,7 @@ The Nepal Agricultural Intelligence Dashboard provides data-driven insights into
 | Frontend | React 18 + TypeScript, Vite, Tailwind CSS, shadcn/ui, Recharts, react-leaflet, Vitest (testing) |
 | Backend | Python 3.12, FastAPI, SQLAlchemy, Statsmodels, with dev dependencies: ruff, mypy, bandit, pip-audit, httpx (for integration tests) |
 | Database | PostgreSQL (Supabase) |
-| Data Processing | Pandas, NumPy, SciPy, GeoPandas |
+| Data Processing | Pandas, NumPy, SciPy |
 | Caching | Redis (Upstash) |
 | Deployment | Render (backend), Vercel (frontend) |
 | Monitoring | Sentry (error tracking), PostHog (analytics) |
@@ -194,8 +194,6 @@ nepal-ag-dashboard/
 │   │   ├── styles/
 │   │   │   ├── tokens.css
 │   │   │   └── globals.css
-│   │   ├── types/
-│   │   │   └── index.ts
 │   │   └── __tests__/
 │   │       ├── components/
 │   │       ├── hooks/
@@ -207,7 +205,6 @@ nepal-ag-dashboard/
 │   ├── requirements.txt          # Dependencies
 │   ├── .env.example              # Env template
 │   ├── Dockerfile                # For Render deployment
-│   ├── render.yaml               # Render deploy config
 │   ├── .pre-commit-config.yaml  # Pre-commit hooks
 │   ├── api/
 │   │   ├── __init__.py
@@ -242,7 +239,9 @@ nepal-ag-dashboard/
 │   │   ├── crops.csv
 │   │   └── nepal_districts.geojson
 │   ├── migrations/
-│   │   └── 001_initial_schema.sql
+│   │   ├── env.py
+│   │   └── versions/
+│   │       └── 0001_initial_schema.py
 │   ├── scripts/
 │   │   └── seed_db.py
 │   └── tests/

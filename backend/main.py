@@ -15,6 +15,7 @@ from api.routes.commercialization import router as commercialization_router
 from api.routes.correlation import router as correlation_router
 from api.routes.crops import router as crops_router
 from api.routes.districts import router as districts_router
+from api.routes.export_crops import router as export_crops_router
 from api.routes.exports import router as exports_router
 from api.routes.forecasts import router as forecasts_router
 from api.routes.heatmap import router as heatmap_router
@@ -143,6 +144,7 @@ app.include_router(correlation_router, prefix="/api/v1")
 app.include_router(commercialization_router, prefix="/api/v1")
 app.include_router(forecasts_router, prefix="/api/v1")
 app.include_router(exports_router, prefix="/api/v1")
+app.include_router(export_crops_router, prefix="/api/v1")
 app.include_router(heatmap_router, prefix="/api/v1")
 
 if __name__ == "__main__":

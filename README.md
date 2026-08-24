@@ -1,5 +1,7 @@
 # Nepal Agricultural Intelligence Dashboard
 
+Version: 0.1.0 (development)
+
 Real-time agricultural analytics dashboard analyzing yield, climate, export crop performance, and commercialization trends across Nepal's 77 districts.
 
 **Report Issues:** [GitHub Issues](https://github.com/Aashish-po/nepal-ag-dashboard/issues)
@@ -33,8 +35,8 @@ The Nepal Agricultural Intelligence Dashboard provides data-driven insights into
 
 | Layer | Technology |
 | ------- | ----------- |
-| Frontend | React 18 + TypeScript, Vite, Tailwind CSS, shadcn/ui, Recharts, react-leaflet |
-| Backend | Python 3.11, FastAPI, SQLAlchemy, Statsmodels |
+| Frontend | React 18 + TypeScript, Vite, Tailwind CSS, shadcn/ui, Recharts, react-leaflet, Vitest (testing) |
+| Backend | Python 3.12, FastAPI, SQLAlchemy, Statsmodels, with dev dependencies: ruff, mypy, bandit, pip-audit, httpx (for integration tests) |
 | Database | PostgreSQL (Supabase) |
 | Data Processing | Pandas, NumPy, SciPy, GeoPandas |
 | Caching | Redis (Upstash) |
@@ -49,8 +51,8 @@ The Nepal Agricultural Intelligence Dashboard provides data-driven insights into
 ### Prerequisites
 
 - Git 2.30+
-- Python 3.11+
-- Node.js 18+ (npm 9+)
+- Python 3.12+
+- Node.js 18+ (pnpm 10+)
 
 ### 1. Clone and set up the backend
 
@@ -58,7 +60,7 @@ The Nepal Agricultural Intelligence Dashboard provides data-driven insights into
 git clone https://github.com/Aashish-po/nepal-ag-dashboard.git
 cd nepal-ag-dashboard/backend
 
-python3.11 -m venv venv
+python3.12 -m venv venv
 source venv/Scripts/activate    # Windows (Git Bash)
 source venv/bin/activate        # macOS/Linux
 
@@ -93,15 +95,15 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
 ```bash
 cd ../frontend
-npm install
+pnpm install
 
 cp .env.example .env.local
 # VITE_API_BASE_URL should point to your backend: http://localhost:8000
 
-npm run dev
+pnpm dev
 ```
 
-Frontend: [http://localhost:5173](http://localhost:5173)
+- Frontend: [http://localhost:5173](http://localhost:5173)
 
 ---
 
@@ -248,10 +250,10 @@ nepal-ag-dashboard/
 │       ├── conftest.py
 │       ├── unit/
 │       │   ├── test_services.py
-│       │   ├── test_schemas.py
-│       │   └── test_utils.py
+│   │       ├── test_schemas.py
+│   │       └── test_utils.py
 │       ├── integration/
-│       │   └── test_api.py
+│   │       │   └── test_api.py
 │       └── fixtures/
 │           ├── districts.json
 │           ├── yields.json
@@ -275,12 +277,23 @@ pytest tests/unit/ -v
 # Backend integration tests
 pytest tests/integration/ -v
 
+# Backend linting, type checking, and security
+cd backend
+ruff check .
+ruff format --check .
+mypy .
+bandit -r backend -ll
+pip-audit
+
 # Frontend unit tests
 cd ../frontend
-npm run test
+pnpm test
 
 # Frontend type check
-npm run type-check
+pnpm type-check
+
+# Frontend vitest UI (optional)
+pnpm test:ui
 
 # E2E tests (requires app running locally)
 npx playwright test
@@ -295,11 +308,12 @@ Contributions are welcome. Please follow these guidelines:
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feat/my-feature`
 3. Make your changes following the existing code style
-4. Run the test suite: `pytest backend/tests/` and `npm run test`
-5. Ensure pre-commit hooks pass: `pre-commit run --all-files`
-6. Commit using [Conventional Commits](https://www.conventionalcommits.org/): `git commit -m "feat: describe your change"`
-7. Push to your branch: `git push origin feat/my-feature`
-8. Open a pull request
+4. Run the test suite: `pytest backend/tests/` and `pnpm test`
+5. Run linting, type checking, and security checks: `ruff check .`, `ruff format --check .`, `mypy .`, `bandit -r backend -ll`, `pip-audit` (backend) and `pnpm lint` (frontend)
+6. Ensure pre-commit hooks pass: `pre-commit run --all-files`
+7. Commit using [Conventional Commits](https://www.conventionalcommits.org/): `git commit -m "feat: describe your change"`
+8. Push to your branch: `git push origin feat/my-feature`
+9. Open a pull request
 
 **Note:** This is primarily a solo developer project. All pull requests are reviewed with focus on correctness, code quality, and alignment with the project's goals and constraints.
 

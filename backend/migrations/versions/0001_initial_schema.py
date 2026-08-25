@@ -18,7 +18,7 @@ def upgrade() -> None:
     # PostgreSQL stores export countries as TEXT[]. SQLite has no array type,
     # so the local validation database uses JSON for the same logical value.
     if bind.dialect.name == "sqlite":
-        column = Base.metadata.tables["exportcrops"].c.main_export_countries
+        column = Base.metadata.tables["export_crops"].c.main_export_countries
         if isinstance(column.type, ARRAY):
             column.type = JSON()
 

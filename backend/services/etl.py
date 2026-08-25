@@ -316,7 +316,7 @@ def _upsert_table_rows(
 ) -> int:
     """Bulk upsert rows into a table using dialect-specific INSERT ... ON CONFLICT."""
     from api.models.db_models import MISSING_DATA_SOURCE, Base
-    from sqlalchemy import create_engine
+    from sqlalchemy import Date, DateTime, create_engine
     from sqlalchemy.dialects.postgresql import insert as pg_insert
     from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 
@@ -340,6 +340,19 @@ def _upsert_table_rows(
                 if column in row and (row[column] is None or pd.isna(row[column])):
                     row[column] = MISSING_DATA_SOURCE
         df = pd.DataFrame(rows).astype(object)
+
+        # SQLite's Date/DateTime bind processors reject strings (Postgres
+        # coerces them); convert CSV string values for date-typed columns so
+        # both dialects get real date/datetime objects.
+        for col in df.columns:
+            sa_col = table.columns.get(col)
+            if sa_col is None:
+                continue
+            if isinstance(sa_col.type, DateTime):
+                df[col] = pd.to_datetime(df[col], errors="coerce")
+            elif isinstance(sa_col.type, Date):
+                df[col] = pd.to_datetime(df[col], errors="coerce").dt.date
+
         df = df.where(pd.notna(df), None)
 
         invalid_columns = set(df.columns) - set(table.columns.keys())

@@ -229,6 +229,49 @@ class TestDataValidation:
         assert any("min" in e.lower() for e in report["errors"])
 
 
+class TestUpsertDateCoercion:
+    """Guard: date-typed columns must reach the DB as real date objects.
+
+    Regression test — CSVs supply dates as strings. Postgres coerces them, but
+    SQLite's Date bind processor rejects strings, so _upsert_table_rows must
+    convert them. This would fail before that coercion existed.
+    """
+
+    def test_climate_string_date_stored_as_date(self, tmp_path, monkeypatch):
+        import datetime
+
+        import pandas as pd
+        from api.models.db_models import Base
+        from services.etl import load_climate_from_chirps
+        from sqlalchemy import create_engine, select
+
+        db_url = f"sqlite:///{tmp_path / 'etl.db'}"
+        monkeypatch.setenv("DATABASE_URL", db_url)
+
+        engine = create_engine(db_url)
+        climate = Base.metadata.tables["climate"]
+        climate.create(engine)  # single table -> skips the ARRAY table SQLite rejects
+
+        df = pd.DataFrame(
+            {
+                "district_id": [1],
+                "observation_date": ["2024-01-01"],  # string, as read from CSV
+                "rainfall_mm": [45.0],
+                "temperature_min_c": [10.0],
+                "temperature_max_c": [22.0],
+                "temperature_mean_c": [16.0],
+                "solar_radiation_mj_m2": [12.0],
+                "data_source": ["NASA POWER"],
+            }
+        )
+
+        assert load_climate_from_chirps(data=df) == 1
+
+        with engine.connect() as conn:
+            stored = conn.execute(select(climate.c.observation_date)).scalar_one()
+        assert stored == datetime.date(2024, 1, 1)
+
+
 # --------------------------------------------------------------------------- #
 # Cache service tests
 # --------------------------------------------------------------------------- #

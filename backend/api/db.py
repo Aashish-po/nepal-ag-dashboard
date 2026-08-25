@@ -9,14 +9,24 @@ from __future__ import annotations
 
 import logging
 import os
+import sys
 from collections.abc import Generator
 
+from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session, sessionmaker
 
 from api.models.db_models import Base
 
 logger = logging.getLogger(__name__)
+
+# Load backend/.env.local for local dev so DATABASE_URL, CORS_ORIGINS, etc. don't
+# have to be exported by hand. Skipped under pytest (tests set their own env) and
+# a no-op in production where the file is absent. Existing env vars always win
+# (override=False), so an explicit `DATABASE_URL=... uvicorn` still takes
+# precedence.
+if "pytest" not in sys.modules:
+    load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env.local"))
 
 DATABASE_URL: str = os.environ.get(
     "DATABASE_URL", "postgresql://localhost:5432/nepal_ag_dev"

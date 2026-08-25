@@ -54,6 +54,9 @@ nosetests.xml
 .alembic-dev.db
 backend/.alembic-dev.db
 backend/.alembic-validation.db
+backend/nepal_ag_dev.db
+*.db-shm
+*.db-wal
 
 # Jupyter
 .ipynb_checkpoints/

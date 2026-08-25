@@ -24,7 +24,6 @@ from sqlalchemy import (
 from sqlalchemy.orm import (
     DeclarativeBase,
     Mapped,
-    declared_attr,
     mapped_column,
     relationship,
 )
@@ -57,13 +56,7 @@ MAX_SUPPORTED_HARVEST_YEAR: int = 2024
 
 
 class Base(DeclarativeBase):
-    @declared_attr.directive
-    def __tablename__(cls) -> str:
-        return (
-            cls.__name__.lower() + "s"
-            if not cls.__name__.lower().endswith("s")
-            else cls.__name__.lower()
-        )
+    pass
 
 
 # ---------------------------------------------------------------------------
@@ -72,6 +65,7 @@ class Base(DeclarativeBase):
 
 
 class Districts(Base):
+    __tablename__ = "districts"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     province: Mapped[str] = mapped_column(String(50), nullable=False)
@@ -92,6 +86,7 @@ class Districts(Base):
 
 
 class Crops(Base):
+    __tablename__ = "crops"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     fao_code: Mapped[str | None] = mapped_column(String(10))
@@ -111,6 +106,7 @@ class Crops(Base):
 
 
 class Yields(Base):
+    __tablename__ = "yields"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     district_id: Mapped[int] = mapped_column(
         ForeignKey("districts.id", ondelete="CASCADE")
@@ -157,6 +153,7 @@ class Yields(Base):
 
 
 class Climate(Base):
+    __tablename__ = "climate"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     district_id: Mapped[int] = mapped_column(
         ForeignKey("districts.id", ondelete="CASCADE")
@@ -196,6 +193,7 @@ class Climate(Base):
 
 
 class ExportCrops(Base):
+    __tablename__ = "export_crops"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     crop_id: Mapped[int] = mapped_column(
         ForeignKey("crops.id", ondelete="CASCADE"), unique=True, nullable=False
@@ -221,6 +219,7 @@ class ExportCrops(Base):
 
 
 class CommercializationIndex(Base):
+    __tablename__ = "commercialization_index"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     district_id: Mapped[int] = mapped_column(
         ForeignKey("districts.id", ondelete="CASCADE")
@@ -255,6 +254,7 @@ class CommercializationIndex(Base):
 
 
 class Forecasts(Base):
+    __tablename__ = "forecasts"
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     district_id: Mapped[int] = mapped_column(
         ForeignKey("districts.id", ondelete="CASCADE")

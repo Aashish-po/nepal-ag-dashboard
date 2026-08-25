@@ -369,7 +369,7 @@ def _upsert_table_rows(
         if is_sqlite:
             batch_size = max(1, 999 // num_cols)
         else:
-            batch_size = len(records)
+            batch_size = 100
 
         with engine.connect() as conn:
             logger.info("Upserting %d rows into %s", len(df), table_name)

@@ -8,6 +8,8 @@ services:
     startCommand: cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT
 
     envVars:
+      - key: PYTHON_VERSION       # pin: Render defaults to 3.14, which has no wheels for our numpy/pandas pins
+        value: 3.12.13
       - key: DATABASE_URL
         sync: false
       - key: ENVIRONMENT

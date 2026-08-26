@@ -85,24 +85,28 @@ export function Home() {
   ];
 
   return (
-    <div className="max-w-350 mx-auto p-6 space-y-8">
+    <div className="max-w-7xl mx-auto p-6 space-y-8">
       <section className="text-center py-12">
-        <h1 className="text-h1 font-bold mb-4 text-balance">
+        <h1 className="text-5xl font-bold mb-4">
           Analyze agricultural productivity across Nepal
         </h1>
-        <p className="text-lg text-text-secondary max-w-2xl mx-auto mb-8 text-balance">
+
+        <p className="max-w-3xl mx-auto text-lg text-muted-foreground mb-8">
           Data-driven insights on crop yields, climate patterns, export
           potential, and forecasts for all 77 districts.
         </p>
+
         <div className="flex flex-wrap justify-center gap-3">
           <Link to="/yields">
             <Button size="lg">Explore Yields</Button>
           </Link>
+
           <Link to="/forecasts">
             <Button size="lg" variant="secondary">
               View Forecasts
             </Button>
           </Link>
+
           <Link to="/about">
             <Button size="lg" variant="outline">
               Learn More

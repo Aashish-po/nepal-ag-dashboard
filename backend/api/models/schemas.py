@@ -39,7 +39,7 @@ class DistrictResponse(SchemaBase):
     longitude: float | None = None
     population: int | None = None
     area_sq_km: float | None = None
-    created_at: str | None = None
+    created_at: datetime | None = None
 
 
 class DistrictListResponse(SchemaBase):

@@ -35,6 +35,13 @@ ENVIRONMENT = os.environ.get("ENVIRONMENT", "development")
 CORS_ORIGINS = [
     o.strip() for o in os.environ.get("CORS_ORIGINS", "").split(",") if o.strip()
 ]
+import os
+
+import sentry_sdk
+
+if dsn := os.getenv("SENTRY_DSN"):
+    sentry_sdk.init(dsn=dsn, traces_sample_rate=0.1)
+
 
 app = FastAPI(
     title="Nepal Agricultural Intelligence Dashboard API",

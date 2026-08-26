@@ -35,7 +35,7 @@ export function Forecasts() {
 
   if (!selectedDistrict || !selectedCrop) {
     return (
-      <div className="max-w-[1400px] mx-auto p-6">
+      <div className="max-w-350 mx-auto p-6">
         <FilterBar showCropSelector />
         <div className="text-center py-12">
           <p className="text-text-secondary">
@@ -48,7 +48,7 @@ export function Forecasts() {
 
   if (isLoading) {
     return (
-      <div className="max-w-[1400px] mx-auto p-6">
+      <div className="max-w-350 mx-auto p-6">
         <FilterBar showCropSelector />
         <TableSkeleton rows={5} />
       </div>
@@ -57,7 +57,7 @@ export function Forecasts() {
 
   if (error) {
     return (
-      <div className="max-w-[1400px] mx-auto p-6">
+      <div className="max-w-350 mx-auto p-6">
         <FilterBar showCropSelector />
         <div className="text-center py-12">
           <p className="text-text-secondary">Could not load forecast data.</p>
@@ -68,7 +68,7 @@ export function Forecasts() {
 
   if (!forecastData) {
     return (
-      <div className="max-w-[1400px] mx-auto p-6">
+      <div className="max-w-350 mx-auto p-6">
         <FilterBar showCropSelector />
         <div className="text-center py-12">
           <p className="text-text-secondary">No forecast data available.</p>
@@ -119,7 +119,7 @@ export function Forecasts() {
   };
 
   return (
-    <div className="max-w-[1400px] mx-auto p-6">
+    <div className="max-w-350 mx-auto p-6">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-h1 font-bold">Forecasts</h1>
         <button

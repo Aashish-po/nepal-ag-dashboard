@@ -320,7 +320,10 @@ def _upsert_table_rows(
     from sqlalchemy.dialects.postgresql import insert as pg_insert
     from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 
-    db_url = os.environ.get("DATABASE_URL", "postgresql://localhost:5432/nepal_ag_dev")
+    # .strip(): a trailing newline from a pasted URL would corrupt the DB name.
+    db_url = os.environ.get(
+        "DATABASE_URL", "postgresql://localhost:5432/nepal_ag_dev"
+    ).strip()
     # Convert async URL to sync URL for pandas/pyodbc
     if "postgresql+asyncpg" in db_url:
         db_url = db_url.replace("postgresql+asyncpg://", "postgresql://")

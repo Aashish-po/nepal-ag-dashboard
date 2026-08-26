@@ -31,7 +31,8 @@ def get_database_url() -> str:
     )
     if database_url is None:
         raise RuntimeError("Alembic requires sqlalchemy.url or DATABASE_URL")
-    return database_url.replace("%", "%%")
+    # .strip(): a trailing newline from a pasted URL would corrupt the DB name.
+    return database_url.strip().replace("%", "%%")
 
 
 def run_migrations_offline() -> None:

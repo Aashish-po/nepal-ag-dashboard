@@ -54,7 +54,7 @@ export function Compare() {
 
   if (!compareDistricts.length) {
     return (
-      <div className="max-w-[1400px] mx-auto p-6">
+      <div className="max-w-350 mx-auto p-6">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-h1 font-bold">Compare Districts</h1>
           <Button
@@ -75,18 +75,18 @@ export function Compare() {
   }
   if (error) {
     return (
-      <div className="max-w-[1400px] mx-auto p-6">
+      <div className="max-w-350 mx-auto p-6">
         <FilterBar showCropSelector={false} />
         <div className="text-center py-12">
           <p className="text-text-secondary">Could not load comparison data.</p>
         </div>
       </div>
-    )
+    );
   }
 
   if (isLoading || !compareData) {
     return (
-      <div className="max-w-[1400px] mx-auto p-6">
+      <div className="max-w-350 mx-auto p-6">
         <FilterBar showCropSelector={false} />
         <TableSkeleton rows={5} />
       </div>
@@ -102,7 +102,9 @@ export function Compare() {
   ];
 
   const allYears: number[] = Array.from(
-    new Set<number>(compareData.flatMap((d: any) => d.timeseries.map((t: any) => t.year))),
+    new Set<number>(
+      compareData.flatMap((d: any) => d.timeseries.map((t: any) => t.year)),
+    ),
   ).sort((a, b) => a - b);
 
   const chartData = allYears.map((year) => {
@@ -137,7 +139,7 @@ export function Compare() {
         });
         // Convert blob to text and parse CSV
         const text = await blob.text();
-        const lines = text.trim().split('\n');
+        const lines = text.trim().split("\n");
         if (allData.length === 0) {
           // Keep header from first district
           allData.push(lines[0]);
@@ -145,20 +147,20 @@ export function Compare() {
         // Add data rows (skip header)
         allData.push(...lines.slice(1));
       }
-      
-      const csvContent = allData.join('\n');
+
+      const csvContent = allData.join("\n");
       downloadBlob(
-        new Blob([csvContent], { type: 'text/csv' }),
-        `comparison_${compareDistricts.join('_')}.csv`,
+        new Blob([csvContent], { type: "text/csv" }),
+        `comparison_${compareDistricts.join("_")}.csv`,
       );
     } catch (error) {
-      console.error('Export failed:', error);
-      alert('Failed to export comparison data');
+      console.error("Export failed:", error);
+      alert("Failed to export comparison data");
     }
   };
 
   return (
-    <div className="max-w-[1400px] mx-auto p-6">
+    <div className="max-w-350 mx-auto p-6">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-h1 font-bold">Compare Districts</h1>
         <Button variant="outline" onClick={handleExport}>

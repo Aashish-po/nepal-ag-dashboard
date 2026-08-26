@@ -40,7 +40,7 @@ export function Yields() {
 
   if (error) {
     return (
-      <div className="max-w-[1400px] mx-auto p-6">
+      <div className="max-w-350 mx-auto p-6">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-h1 font-bold">Yield Analysis</h1>
           <Button variant="outline" onClick={() => downloadYields()}>
@@ -57,7 +57,7 @@ export function Yields() {
 
   if (!selectedDistrict || !selectedCrop) {
     return (
-      <div className="max-w-[1400px] mx-auto p-6">
+      <div className="max-w-350uto p-6">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-h1 font-bold">Yield Analysis</h1>
           <Button variant="outline" onClick={() => downloadYields()}>
@@ -76,7 +76,7 @@ export function Yields() {
 
   if (isLoading && yieldsData === undefined) {
     return (
-      <div className="max-w-[1400px] mx-auto p-6">
+      <div className="max-w-350 mx-auto p-6">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-h1 font-bold">Yield Analysis</h1>
           <Button variant="outline" onClick={() => downloadYields()}>
@@ -93,7 +93,7 @@ export function Yields() {
 
   if (!yieldsData) {
     return (
-      <div className="max-w-[1400px] mx-auto p-6">
+      <div className="max-w-350 mx-auto p-6">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-h1 font-bold">Yield Analysis</h1>
           <Button variant="outline" onClick={() => downloadYields()}>
@@ -118,20 +118,20 @@ export function Yields() {
     production: t.production_mt,
   }));
 
-const downloadYields = async () => {
-     try {
-       const blob = await downloadYieldsCsv({
-         district_id: selectedDistrict,
-         crop_id: selectedCrop,
-         year_start: yearStart,
-         year_end: yearEnd,
-       });
-       downloadBlob(blob, `yields_${district_name}_${crop_name}.csv`);
-     } catch (err) {
-       console.error("Download failed:", err);
-       alert('Failed to download CSV. Please try again.');
-     }
-   };
+  const downloadYields = async () => {
+    try {
+      const blob = await downloadYieldsCsv({
+        district_id: selectedDistrict,
+        crop_id: selectedCrop,
+        year_start: yearStart,
+        year_end: yearEnd,
+      });
+      downloadBlob(blob, `yields_${district_name}_${crop_name}.csv`);
+    } catch (err) {
+      console.error("Download failed:", err);
+      alert("Failed to download CSV. Please try again.");
+    }
+  };
 
   const stats = [
     {
@@ -165,7 +165,7 @@ const downloadYields = async () => {
   ];
 
   return (
-    <div className="max-w-[1400px] mx-auto p-6">
+    <div className="max-w-350 mx-auto p-6">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-h1 font-bold">Yield Analysis</h1>
         <Button variant="outline" onClick={downloadYields}>

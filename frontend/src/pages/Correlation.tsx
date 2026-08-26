@@ -21,7 +21,7 @@ export function Correlation() {
 
   if (error) {
     return (
-      <div className="max-w-[1400px] mx-auto p-6">
+      <div className="max-w-350 mx-auto p-6">
         <FilterBar showCropSelector />
         <div className="text-center py-12">
           <p className="text-text-secondary">
@@ -34,7 +34,7 @@ export function Correlation() {
 
   if (isLoading || !correlationData) {
     return (
-      <div className="max-w-[1400px] mx-auto p-6">
+      <div className="max-w-350 mx-auto p-6">
         <FilterBar showCropSelector />
         <div className="text-center py-12">
           <p className="text-text-secondary">
@@ -49,7 +49,7 @@ export function Correlation() {
   const { correlations } = correlationData;
   if (!correlations || Object.keys(correlations).length === 0) {
     return (
-      <div className="max-w-[1400px] mx-auto p-6">
+      <div className="max-w-350 mx-auto p-6">
         <FilterBar showCropSelector />
         <div className="text-center py-12">
           <p className="text-text-secondary">
@@ -69,7 +69,7 @@ export function Correlation() {
     }),
   );
   return (
-    <div className="max-w-[1400px] mx-auto p-6">
+    <div className="max-w-350 mx-auto p-6">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-h1 font-bold">Yield-Climate Correlation</h1>
         <Button
@@ -124,66 +124,68 @@ export function Correlation() {
           </CardContent>
         </Card>
 
-<Card>
-            <CardHeader>
-              <CardTitle>Rainfall vs. Yield</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4 text-center py-8">
-                <div className="text-2xl font-bold">
-                  {correlations?.rainfall_mm?.coefficient?.toFixed(3) ?? "0.000"}
-                </div>
-                <p className="text-sm text-text-secondary">
-                  Correlation coefficient (r)
-                </p>
-                <p className="text-xs text-text-muted">
-                  {correlations?.rainfall_mm?.significant
-                    ? "Statistically significant"
-                    : "Not statistically significant"}
-                </p>
+        <Card>
+          <CardHeader>
+            <CardTitle>Rainfall vs. Yield</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4 text-center py-8">
+              <div className="text-2xl font-bold">
+                {correlations?.rainfall_mm?.coefficient?.toFixed(3) ?? "0.000"}
               </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Temperature vs. Yield</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4 text-center py-8">
-                <div className="text-2xl font-bold">
-                  {correlations?.temperature_mean_c?.coefficient?.toFixed(3) ?? "0.000"}
-                </div>
-                <p className="text-sm text-text-secondary">
-                  Correlation coefficient (r)
-                </p>
-                <p className="text-xs text-text-muted">
-                  {correlations?.temperature_mean_c?.significant
-                    ? "Statistically significant"
-                    : "Not statistically significant"}
-                </p>
+              <p className="text-sm text-text-secondary">
+                Correlation coefficient (r)
+              </p>
+              <p className="text-xs text-text-muted">
+                {correlations?.rainfall_mm?.significant
+                  ? "Statistically significant"
+                  : "Not statistically significant"}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Temperature vs. Yield</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4 text-center py-8">
+              <div className="text-2xl font-bold">
+                {correlations?.temperature_mean_c?.coefficient?.toFixed(3) ??
+                  "0.000"}
               </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Solar Radiation vs. Yield</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4 text-center py-8">
-                <div className="text-2xl font-bold">
-                  {correlations?.solar_radiation_mj_m2?.coefficient?.toFixed(3) ?? "0.000"}
-                </div>
-                <p className="text-sm text-text-secondary">
-                  Correlation coefficient (r)
-                </p>
-                <p className="text-xs text-text-muted">
-                  {correlations?.solar_radiation_mj_m2?.significant
-                    ? "Statistically significant"
-                    : "Not statistically significant"}
-                </p>
+              <p className="text-sm text-text-secondary">
+                Correlation coefficient (r)
+              </p>
+              <p className="text-xs text-text-muted">
+                {correlations?.temperature_mean_c?.significant
+                  ? "Statistically significant"
+                  : "Not statistically significant"}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Solar Radiation vs. Yield</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4 text-center py-8">
+              <div className="text-2xl font-bold">
+                {correlations?.solar_radiation_mj_m2?.coefficient?.toFixed(3) ??
+                  "0.000"}
               </div>
-            </CardContent>
-          </Card>
+              <p className="text-sm text-text-secondary">
+                Correlation coefficient (r)
+              </p>
+              <p className="text-xs text-text-muted">
+                {correlations?.solar_radiation_mj_m2?.significant
+                  ? "Statistically significant"
+                  : "Not statistically significant"}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       <div className="space-y-6">

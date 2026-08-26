@@ -21,7 +21,7 @@ export function ExportCrops() {
 
   if (!selectedDistrict) {
     return (
-      <div className="max-w-[1400px] mx-auto p-6">
+      <div className="max-w-350 mx-auto p-6">
         <FilterBar showCropSelector showYearRange={true} />
         <div className="text-center py-12">
           <p className="text-text-secondary">
@@ -34,7 +34,7 @@ export function ExportCrops() {
 
   if (error) {
     return (
-      <div className="max-w-[1400px] mx-auto p-6">
+      <div className="max-w-350 mx-auto p-6">
         <FilterBar showCropSelector showYearRange={true} />
         <div className="text-center py-12">
           <p className="text-text-secondary">
@@ -47,7 +47,7 @@ export function ExportCrops() {
 
   if (isLoading || !exportData) {
     return (
-      <div className="max-w-[1400px] mx-auto p-6">
+      <div className="max-w-350 mx-auto p-6">
         <FilterBar showCropSelector showYearRange={true} />
         <TableSkeleton rows={5} />
       </div>
@@ -87,7 +87,7 @@ export function ExportCrops() {
   ];
 
   return (
-    <div className="max-w-[1400px] mx-auto p-6">
+    <div className="max-w-350 mx-auto p-6">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-h1 font-bold">Export Crops</h1>
         <button

@@ -21,7 +21,7 @@ export function Climate() {
 
   if (error) {
     return (
-      <div className="max-w-[1400px] mx-auto p-6">
+      <div className="max-w-350 mx-auto p-6">
         <FilterBar showCropSelector={false} />
         <div className="text-center py-12">
           <p className="text-text-secondary">Could not load climate data.</p>
@@ -32,7 +32,7 @@ export function Climate() {
 
   if (!selectedDistrict) {
     return (
-      <div className="max-w-[1400px] mx-auto p-6">
+      <div className="max-w-350 mx-auto p-6">
         <FilterBar showCropSelector={false} />
         <div className="text-center py-12">
           <p className="text-text-secondary">
@@ -45,7 +45,7 @@ export function Climate() {
 
   if (isLoading || !climateData) {
     return (
-      <div className="max-w-[1400px] mx-auto p-6">
+      <div className="max-w-350 mx-auto p-6">
         <FilterBar showCropSelector={false} />
         <div className="text-center py-12">
           <p className="text-text-secondary">Loading climate data...</p>
@@ -117,9 +117,9 @@ export function Climate() {
         row.data_source ?? "",
       ]);
       // Combine header and rows
-const csvContent = [header, ...rows]
-         .map((r) => r.map((v: string) => `"${v}"`).join(","))
-         .join("\n");
+      const csvContent = [header, ...rows]
+        .map((r) => r.map((v: string) => `"${v}"`).join(","))
+        .join("\n");
       const blob = new Blob([csvContent], { type: "text/csv" });
       downloadBlob(blob, `climate_${selectedDistrict}.csv`);
     } catch (err) {
@@ -128,42 +128,42 @@ const csvContent = [header, ...rows]
     }
   };
 
-return (
-     <div className="max-w-[1400px] mx-auto p-6">
-       <div className="flex items-center justify-between mb-6">
-         <h1 className="text-h1 font-bold">Climate Intelligence</h1>
-         <button
-           className="px-4 py-2 border border-border rounded-md text-sm hover:bg-bg-tertiary"
-           onClick={downloadClimateCsv}
-         >
-           Download CSV
-         </button>
-       </div>
-       <FilterBar showCropSelector={false} />
-       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-         {stats.map((stat) => (
-           <div
-             key={stat.label}
-             className="bg-white border border-border rounded-lg p-4"
-           >
-             <p className="text-sm text-text-secondary">{stat.label}</p>
-             <p className="text-2xl font-bold mt-1">{stat.value}</p>
-           </div>
-         ))}
-       </div>
-       {/* Chart visualizations to be implemented */}
-       <div className="bg-white border border-border rounded-lg p-4">
-         <h3 className="text-lg font-semibold mb-4">Monthly Rainfall Chart</h3>
-         <p className="text-text-center py-8">Chart visualization coming soon</p>
-       </div>
-       <div className="bg-white border border-border rounded-lg p-4">
-         <h3 className="text-lg font-semibold mb-4">Temperature Chart</h3>
-         <p className="text-text-center py-8">Chart visualization coming soon</p>
-       </div>
-       <div className="bg-white border border-border rounded-lg p-4">
-         <h3 className="text-lg font-semibold mb-4">Solar Radiation Chart</h3>
-         <p className="text-text-center py-8">Chart visualization coming soon</p>
-       </div>
-     </div>
-   );
+  return (
+    <div className="max-w-350 mx-auto p-6">
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-h1 font-bold">Climate Intelligence</h1>
+        <button
+          className="px-4 py-2 border border-border rounded-md text-sm hover:bg-bg-tertiary"
+          onClick={downloadClimateCsv}
+        >
+          Download CSV
+        </button>
+      </div>
+      <FilterBar showCropSelector={false} />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        {stats.map((stat) => (
+          <div
+            key={stat.label}
+            className="bg-white border border-border rounded-lg p-4"
+          >
+            <p className="text-sm text-text-secondary">{stat.label}</p>
+            <p className="text-2xl font-bold mt-1">{stat.value}</p>
+          </div>
+        ))}
+      </div>
+      {/* Chart visualizations to be implemented */}
+      <div className="bg-white border border-border rounded-lg p-4">
+        <h3 className="text-lg font-semibold mb-4">Monthly Rainfall Chart</h3>
+        <p className="text-text-center py-8">Chart visualization coming soon</p>
+      </div>
+      <div className="bg-white border border-border rounded-lg p-4">
+        <h3 className="text-lg font-semibold mb-4">Temperature Chart</h3>
+        <p className="text-text-center py-8">Chart visualization coming soon</p>
+      </div>
+      <div className="bg-white border border-border rounded-lg p-4">
+        <h3 className="text-lg font-semibold mb-4">Solar Radiation Chart</h3>
+        <p className="text-text-center py-8">Chart visualization coming soon</p>
+      </div>
+    </div>
+  );
 }

@@ -28,9 +28,10 @@ logger = logging.getLogger(__name__)
 if "pytest" not in sys.modules:
     load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env.local"))
 
+# .strip(): a trailing newline from a pasted URL would corrupt the DB name.
 DATABASE_URL: str = os.environ.get(
     "DATABASE_URL", "postgresql://localhost:5432/nepal_ag_dev"
-)
+).strip()
 
 # Render provides postgres://; SQLAlchemy needs the postgresql:// scheme.
 if DATABASE_URL.startswith("postgres://"):

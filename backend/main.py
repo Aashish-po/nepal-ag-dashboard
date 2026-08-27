@@ -18,11 +18,9 @@ from api.routes.districts import router as districts_router
 from api.routes.export_crops import router as export_crops_router
 from api.routes.exports import router as exports_router
 from api.routes.forecasts import router as forecasts_router
-from api.routes.heatmap import router as heatmap_router
 from api.routes.yields import router as yields_router
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 from sqlalchemy.exc import SQLAlchemyError
 
 logging.basicConfig(
@@ -35,12 +33,6 @@ ENVIRONMENT = os.environ.get("ENVIRONMENT", "development")
 CORS_ORIGINS = [
     o.strip() for o in os.environ.get("CORS_ORIGINS", "").split(",") if o.strip()
 ]
-import os
-
-import sentry_sdk
-
-if dsn := os.getenv("SENTRY_DSN"):
-    sentry_sdk.init(dsn=dsn, traces_sample_rate=0.1)
 
 
 app = FastAPI(
@@ -77,34 +69,6 @@ if ENVIRONMENT == "development":
         logger.warning("init_db skipped (no DB available): %s", exc)
 
 
-@app.on_event("startup")
-async def startup_event():
-    logger.info("Application starting (environment: %s)", ENVIRONMENT)
-    db_status = check_db_connection()
-    if db_status == "connected":
-        logger.info("Database connection established")
-    else:
-        logger.warning("Database connection failed — running in degraded mode")
-
-    if ENVIRONMENT == "production":
-        from services.scheduler import start_scheduler
-
-        try:
-            start_scheduler()
-            logger.info("Background scheduler started")
-        except SQLAlchemyError as exc:
-            logger.error("Failed to start scheduler: %s", exc)
-
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    logger.info("Application shutting down")
-    if ENVIRONMENT == "production":
-        from services.scheduler import shutdown_scheduler
-
-        shutdown_scheduler()
-
-
 @app.get("/health")
 def health():
     db_status = check_db_connection()
@@ -112,20 +76,6 @@ def health():
         status="ok" if db_status == "connected" else "degraded",
         timestamp=datetime.now(timezone.utc).isoformat(),
         database=db_status,
-    )
-
-
-@app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception):
-    logger.error("Unhandled error on %s: %s", request.url.path, exc)
-    return JSONResponse(
-        status_code=500,
-        content={
-            "error": {
-                "code": "INTERNAL_SERVER_ERROR",
-                "message": "An unexpected error occurred.",
-            }
-        },
     )
 
 
@@ -139,7 +89,6 @@ app.include_router(commercialization_router, prefix="/api/v1")
 app.include_router(forecasts_router, prefix="/api/v1")
 app.include_router(exports_router, prefix="/api/v1")
 app.include_router(export_crops_router, prefix="/api/v1")
-app.include_router(heatmap_router, prefix="/api/v1")
 
 if __name__ == "__main__":
     import uvicorn

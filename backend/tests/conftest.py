@@ -269,17 +269,5 @@ def sample_climate_data():
 
 @pytest.fixture
 def sample_heatmap_data():
-    return {
-        "total_rows": 1,
-        "rows": [
-            {
-                "district": "Kathmandu",
-                "district_id": 1,
-                "crop": "Rice",
-                "crop_id": 1,
-                "rainfall_corr": 0.68,
-                "temperature_corr": -0.42,
-                "solar_corr": 0.55,
-            }
-        ],
-    }
+    return {"total_rows": 0, "rows": []}
+

@@ -169,7 +169,6 @@ class CorrelationResponse(SchemaBase):
 class ExportSeason(SchemaBase):
     start_month: int
     end_month: int
-    peak_month: int | None = None
 
 
 class ExportCropInfo(SchemaBase):
@@ -247,7 +246,6 @@ class ForecastMonth(SchemaBase):
     upper_ci_95: float | None = None
     forecast_model: str | None = None
     forecast_date: str | None = None
-    confidence: float = 0.95
 
 
 class ModelDiagnostics(SchemaBase):

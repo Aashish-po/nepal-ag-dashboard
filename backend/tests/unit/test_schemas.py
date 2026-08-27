@@ -93,10 +93,8 @@ class TestSchemas:
             forecast_yield_kg_ha=382,
             lower_ci_95=355,
             upper_ci_95=410,
-            confidence=0.95,
         )
         assert fm.forecast_month == "2025-01"
-        assert fm.confidence == 0.95
 
     def test_health_response_validation(self):
         """HealthResponse should contain all required fields."""

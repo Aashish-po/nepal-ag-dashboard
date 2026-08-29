@@ -270,4 +270,3 @@ def sample_climate_data():
 @pytest.fixture
 def sample_heatmap_data():
     return {"total_rows": 0, "rows": []}
-

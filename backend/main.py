@@ -69,6 +69,27 @@ if ENVIRONMENT == "development":
         logger.warning("init_db skipped (no DB available): %s", exc)
 
 
+# Root endpoint
+@app.get("/")
+def root():
+    return {
+        "service": "Nepal Agricultural Intelligence Dashboard API",
+        "version": "1.0.0",
+        "status": "running",
+        "docs": "/docs",
+        "health": "/health",
+        "endpoints": {
+            "districts": "/api/v1/districts",
+            "crops": "/api/v1/crops",
+            "yields": "/api/v1/yields/{district_id}/{crop_id}",
+            "climate": "/api/v1/climate/{district_id}",
+            "correlation": "/api/v1/correlation/{district_id}",
+            "forecasts": "/api/v1/forecasts/{district_id}/{crop_id}",
+        },
+    }
+
+
+# Health check endpoint
 @app.get("/health")
 def health():
     db_status = check_db_connection()

@@ -15,6 +15,7 @@ from sqlalchemy import (
     Boolean,
     DateTime,
     ForeignKey,
+    Index,
     Integer,
     String,
     Text,
@@ -74,9 +75,16 @@ class Districts(Base):
     longitude: Mapped[float | None] = mapped_column(DECIMAL(11, 8))
     population: Mapped[int | None] = mapped_column(Integer)
     area_sq_km: Mapped[float | None] = mapped_column(DECIMAL(10, 2))
+
     created_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
+    )
+
+    __table_args__ = (
+        Index("ix_districts_province", "province"),
+        Index("ix_districts_region", "region"),
+        Index("ix_districts_name", "name"),
     )
 
 
@@ -144,6 +152,12 @@ class Yields(Base):
             "data_source",
             name="uq_yields_district_crop_year_source",
         ),
+        # COMPOSITE: Most common query pattern (district + crop + year filter)
+        Index("ix_yields_district_crop_year", "district_id", "crop_id", "year"),
+        # SINGLE: Common filters
+        Index("ix_yields_district_id", "district_id"),
+        Index("ix_yields_crop_id", "crop_id"),
+        Index("ix_yields_year", "year"),
     )
 
 
@@ -184,6 +198,10 @@ class Climate(Base):
             "data_source",
             name="uq_climate_district_date_source",
         ),
+        # COMPOSITE: Climate queries typically filter by district + date range
+        Index("ix_climate_district_date", "district_id", "observation_date"),
+        # SINGLE: Direct district lookups
+        Index("ix_climate_district_id", "district_id"),
     )
 
 
@@ -245,6 +263,8 @@ class CommercializationIndex(Base):
             "year",
             name="uq_commercialization_district_year",
         ),
+        # Direct lookups by district
+        Index("ix_commercialization_district_id", "district_id"),
     )
 
 
@@ -284,4 +304,13 @@ class Forecasts(Base):
             "forecast_model",
             name="uq_forecasts_district_crop_month_model",
         ),
+        # COMPOSITE: Forecast lookups are typically district + crop + month
+        Index(
+            "ix_forecasts_district_crop_month",
+            "district_id",
+            "crop_id",
+            "forecast_month",
+        ),
+        # SINGLE: Direct district queries
+        Index("ix_forecasts_district_id", "district_id"),
     )

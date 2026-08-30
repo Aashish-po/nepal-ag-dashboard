@@ -12,14 +12,11 @@ from typing import Any
 from unittest.mock import MagicMock
 
 import pytest
-
-# --------------------------------------------------------------------------- #
-# Test fixtures and helpers (module level)
-# --------------------------------------------------------------------------- #
 from api.db import get_db
 from api.models.db_models import Crops, Districts, Yields
 from fastapi.testclient import TestClient
 from main import app
+from services.validators import FilterValidator, get_filter_validator
 
 # Pre-built test fixtures for db.get()
 LOOKUP = {
@@ -42,6 +39,16 @@ LOOKUP = {
         longitude=85.3897,
         population=266000,
         area_sq_km=119.36,
+    ),
+    (Districts, 3): Districts(
+        id=3,
+        name="Dhanusa",
+        province="Madhesh",
+        region="Terai",
+        latitude=26.7289,
+        longitude=85.9177,
+        population=693000,
+        area_sq_km=2430.49,
     ),
     (Crops, 1): Crops(
         id=1,
@@ -90,26 +97,55 @@ def create_mock_execute(result_rows, return_type="scalars"):
 
 def get_table_name(stmt: Any) -> str | None:
     """Extract table name from a SQLAlchemy statement."""
+    # Try to get table name from stmt.table
     table = getattr(stmt, "table", None)
-    name = getattr(table, "name", None)
-    if isinstance(name, str):
-        return name
+    if table is not None:
+        name = getattr(table, "name", None)
+        if isinstance(name, str):
+            return name
+
+    # Try to get table name from selected_columns
     try:
         for col in stmt.selected_columns:
+            # Try to get table from column directly
             t = getattr(col, "table", None)
-            n = getattr(t, "name", None)
-            if isinstance(n, str):
-                return n
+            if t is not None:
+                n = getattr(t, "name", None)
+                if isinstance(n, str):
+                    return n
+            # Try to unwrap common column wrappers to find table
+            for attr in ("expression", "column", "expr", "_expression", "_column"):
+                wrapped = getattr(col, attr, None)
+                if wrapped is not None:
+                    t = getattr(wrapped, "table", None)
+                    if t is not None:
+                        n = getattr(t, "name", None)
+                        if isinstance(n, str):
+                            return n
     except AttributeError:
         pass
+
+    # Try to get table name from _raw_columns
     try:
         for col in getattr(stmt, "_raw_columns", []):
+            # Try to get table from column directly
             t = getattr(col, "table", None)
-            n = getattr(t, "name", None)
-            if isinstance(n, str):
-                return n
+            if t is not None:
+                n = getattr(t, "name", None)
+                if isinstance(n, str):
+                    return n
+            # Try to unwrap common column wrappers to find table
+            for attr in ("expression", "column", "expr", "_expression", "_column"):
+                wrapped = getattr(col, attr, None)
+                if wrapped is not None:
+                    t = getattr(wrapped, "table", None)
+                    if t is not None:
+                        n = getattr(t, "name", None)
+                        if isinstance(n, str):
+                            return n
     except AttributeError:
         pass
+
     return None
 
 
@@ -160,6 +196,8 @@ def _apply_op(rows, col_name, op_name, value):
         "le": op_mod.le,
         "gt": op_mod.gt,
         "lt": op_mod.lt,
+        "is": lambda x, y: x is y,
+        "is_not": lambda x, y: x is not y,
     }
     func = ops.get(op_name)
     if func is None:
@@ -176,6 +214,73 @@ def mock_execute_side_effect(stmt):
 
     # Handle district queries
     if table_name == "districts":
+        # Check what columns are being selected
+        selected_columns = getattr(stmt, "selected_columns", None)
+
+        # Handle specific column selections (returns scalar values)
+        if selected_columns is not None and len(selected_columns) == 1:
+            col = selected_columns[0]
+            col_str = str(col).lower()
+            # Handle province selection
+            if "province" in col_str:
+                provinces = ["Bagmati", "Madhesh"]  # Hardcoded for testing
+                return create_mock_execute(provinces, return_type="scalars")
+            # Handle distinct province
+            if "distinct" in col_str and "province" in col_str:
+                provinces = ["Bagmati", "Madhesh"]  # Hardcoded for testing
+                return create_mock_execute(provinces, return_type="scalars")
+
+            # Handle region selection
+        if "region" in col_str:
+            regions = ["Hill", "Terai"]  # Hardcoded for testing
+            return create_mock_execute(regions, return_type="scalars")
+        # Handle distinct region
+        if "distinct" in col_str and "region" in col_str:
+            regions = ["Hill", "Terai"]  # Hardcoded for testing
+            return create_mock_execute(regions, return_type="scalars")
+
+            # Handle id selection
+            if "id" in col_str and "district" in col_str:
+                # Start with the full district objects
+                test_districts = [
+                    Districts(
+                        id=1,
+                        name="Kathmandu",
+                        province="Bagmati",
+                        region="Hill",
+                        latitude=27.7172,
+                        longitude=85.3240,
+                        population=1200000,
+                        area_sq_km=899.25,
+                    ),
+                    Districts(
+                        id=2,
+                        name="Bhaktapur",
+                        province="Bagmati",
+                        region="Hill",
+                        latitude=27.6519,
+                        longitude=85.3897,
+                        population=266000,
+                        area_sq_km=119.36,
+                    ),
+                    Districts(
+                        id=3,
+                        name="Dhanusa",
+                        province="Madhesh",
+                        region="Terai",
+                        latitude=26.7289,
+                        longitude=85.9177,
+                        population=693000,
+                        area_sq_km=2430.49,
+                    ),
+                ]
+                # Apply the WHERE clause on the district objects
+                filtered_districts = apply_where(stmt, test_districts)
+                # Then extract the IDs from the filtered districts
+                ids = [d.id for d in filtered_districts]
+                return create_mock_execute(ids, return_type="scalars")
+
+        # Handle full entity selection (returns District objects)
         test_districts = [
             Districts(
                 id=1,
@@ -212,6 +317,43 @@ def mock_execute_side_effect(stmt):
 
     # Handle crop queries
     if table_name == "crops":
+        # Check what columns are being selected
+        selected_columns = getattr(stmt, "selected_columns", None)
+
+        # Handle specific column selections (returns scalar values)
+        if selected_columns is not None and len(selected_columns) == 1:
+            col = selected_columns[0]
+            col_str = str(col).lower()
+            # Handle id selection
+            if "id" in col_str:
+                # Start with the full crop objects
+                test_crops = [
+                    Crops(
+                        id=1,
+                        name="Rice",
+                        fao_code="F0027",
+                        category="Cereal",
+                        unit="MT",
+                        is_export_crop=False,
+                        is_subsistence=True,
+                    ),
+                    Crops(
+                        id=5,
+                        name="Cardamom",
+                        fao_code="F0717",
+                        category="Spice",
+                        unit="MT",
+                        is_export_crop=True,
+                        is_subsistence=False,
+                    ),
+                ]
+                # Apply the WHERE clause on the crop objects
+                filtered_crops = apply_where(stmt, test_crops)
+                # Then extract the IDs from the filtered crops
+                ids = [c.id for c in filtered_crops]
+                return create_mock_execute(ids, return_type="scalars")
+
+        # Handle full entity selection (returns Crop objects)
         test_crops = [
             Crops(
                 id=1,
@@ -236,6 +378,28 @@ def mock_execute_side_effect(stmt):
 
     # Handle yield queries
     if table_name == "yields":
+        # Check what columns are being selected
+        selected_columns = getattr(stmt, "selected_columns", None)
+
+        # Handle specific column selections (returns scalar values)
+        if selected_columns is not None:
+            # Extract column names/keys from selected columns
+            column_keys = []
+            for col in selected_columns:
+                # Try to get the column key/name
+                col_key = getattr(col, "key", None)
+                if col_key is None:
+                    # Try to get the name attribute
+                    col_key = getattr(col, "name", None)
+                column_keys.append(col_key)
+
+            # Handle common yield column selections
+            # For simplicity and since most tests expect full objects,
+            # we'll return full objects but note that scalar selection
+            # would need more specific handling
+            # Fall through to return full objects
+
+        # Handle full entity selection (returns Yield objects)
         test_yields = [
             Yields(
                 id=1,
@@ -285,8 +449,13 @@ def client():
 
     mock_session.execute = execute_side_effect
 
-    # Override dependencies
+    # Override dependencies - get_db must return the session directly so routes
+    # receive a usable object (not a generator). get_filter_validator wraps the
+    # same session in a FilterValidator.
     app.dependency_overrides[get_db] = lambda: mock_session
+    app.dependency_overrides[get_filter_validator] = lambda: FilterValidator(
+        mock_session
+    )
 
     # Mock database connection check for health endpoint
     import main

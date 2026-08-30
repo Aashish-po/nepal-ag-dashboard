@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Minimal test to reproduce the FastAPI dependency issue with real Session."""
 
 from typing import Annotated

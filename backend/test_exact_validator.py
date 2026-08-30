@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Minimal test to reproduce the FastAPI dependency issue with exact validator signature."""
 
 from typing import Annotated

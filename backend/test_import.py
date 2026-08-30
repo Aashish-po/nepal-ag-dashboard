@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Test script to isolate the import issue."""
 
 try:

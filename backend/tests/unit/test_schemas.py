@@ -117,33 +117,6 @@ class TestSchemas:
         assert _level(60) == "COMMERCIAL"
         assert _level(85) == "HIGHLY_COMMERCIAL"
 
-    def test_error_response_format(self):
-        """ErrorResponse should have the standard error structure."""
-        from api.models.schemas import ErrorResponse
-
-        er = ErrorResponse(
-            error={
-                "code": "NOT_FOUND",
-                "message": "District not found",
-            }
-        )
-        assert er.error["code"] == "NOT_FOUND"
-
-    def test_heatmap_row_validation(self):
-        """HeatmapRow should validate correlation values."""
-        from api.models.schemas import HeatmapRow
-
-        row = HeatmapRow(
-            district="Kathmandu",
-            district_id=1,
-            crop="Rice",
-            crop_id=1,
-            rainfall_corr=0.68,
-            temperature_corr=-0.42,
-            solar_corr=0.55,
-        )
-        assert row.rainfall_corr == 0.68
-
 
 # --------------------------------------------------------------------------- #
 # Pydantic model config tests

@@ -8,11 +8,11 @@ Cache is session-scoped, so it's fresh per request but doesn't require DB hits p
 from collections.abc import Sequence
 from typing import Annotated
 
+from api.db import get_db
 from api.models.db_models import Crops, Districts
 from fastapi import Depends
-from sqlalchemy import distinct, select
+from sqlalchemy import select
 from sqlalchemy.orm import Session
-from test_minimal import get_db
 
 
 class FilterValidator:
@@ -33,140 +33,69 @@ class FilterValidator:
         self._crop_ids_cache: set[int] | None = None
         self._district_ids_cache: set[int] | None = None
 
-    def _get_provinces(self) -> set[str]:
-        """Lazy-load provinces from cache or DB (once per session)."""
-        if self._provinces_cache is None:
-            results: Sequence[str | None] = (
-                self.db.execute(
-                    select(distinct(Districts.province))
-                    .where(Districts.province.isnot(None))
-                    .order_by(Districts.province)
-                )
-                .scalars()
-                .all()
-            )
-            # Filter out None values for type safety
-            self._provinces_cache = {r for r in results if r is not None}
-        return self._provinces_cache
+    def _get_values(self, table_model, column_name: str) -> set[str | int]:
+        """Lazy-load distinct non-null values from a column (once per session)."""
+        cache_attr = f"_{column_name.lower()}_cache"
+        cached = getattr(self, cache_attr, None)
+        if cached is None:
+            column = getattr(table_model, column_name)
+            stmt = select(column).where(column.isnot(None)).order_by(column)
+            results: Sequence[str | int | None] = self.db.execute(stmt).scalars().all()
+            # ponytail: explicitly exclude None to avoid type confusion with is_ ops
+            result_set = {r for r in results if r is not None}
+            setattr(self, cache_attr, result_set)
+            return result_set
+        return cached  # type: ignore[return-value]
 
-    def _get_regions(self) -> set[str]:
-        """Lazy-load regions from cache or DB (once per session)."""
-        if self._regions_cache is None:
-            results: Sequence[str | None] = (
-                self.db.execute(
-                    select(distinct(Districts.region))
-                    .where(Districts.region.isnot(None))
-                    .order_by(Districts.region)
-                )
-                .scalars()
-                .all()
-            )
-            # Filter out None values for type safety
-            self._regions_cache = {r for r in results if r is not None}
-        return self._regions_cache
-
-    def _get_crop_ids(self) -> set[int]:
-        """Lazy-load crop IDs from cache or DB (once per session)."""
-        if self._crop_ids_cache is None:
-            results: Sequence[int] = self.db.execute(select(Crops.id)).scalars().all()
-            self._crop_ids_cache = set(results)
-        return self._crop_ids_cache
-
-    def _get_district_ids(self) -> set[int]:
-        """Lazy-load district IDs from cache or DB (once per session)."""
-        if self._district_ids_cache is None:
-            results: Sequence[int] = (
-                self.db.execute(select(Districts.id)).scalars().all()
-            )
-            self._district_ids_cache = set(results)
-        return self._district_ids_cache
-
-    def get_provinces(self) -> set[str]:
-        """Get all valid province values."""
-        return self._get_provinces()
-
-    def get_regions(self) -> set[str]:
-        """Get all valid region values."""
-        return self._get_regions()
-
-    def get_crop_ids(self) -> set[int]:
-        """Get all valid crop IDs."""
-        return self._get_crop_ids()
-
-    def get_district_ids(self) -> set[int]:
-        """Get all valid district IDs."""
-        return self._get_district_ids()
+    def _get_ids(self, table_model) -> set[int]:
+        """Lazy-load distinct IDs from a model (once per session)."""
+        cache_attr = f"_ids_{table_model.__name__.lower()}_cache"
+        cached = getattr(self, cache_attr, None)
+        if cached is None:
+            stmt = select(table_model.id)
+            results: Sequence[int] = self.db.execute(stmt).scalars().all()
+            result_set = set(results)
+            setattr(self, cache_attr, result_set)
+            return result_set
+        return cached
 
     def validate_province(self, province: str) -> bool:
-        """
-        Check if province is valid.
-
-        Args:
-            province: Province name to validate
-
-        Returns:
-            True if province exists, False otherwise
-        """
+        """Check if province exists."""
         if not province or not isinstance(province, str):
             return False
-        return province.strip() in self._get_provinces()
+        return province.strip() in self._get_values(Districts, "province")
 
     def validate_region(self, region: str) -> bool:
-        """
-        Check if region is valid.
-
-        Args:
-            region: Region name to validate
-
-        Returns:
-            True if region exists, False otherwise
-        """
+        """Check if region exists."""
         if not region or not isinstance(region, str):
             return False
-        return region.strip() in self._get_regions()
+        return region.strip() in self._get_values(Districts, "region")
 
     def validate_crop_id(self, crop_id: int) -> bool:
-        """
-        Check if crop_id exists.
-
-        Args:
-            crop_id: Crop ID to validate
-
-        Returns:
-            True if crop exists, False otherwise
-        """
+        """Check if crop exists."""
         if not isinstance(crop_id, int) or crop_id <= 0:
             return False
-        return crop_id in self._get_crop_ids()
+        return crop_id in self._get_ids(Crops)
 
     def validate_district_id(self, district_id: int) -> bool:
-        """
-        Check if district_id exists.
-
-        Args:
-            district_id: District ID to validate
-
-        Returns:
-            True if district exists, False otherwise
-        """
+        """Check if district exists."""
         if not isinstance(district_id, int) or district_id <= 0:
             return False
-        return district_id in self._get_district_ids()
+        return district_id in self._get_ids(Districts)
+
+    def get_provinces(self) -> set[str]:
+        return self._get_values(Districts, "province")  # type: ignore[return-value]
+
+    def get_regions(self) -> set[str]:
+        return self._get_values(Districts, "region")  # type: ignore[return-value]
+
+    def get_crop_ids(self) -> set[int]:
+        return self._get_ids(Crops)
+
+    def get_district_ids(self) -> set[int]:
+        return self._get_ids(Districts)
 
 
 def get_filter_validator(db: Annotated[Session, Depends(get_db)]) -> FilterValidator:
-    """
-    FastAPI dependency to inject filter validator into routes.
-
-    Validator is session-scoped, so it's fresh per request but caches
-    within that request to prevent multiple DB queries.
-
-    Example:
-        @app.get("/data")
-        def get_data(
-            validator: Annotated[FilterValidator, Depends(get_filter_validator)]
-        ):
-            if validator.validate_province("Eastern"):
-                # do something
-    """
+    """Return a session-scoped filter validator (caches within one request)."""
     return FilterValidator(db)

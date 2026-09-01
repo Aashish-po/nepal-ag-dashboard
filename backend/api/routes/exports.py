@@ -250,39 +250,17 @@ def export_forecasts(
         ]
     )
 
-    # Write historical data to chart sheet
-    for hist_row in hist_results:
-        ws_chart.append(
-            [
-                hist_row[0],
-                _num(hist_row[1]),
-                None,  # No forecast value for historical data
-                None,  # No lower CI for historical data
-                None,  # No upper CI for historical data
-            ]
-        )
+    buf = BytesIO()
+    wb.save(buf)
+    buf.seek(0)
 
-    # Write forecast data to chart sheet
-    for forecast_row in fc_results[:months_ahead]:
-        ws_chart.append(
-            [
-                forecast_row[0],
-                None,  # No historical yield for forecast data
-                _num(forecast_row[1]),
-                _num(forecast_row[2]),
-                _num(forecast_row[3]),
-            ]
-        )
+    # Auto-size columns
     for ws in wb.worksheets:
         for column in ws.columns:
             max_length = max(len(str(cell.value or "")) for cell in column)
             col_idx = column[0].column
             if col_idx is not None:
                 ws.column_dimensions[get_column_letter(col_idx)].width = max_length + 2
-
-    buf = BytesIO()
-    wb.save(buf)
-    buf.seek(0)
 
     filename = (
         f"forecast_{_safe_filename_part(district.name)}"

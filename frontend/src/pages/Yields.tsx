@@ -57,7 +57,8 @@ export function Yields() {
 
   if (!selectedDistrict || !selectedCrop) {
     return (
-      <div className="max-w-350uto p-6">
+      <div className="max-w-350 mx-auto p-6">
+        {" "}
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-h1 font-bold">Yield Analysis</h1>
           <Button variant="outline" onClick={() => downloadYields()}>

@@ -10,7 +10,7 @@ from __future__ import annotations
 from datetime import date, datetime
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 
 # ---------------------------------------------------------------------------
 # Shared config
@@ -18,11 +18,7 @@ from pydantic import BaseModel, ConfigDict
 
 
 class SchemaBase(BaseModel):
-    model_config = ConfigDict(
-        from_attributes=True,
-        arbitrary_types_allowed=True,
-        protected_namespaces=(),
-    )
+    model_config = {"from_attributes": True}
 
 
 # ---------------------------------------------------------------------------
@@ -267,32 +263,8 @@ class ForecastResponse(SchemaBase):
 
 
 # ---------------------------------------------------------------------------
-# Heatmap schemas
-# ---------------------------------------------------------------------------
-
-
-class HeatmapRow(SchemaBase):
-    district: str
-    district_id: int
-    crop: str
-    crop_id: int
-    rainfall_corr: float | None = None
-    temperature_corr: float | None = None
-    solar_corr: float | None = None
-
-
-class HeatmapResponse(SchemaBase):
-    total_rows: int
-    rows: list[HeatmapRow]
-
-
-# ---------------------------------------------------------------------------
 # Error / health schemas
 # ---------------------------------------------------------------------------
-
-
-class ErrorResponse(SchemaBase):
-    error: dict[str, Any]
 
 
 class HealthResponse(SchemaBase):

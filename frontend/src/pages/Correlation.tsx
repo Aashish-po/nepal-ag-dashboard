@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { Button } from "@/shadcn/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/shadcn/card";
 import { getCorrelation } from "@/lib/api";
 import { useFilterStore } from "@/hooks/useFilters";
@@ -72,12 +71,6 @@ export function Correlation() {
     <div className="max-w-350 mx-auto p-6">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-h1 font-bold">Yield-Climate Correlation</h1>
-        <Button
-          variant="outline"
-          onClick={() => alert("Export analysis triggered")}
-        >
-          Download Matrix
-        </Button>
       </div>
 
       <FilterBar showCropSelector />

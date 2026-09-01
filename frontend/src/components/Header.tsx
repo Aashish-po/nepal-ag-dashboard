@@ -1,19 +1,20 @@
-'use client'
+"use client";
 
-import { Search } from 'lucide-react'
-import { Link, useLocation } from 'react-router-dom'
-import { cn } from '@/lib/utils'
+import { Search } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { cn } from "@/lib/utils";
 
 export function Header() {
-  const location = useLocation()
+  const location = useLocation();
 
   return (
-    <header className="sticky top-0 z-30 h-[60px] bg-bg-primary border-b border-border-primary">
-      <div className="max-w-[1400px] mx-auto h-full flex items-center justify-between px-4 md:px-6">
+    <header className="sticky top-0 z-30 h-15 bg-bg-primary border-b border-border-primary">
+      <div className="max-w-350 mx-auto h-full flex items-center justify-between px-4 md:px-6">
         <div className="flex items-center gap-3">
           <div className="md:hidden w-8" />
           <h2 className="text-lg font-semibold">
-            <span className="text-text-secondary font-normal">Nepal Ag</span> Intelligence
+            <span className="text-text-secondary font-normal">Nepal Ag</span>{" "}
+            Intelligence
           </h2>
         </div>
 
@@ -32,10 +33,10 @@ export function Header() {
           <Link
             to="/about"
             className={cn(
-              'px-3 py-2 rounded-md text-sm font-medium transition-colors',
-              location.pathname === '/about'
-                ? 'text-primary bg-primary/10'
-                : 'text-text-secondary hover:text-text-primary'
+              "px-3 py-2 rounded-md text-sm font-medium transition-colors",
+              location.pathname === "/about"
+                ? "text-primary bg-primary/10"
+                : "text-text-secondary hover:text-text-primary",
             )}
           >
             About
@@ -51,5 +52,5 @@ export function Header() {
         </nav>
       </div>
     </header>
-  )
+  );
 }

@@ -8,12 +8,18 @@ router registration, dependency wiring, filtering, schemas, and error handling.
 Run: pytest backend/tests/integration/test_api.py -v
 """
 
+from datetime import date
 from typing import Any
 from unittest.mock import MagicMock
 
 import pytest
 from api.db import get_db
-from api.models.db_models import Crops, Districts, Yields
+from api.models.db_models import (
+    CommercializationIndex,
+    Crops,
+    Districts,
+    Yields,
+)
 from fastapi.testclient import TestClient
 from main import app
 from services.validators import FilterValidator, get_filter_validator
@@ -68,6 +74,127 @@ LOOKUP = {
     ),
 }
 
+# --------------------------------------------------------------------------- #
+# Mock data constants for table queries
+# --------------------------------------------------------------------------- #
+
+_TEST_DISTRICTS = [
+    Districts(
+        id=1,
+        name="Kathmandu",
+        province="Bagmati",
+        region="Hill",
+        latitude=27.7172,
+        longitude=85.3240,
+        population=1200000,
+        area_sq_km=899.25,
+    ),
+    Districts(
+        id=2,
+        name="Bhaktapur",
+        province="Bagmati",
+        region="Hill",
+        latitude=27.6519,
+        longitude=85.3897,
+        population=266000,
+        area_sq_km=119.36,
+    ),
+    Districts(
+        id=3,
+        name="Dhanusa",
+        province="Madhesh",
+        region="Terai",
+        latitude=26.7289,
+        longitude=85.9177,
+        population=693000,
+        area_sq_km=2430.49,
+    ),
+]
+
+_TEST_CROPS = [
+    Crops(
+        id=1,
+        name="Rice",
+        fao_code="F0027",
+        category="Cereal",
+        unit="MT",
+        is_export_crop=False,
+        is_subsistence=True,
+    ),
+    Crops(
+        id=5,
+        name="Cardamom",
+        fao_code="F0717",
+        category="Spice",
+        unit="MT",
+        is_export_crop=True,
+        is_subsistence=False,
+    ),
+]
+
+_TEST_YIELDS = [
+    Yields(
+        id=1,
+        district_id=1,
+        crop_id=1,
+        year=2024,
+        production_mt=450000,
+        area_harvested_ha=1200000,
+        yield_kg_ha=375.0,
+        data_source="FAOSTAT",
+        data_quality="Official",
+    ),
+    Yields(
+        id=2,
+        district_id=1,
+        crop_id=1,
+        year=2023,
+        production_mt=440000,
+        area_harvested_ha=1190000,
+        yield_kg_ha=370.0,
+        data_source="FAOSTAT",
+        data_quality="Official",
+    ),
+    Yields(
+        id=3,
+        district_id=1,
+        crop_id=1,
+        year=2022,
+        production_mt=430000,
+        area_harvested_ha=1180000,
+        yield_kg_ha=365.0,
+        data_source="FAOSTAT",
+        data_quality="Official",
+    ),
+]
+
+_TEST_CLIMATE_ROWS = [
+    (date(2024, 1, 15), 20.5, 8.0, 18.0, 12.0, 12.5, "NASA POWER"),
+    (date(2024, 7, 15), 85.0, 22.0, 35.0, 28.0, 22.0, "NASA POWER"),
+    (date(2023, 1, 15), 15.0, 6.0, 15.0, 10.0, 10.0, "NASA POWER"),
+    (date(2023, 7, 15), 70.0, 20.0, 32.0, 26.0, 20.0, "NASA POWER"),
+    (date(2022, 1, 15), 12.0, 4.0, 13.0, 8.0, 8.0, "NASA POWER"),
+    (date(2022, 7, 15), 60.0, 18.0, 30.0, 24.0, 18.0, "NASA POWER"),
+]
+
+_TEST_COMMERIALIZATION = [
+    CommercializationIndex(
+        id=1,
+        district_id=1,
+        year=2024,
+        export_crop_area_pct=35.0,
+        subsistence_area_pct=40.0,
+        avg_holding_size_ha=0.8,
+        export_volume_ratio=1.2,
+        commercialization_score=42.5,
+    ),
+]
+
+_TEST_FORECASTS = [
+    (date(2024, 1, 1), 380.0, 350.0, 410.0, "ARIMA", 15.0, 10.0, 2.5),
+    (date(2024, 2, 1), 385.0, 355.0, 415.0, "ARIMA", 14.0, 9.0, 2.3),
+]
+
 
 def mock_get(*args, **kwargs):
     """Mock implementation for db.get()."""
@@ -103,6 +230,17 @@ def get_table_name(stmt: Any) -> str | None:
         name = getattr(table, "name", None)
         if isinstance(name, str):
             return name
+
+    # Handle JOIN queries: scan all FROM clauses for table names
+    try:
+        from_list = getattr(stmt, "get_final_froms", None)
+        if from_list is not None:
+            for f in from_list():
+                n = getattr(f, "name", None)
+                if isinstance(n, str):
+                    return n
+    except Exception:  # noqa: BLE001,S110 — stub DB layer must swallow any SQLAlchemy introspection failure
+        pass
 
     # Try to get table name from selected_columns
     try:
@@ -145,6 +283,15 @@ def get_table_name(stmt: Any) -> str | None:
                             return n
     except AttributeError:
         pass
+
+    # Detect raw SQL queries by string content
+    stmt_str = str(stmt).lower()
+    if "from climate" in stmt_str or "climate" in stmt_str.split("where")[0]:
+        return "climate"
+    if "from forecasts" in stmt_str or "forecasts" in stmt_str.split("where")[0]:
+        return "forecasts"
+    if "from commercialization" in stmt_str:
+        return "commercialization_index"
 
     return None
 
@@ -198,6 +345,13 @@ def _apply_op(rows, col_name, op_name, value):
         "lt": op_mod.lt,
         "is": lambda x, y: x is y,
         "is_not": lambda x, y: x is not y,
+        "is_not_": lambda x, y: (
+            x is not y
+        ),  # ponytail: handles .isnot() operator name alias
+        "is_": lambda x, y: x is y,  # ponytail: handles .is_(value) operator name alias
+        "isnot": lambda x, y: (
+            x is not y
+        ),  # ponytail: handles .isnot(None) operator name
     }
     func = ops.get(op_name)
     if func is None:
@@ -212,219 +366,73 @@ def mock_execute_side_effect(stmt):
     """Side effect for session.execute() that returns appropriate mock data."""
     table_name = get_table_name(stmt)
 
+    # Handle raw SQL (text queries) — detect by absence of .table and presence of FROM clause
+    if table_name is None:
+        stmt_str = str(stmt).lower()
+        if "from climate" in stmt_str or "climate" in stmt_str:
+            return create_mock_execute(_TEST_CLIMATE_ROWS, return_type="fetchall")
+        # Other text queries without recognizable table — fall through
+
     # Handle district queries
     if table_name == "districts":
-        # Check what columns are being selected
         selected_columns = getattr(stmt, "selected_columns", None)
 
-        # Handle specific column selections (returns scalar values)
         if selected_columns is not None and len(selected_columns) == 1:
             col = selected_columns[0]
             col_str = str(col).lower()
-            # Handle province selection
             if "province" in col_str:
-                provinces = ["Bagmati", "Madhesh"]  # Hardcoded for testing
-                return create_mock_execute(provinces, return_type="scalars")
-            # Handle distinct province
+                return create_mock_execute(
+                    ["Bagmati", "Madhesh"], return_type="scalars"
+                )
             if "distinct" in col_str and "province" in col_str:
-                provinces = ["Bagmati", "Madhesh"]  # Hardcoded for testing
-                return create_mock_execute(provinces, return_type="scalars")
-
-            # Handle region selection
-        if "region" in col_str:
-            regions = ["Hill", "Terai"]  # Hardcoded for testing
-            return create_mock_execute(regions, return_type="scalars")
-        # Handle distinct region
-        if "distinct" in col_str and "region" in col_str:
-            regions = ["Hill", "Terai"]  # Hardcoded for testing
-            return create_mock_execute(regions, return_type="scalars")
-
-            # Handle id selection
+                return create_mock_execute(
+                    ["Bagmati", "Madhesh"], return_type="scalars"
+                )
+            if "region" in col_str:
+                return create_mock_execute(["Hill", "Terai"], return_type="scalars")
+            if "distinct" in col_str and "region" in col_str:
+                return create_mock_execute(["Hill", "Terai"], return_type="scalars")
             if "id" in col_str and "district" in col_str:
-                # Start with the full district objects
-                test_districts = [
-                    Districts(
-                        id=1,
-                        name="Kathmandu",
-                        province="Bagmati",
-                        region="Hill",
-                        latitude=27.7172,
-                        longitude=85.3240,
-                        population=1200000,
-                        area_sq_km=899.25,
-                    ),
-                    Districts(
-                        id=2,
-                        name="Bhaktapur",
-                        province="Bagmati",
-                        region="Hill",
-                        latitude=27.6519,
-                        longitude=85.3897,
-                        population=266000,
-                        area_sq_km=119.36,
-                    ),
-                    Districts(
-                        id=3,
-                        name="Dhanusa",
-                        province="Madhesh",
-                        region="Terai",
-                        latitude=26.7289,
-                        longitude=85.9177,
-                        population=693000,
-                        area_sq_km=2430.49,
-                    ),
-                ]
-                # Apply the WHERE clause on the district objects
-                filtered_districts = apply_where(stmt, test_districts)
-                # Then extract the IDs from the filtered districts
-                ids = [d.id for d in filtered_districts]
-                return create_mock_execute(ids, return_type="scalars")
+                filtered = apply_where(stmt, _TEST_DISTRICTS)
+                return create_mock_execute(
+                    [d.id for d in filtered], return_type="scalars"
+                )
 
-        # Handle full entity selection (returns District objects)
-        test_districts = [
-            Districts(
-                id=1,
-                name="Kathmandu",
-                province="Bagmati",
-                region="Hill",
-                latitude=27.7172,
-                longitude=85.3240,
-                population=1200000,
-                area_sq_km=899.25,
-            ),
-            Districts(
-                id=2,
-                name="Bhaktapur",
-                province="Bagmati",
-                region="Hill",
-                latitude=27.6519,
-                longitude=85.3897,
-                population=266000,
-                area_sq_km=119.36,
-            ),
-            Districts(
-                id=3,
-                name="Dhanusa",
-                province="Madhesh",
-                region="Terai",
-                latitude=26.7289,
-                longitude=85.9177,
-                population=693000,
-                area_sq_km=2430.49,
-            ),
-        ]
-        return create_mock_execute(apply_where(stmt, test_districts))
+        return create_mock_execute(apply_where(stmt, _TEST_DISTRICTS))
 
     # Handle crop queries
     if table_name == "crops":
-        # Check what columns are being selected
         selected_columns = getattr(stmt, "selected_columns", None)
 
-        # Handle specific column selections (returns scalar values)
         if selected_columns is not None and len(selected_columns) == 1:
             col = selected_columns[0]
             col_str = str(col).lower()
-            # Handle id selection
             if "id" in col_str:
-                # Start with the full crop objects
-                test_crops = [
-                    Crops(
-                        id=1,
-                        name="Rice",
-                        fao_code="F0027",
-                        category="Cereal",
-                        unit="MT",
-                        is_export_crop=False,
-                        is_subsistence=True,
-                    ),
-                    Crops(
-                        id=5,
-                        name="Cardamom",
-                        fao_code="F0717",
-                        category="Spice",
-                        unit="MT",
-                        is_export_crop=True,
-                        is_subsistence=False,
-                    ),
-                ]
-                # Apply the WHERE clause on the crop objects
-                filtered_crops = apply_where(stmt, test_crops)
-                # Then extract the IDs from the filtered crops
-                ids = [c.id for c in filtered_crops]
-                return create_mock_execute(ids, return_type="scalars")
+                filtered = apply_where(stmt, _TEST_CROPS)
+                return create_mock_execute(
+                    [c.id for c in filtered], return_type="scalars"
+                )
 
-        # Handle full entity selection (returns Crop objects)
-        test_crops = [
-            Crops(
-                id=1,
-                name="Rice",
-                fao_code="F0027",
-                category="Cereal",
-                unit="MT",
-                is_export_crop=False,
-                is_subsistence=True,
-            ),
-            Crops(
-                id=5,
-                name="Cardamom",
-                fao_code="F0717",
-                category="Spice",
-                unit="MT",
-                is_export_crop=True,
-                is_subsistence=False,
-            ),
-        ]
-        return create_mock_execute(apply_where(stmt, test_crops))
+        return create_mock_execute(apply_where(stmt, _TEST_CROPS))
 
     # Handle yield queries
     if table_name == "yields":
-        # Check what columns are being selected
-        selected_columns = getattr(stmt, "selected_columns", None)
+        return create_mock_execute(apply_where(stmt, _TEST_YIELDS))
 
-        # Handle specific column selections (returns scalar values)
-        if selected_columns is not None:
-            # Extract column names/keys from selected columns
-            column_keys = []
-            for col in selected_columns:
-                # Try to get the column key/name
-                col_key = getattr(col, "key", None)
-                if col_key is None:
-                    # Try to get the name attribute
-                    col_key = getattr(col, "name", None)
-                column_keys.append(col_key)
+    # Handle commercialization_index queries
+    if table_name == "commercialization_index":
+        return create_mock_execute(apply_where(stmt, _TEST_COMMERIALIZATION))
 
-            # Handle common yield column selections
-            # For simplicity and since most tests expect full objects,
-            # we'll return full objects but note that scalar selection
-            # would need more specific handling
-            # Fall through to return full objects
+    # Handle forecasts queries
+    if table_name == "forecasts":
+        return create_mock_execute(_TEST_FORECASTS, return_type="all")
 
-        # Handle full entity selection (returns Yield objects)
-        test_yields = [
-            Yields(
-                id=1,
-                district_id=1,
-                crop_id=1,
-                year=2024,
-                production_mt=450000,
-                area_harvested_ha=1200000,
-                yield_kg_ha=375.0,
-                data_source="FAOSTAT",
-                data_quality="Official",
-            ),
-            Yields(
-                id=2,
-                district_id=1,
-                crop_id=1,
-                year=2023,
-                production_mt=440000,
-                area_harvested_ha=1190000,
-                yield_kg_ha=370.0,
-                data_source="FAOSTAT",
-                data_quality="Official",
-            ),
-        ]
-        return create_mock_execute(apply_where(stmt, test_yields))
+    # Handle raw SQL text queries (used by correlations service)
+    stmt_str = str(stmt).lower()
+    if "climate" in stmt_str and "district_id" in stmt_str:
+        return create_mock_execute(_TEST_CLIMATE_ROWS, return_type="fetchall")
+    if "forecasts" in stmt_str and ("district_id" in stmt_str or "crop_id" in stmt_str):
+        return create_mock_execute(_TEST_FORECASTS, return_type="all")
 
     # Default empty result
     return create_mock_execute([])
@@ -588,7 +596,7 @@ class TestYieldsEndpoint:
         response = client.get("/api/v1/yields/1/1")
         assert response.status_code == 200
         data = response.json()
-        assert "district_id" in data
+        assert data["district_id"] == 1
         assert "timeseries" in data
         assert "statistics" in data
         assert isinstance(data["timeseries"], list)
@@ -609,3 +617,101 @@ class TestYieldsEndpoint:
         """Non-existent district should return 404."""
         response = client.get("/api/v1/yields/999/1")
         assert response.status_code == 404
+
+
+class TestClimateEndpoint:
+    """Tests for GET /api/v1/climate/{district_id}."""
+
+    def test_climate_response_structure(self, client):
+        """Response should have data array and summary."""
+        response = client.get("/api/v1/climate/1")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["district_id"] == 1
+        assert "data" in data
+        assert isinstance(data["data"], list)
+
+    def test_climate_data_fields(self, client):
+        """Climate data should have required fields."""
+        response = client.get("/api/v1/climate/1")
+        assert response.status_code == 200
+        data = response.json()
+        if data["data"]:
+            record = data["data"][0]
+            assert "observation_date" in record
+            assert "rainfall_mm" in record
+            assert "temperature_mean_c" in record
+
+
+class TestCorrelationEndpoint:
+    """Tests for GET /api/v1/correlation/{district_id}."""
+
+    def test_correlation_response_structure(self, client):
+        """Response should have correlations and R-squared."""
+        response = client.get("/api/v1/correlation/1?crop_id=1")
+        assert response.status_code == 200
+        data = response.json()
+        assert "correlations" in data
+        assert "r_squared" in data
+
+
+class TestExportCropsEndpoint:
+    """Tests for GET /api/v1/export-crops/{district_id}."""
+
+    def test_export_crops_response_structure(self, client):
+        """Response should have export crops data."""
+        response = client.get("/api/v1/export-crops/1?year=2024")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["year"] == 2024
+        assert "export_crops" in data
+
+
+class TestCommercializationEndpoint:
+    """Tests for GET /api/v1/commercialization."""
+
+    def test_commercialization_response_structure(self, client):
+        """Response should have commercialization score."""
+        response = client.get("/api/v1/commercialization/1?year=2024")
+        assert response.status_code == 200
+        data = response.json()
+        assert "commercialization_score" in data
+        assert data["district_id"] == 1
+
+    def test_commercialization_list_endpoint(self, client):
+        """List endpoint should return ranked districts."""
+        response = client.get("/api/v1/commercialization?year=2024")
+        assert response.status_code == 200
+        data = response.json()
+        assert "year" in data
+        assert "districts" in data
+
+
+class TestExportsEndpoint:
+    """Tests for export endpoints."""
+
+    def test_export_yields_csv(self, client):
+        """CSV export should return proper content type."""
+        response = client.get(
+            "/api/v1/export/yields?district_id=1&crop_id=1&format=csv"
+        )
+        assert response.status_code == 200
+        assert "text/csv" in response.headers.get("content-type", "")
+
+    def test_export_forecasts_excel(self, client):
+        """Excel export should return workbook."""
+        response = client.get(
+            "/api/v1/export/forecasts?district_id=1&crop_id=1&format=excel"
+        )
+        assert response.status_code == 200
+        # Verify content-disposition header for download
+        assert "attachment" in response.headers.get("content-disposition", "")
+
+
+class TestErrorHandling:
+    """Tests for error handling across endpoints."""
+
+    def test_invalid_year_returns_422(self, client):
+        """Invalid year parameters should return 422 (FastAPI validation)."""
+        response = client.get("/api/v1/yields/1/1?year_start=2000&year_end=2024")
+        assert response.status_code == 422

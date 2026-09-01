@@ -6,15 +6,15 @@ import { TableSkeleton } from "@/components/Loading";
 import { formatNumber } from "@/lib/utils";
 
 export function ExportCrops() {
-  const { selectedDistrict, yearStart, yearEnd } = useFilterStore();
+  const { selectedDistrict } = useFilterStore();
 
   const {
     data: exportData,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["export-crops", selectedDistrict, yearStart, yearEnd],
-    queryFn: () => getExportCrops(selectedDistrict ?? 1, yearStart, yearEnd),
+    queryKey: ["export-crops", selectedDistrict],
+    queryFn: () => getExportCrops(selectedDistrict ?? 1),
     enabled: !!selectedDistrict,
     staleTime: 300000,
   });
@@ -22,7 +22,7 @@ export function ExportCrops() {
   if (!selectedDistrict) {
     return (
       <div className="max-w-350 mx-auto p-6">
-        <FilterBar showCropSelector showYearRange={true} />
+        <FilterBar showCropSelector={false} showYearRange={false} />
         <div className="text-center py-12">
           <p className="text-text-secondary">
             Select a district to view export crop data.
@@ -35,7 +35,7 @@ export function ExportCrops() {
   if (error) {
     return (
       <div className="max-w-350 mx-auto p-6">
-        <FilterBar showCropSelector showYearRange={true} />
+        <FilterBar showCropSelector={false} showYearRange={false} />
         <div className="text-center py-12">
           <p className="text-text-secondary">
             Could not load export crop data.
@@ -48,7 +48,7 @@ export function ExportCrops() {
   if (isLoading || !exportData) {
     return (
       <div className="max-w-350 mx-auto p-6">
-        <FilterBar showCropSelector showYearRange={true} />
+        <FilterBar showCropSelector={false} showYearRange={false} />
         <TableSkeleton rows={5} />
       </div>
     );
@@ -57,7 +57,6 @@ export function ExportCrops() {
   const exportCrops = exportData.export_crops || [];
   const districtName = exportData.district_name || "Unknown District";
 
-  const productionTrend = exportData.production_trend || [];
   const totalRevenue = exportCrops.reduce(
     (sum: number, c: any) => sum + (c.estimated_revenue_usd || 0),
     0,
@@ -90,32 +89,13 @@ export function ExportCrops() {
     <div className="max-w-350 mx-auto p-6">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-h1 font-bold">Export Crops</h1>
-        <button
-          className="px-4 py-2 border border-border rounded-md text-sm hover:bg-bg-tertiary"
-          onClick={() =>
-            alert("Report download feature is not implemented yet.")
-          }
-        >
-          Download Report
-        </button>
       </div>
 
-      <FilterBar showCropSelector={false} showYearRange={true} />
+      <FilterBar showCropSelector={false} showYearRange={false} />
 
       <p className="text-sm text-text-secondary mb-4">
         Showing export crop analysis for {districtName}
       </p>
-
-      {productionTrend.length > 0 && (
-        <div className="bg-white border border-border rounded-lg p-4 mb-6">
-          <h3 className="text-lg font-semibold mb-4">Production Trend (MT)</h3>
-          <div className="text-center py-8">
-            <p className="text-text-secondary">
-              Production trend chart is not implemented yet.
-            </p>
-          </div>
-        </div>
-      )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         {stats.map((stat) => (

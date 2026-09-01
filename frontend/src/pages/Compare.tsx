@@ -19,9 +19,12 @@ import { TableSkeleton } from "@/components/Loading";
 import { formatNumber, downloadBlob } from "@/lib/utils";
 
 export function Compare() {
-  const { compareDistricts, selectedCrop, yearStart, yearEnd } =
-    useFilterStore();
+  const { selectedCrop, yearStart, yearEnd } = useFilterStore();
 
+  // compareDistricts was removed from the store — it was never wired to any UI
+  // control, so this component currently only shows its empty-state prompt.
+  // Re-populating the compare workflow would require a new selection mechanism.
+  const compareDistricts: number[] = [];
   const cropId = selectedCrop;
 
   const queries = useQuery({
@@ -29,7 +32,7 @@ export function Compare() {
     queryFn: async () => {
       if (!compareDistricts.length || !cropId) return [];
       const results = await Promise.all(
-        compareDistricts.map(async (districtId) => {
+        compareDistricts.map(async (districtId: number) => {
           const data = await getYields(
             districtId,
             cropId,
@@ -46,7 +49,7 @@ export function Compare() {
       );
       return results;
     },
-    enabled: compareDistricts.length > 0 && !!cropId,
+    enabled: false,
     staleTime: 300000,
   });
 
@@ -57,12 +60,6 @@ export function Compare() {
       <div className="max-w-350 mx-auto p-6">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-h1 font-bold">Compare Districts</h1>
-          <Button
-            variant="outline"
-            onClick={() => alert("Export comparison CSV triggered")}
-          >
-            Export Comparison
-          </Button>
         </div>
         <FilterBar showCropSelector={false} />
         <div className="text-center py-12">

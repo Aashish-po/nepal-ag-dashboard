@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useFilterStore } from "@/hooks/useFilters";
 import { formatNumber } from "@/lib/utils";
-import { MONTH_NAMES } from "@/lib/constants";
 import { FilterBar } from "@/components/FilterBar";
 import { getClimate } from "@/lib/api";
 import { downloadBlob } from "@/lib/utils";
@@ -56,9 +55,10 @@ export function Climate() {
 
   const { summary } = climateData;
 
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const getMonthName = (month: number | null | undefined): string => {
     if (month == null || month < 1 || month > 12) return "";
-    return MONTH_NAMES[month - 1];
+    return monthNames[month - 1];
   };
 
   const startMonthName = getMonthName(summary?.monsoon_start_month);

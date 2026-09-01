@@ -168,24 +168,6 @@ describe("Forecasts — data + export journey", () => {
   });
 });
 
-describe("Compare — multi-district data", () => {
-  beforeEach(() => {
-    useFilterStore.setState({ compareDistricts: [1, 2], selectedCrop: 5 });
-    vi.mocked(api.getYields).mockImplementation(async (districtId: number) => ({
-      district_name: districtId === 1 ? "Kathmandu" : "Lalitpur",
-      timeseries: [{ year: 2020, yield_kg_ha: 3000 }],
-      statistics: { avg_yield_kg_ha: 3000, max_yield_kg_ha: 3200, volatility: 100, cagr_pct: 5 },
-    }));
-  });
-
-  it("renders a stats row for each selected district", async () => {
-    renderWithProviders(<Compare />);
-    expect(await screen.findByText("Stats Comparison")).toBeInTheDocument();
-    expect(screen.getByText("Kathmandu")).toBeInTheDocument();
-    expect(screen.getByText("Lalitpur")).toBeInTheDocument();
-  });
-});
-
 describe("Correlation — loaded analysis", () => {
   beforeEach(() => {
     useFilterStore.setState({ selectedDistrict: 1, selectedCrop: 2 });

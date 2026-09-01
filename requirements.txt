@@ -15,4 +15,3 @@ openpyxl==3.1.5
 python-multipart==0.0.31
 
 pydantic>=2.9.0  # fastapi>=0.141 requires pydantic>=2.9; old ==2.5.3 pin forced a vulnerable starlette
-sentry-sdk[fastapi]

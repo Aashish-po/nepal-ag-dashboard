@@ -39,10 +39,8 @@ export async function getCorrelation(districtId: number, cropId: number) {
   return response.data
 }
 
-export async function getExportCrops(districtId: number, _yearStart: number | null, _yearEnd: number | null, year?: number) {
-  const response = await apiClient.get(`/api/v1/export-crops/${districtId}`, {
-    params: { year },
-  })
+export async function getExportCrops(districtId: number) {
+  const response = await apiClient.get(`/api/v1/export-crops/${districtId}`)
   return response.data
 }
 

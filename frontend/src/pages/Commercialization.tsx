@@ -17,12 +17,17 @@ import { TableSkeleton } from "@/components/Loading";
 import { formatNumber } from "@/lib/utils";
 
 export function Commercialization() {
-  const { selectedDistrict, province, yearEnd, setSelectedDistrict } = useFilterStore();
+  const { selectedDistrict, yearEnd, setSelectedDistrict } =
+    useFilterStore();
   const year = yearEnd || 2024;
 
-  const { data: heatmapData, isLoading: heatmapLoading, error: heatmapError } = useQuery({
-    queryKey: ["commercialization-list", province, year],
-    queryFn: () => getCommercializationList(year, province),
+  const {
+    data: heatmapData,
+    isLoading: heatmapLoading,
+    error: heatmapError,
+  } = useQuery({
+    queryKey: ["commercialization-list", year],
+    queryFn: () => getCommercializationList(year),
     staleTime: 300000,
   });
 
@@ -35,7 +40,7 @@ export function Commercialization() {
 
   if (detailError) {
     return (
-      <div className="max-w-[1400px] mx-auto p-6">
+      <div className="max-w-350 mx-auto p-6">
         <FilterBar showCropSelector={false} />
         <div className="text-center py-12">
           <p className="text-text-secondary">
@@ -48,7 +53,7 @@ export function Commercialization() {
 
   if (heatmapError) {
     return (
-      <div className="max-w-[1400px] mx-auto p-6">
+      <div className="max-w-350 mx-auto p-6">
         <FilterBar showCropSelector={false} />
         <div className="text-center py-12">
           <p className="text-text-secondary">
@@ -61,7 +66,7 @@ export function Commercialization() {
 
   if (heatmapLoading || !heatmapData) {
     return (
-      <div className="max-w-[1400px] mx-auto p-6">
+      <div className="max-w-350 mx-auto p-6">
         <FilterBar showCropSelector={false} />
         <TableSkeleton rows={5} />
       </div>
@@ -95,15 +100,9 @@ export function Commercialization() {
   }));
 
   return (
-    <div className="max-w-[1400px] mx-auto p-6">
+    <div className="max-w-350 mx-auto p-6">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-h1 font-bold">Commercialization Dashboard</h1>
-        <Button
-          variant="outline"
-          onClick={() => alert("Download rankings CSV triggered")}
-        >
-          Download Rankings
-        </Button>
       </div>
 
       <FilterBar showCropSelector={false} />

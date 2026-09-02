@@ -16,6 +16,8 @@ import {
   CardDescription,
   CardContent,
 } from "@/shadcn/card";
+import { useQuery } from "@tanstack/react-query";
+import { getDistricts, getCrops } from "@/lib/api";
 
 export function Home() {
   const features = [
@@ -77,9 +79,34 @@ export function Home() {
     },
   ];
 
+  // Fetch live district and crop counts from API (#1)
+  const { data: districtsData } = useQuery({
+    queryKey: ["districts"],
+    queryFn: () => getDistricts(),
+    staleTime: 300000,
+  });
+  const { data: cropsData } = useQuery({
+    queryKey: ["crops"],
+    queryFn: () => getCrops(),
+    staleTime: 300000,
+  });
+  // Last ETL run timestamp (#9)
+  const { data: healthData } = useQuery({
+    queryKey: ["health"],
+    queryFn: () =>
+      fetch(
+        `${import.meta.env.VITE_API_BASE_URL || "http://localhost:8000"}/api/v1/health`,
+      ).then((r) => r.json()),
+    staleTime: 300000,
+    refetchOnWindowFocus: false,
+  });
+
+  const districtCount = districtsData?.districts?.length ?? 77;
+  const cropCount = cropsData?.crops?.length ?? 35;
+
   const stats = [
-    { label: "Districts", value: "77" },
-    { label: "Crops tracked", value: "35+" },
+    { label: "Districts", value: `${districtCount}` },
+    { label: "Crops tracked", value: `${cropCount}+` },
     { label: "Data range", value: "2014-2024" },
     { label: "Climate records", value: "10+ years" },
   ];
@@ -93,7 +120,7 @@ export function Home() {
 
         <p className="max-w-3xl mx-auto text-lg text-muted-foreground mb-8">
           Data-driven insights on crop yields, climate patterns, export
-          potential, and forecasts for all 77 districts.
+          potential, and forecasts for all {districtCount} districts.
         </p>
 
         <div className="flex flex-wrap justify-center gap-3">
@@ -151,6 +178,16 @@ export function Home() {
           })}
         </div>
       </section>
+
+      {/* Last ETL run badge (#9) */}
+      <div className="text-center">
+        <p className="text-xs text-text-muted">
+          Data last updated:{" "}
+          {healthData?.timestamp
+            ? new Date(healthData.timestamp).toLocaleString()
+            : "Not yet synchronized"}
+        </p>
+      </div>
     </div>
   );
 }

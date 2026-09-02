@@ -65,7 +65,7 @@ describe("data pages — default empty states", () => {
   it("Compare prompts to pick districts", async () => {
     renderWithProviders(<Compare />);
     expect(
-      await screen.findByText(/select districts to compare/i),
+      await screen.findByText(/select 2–5 districts above/i),
     ).toBeInTheDocument();
   });
 

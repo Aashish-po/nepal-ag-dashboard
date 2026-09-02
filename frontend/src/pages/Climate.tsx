@@ -1,3 +1,17 @@
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  Bar,
+  BarChart,
+  Area,
+  AreaChart,
+} from "recharts";
 import { useQuery } from "@tanstack/react-query";
 import { useFilterStore } from "@/hooks/useFilters";
 import { formatNumber } from "@/lib/utils";
@@ -53,20 +67,44 @@ export function Climate() {
     );
   }
 
-  const { summary } = climateData;
+  const { summary, data } = climateData;
 
-  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const getMonthName = (month: number | null | undefined): string => {
-    if (month == null || month < 1 || month > 12) return "";
-    return monthNames[month - 1];
-  };
+  const monthNames = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+  ];
 
-  const startMonthName = getMonthName(summary?.monsoon_start_month);
-  const endMonthName = getMonthName(summary?.monsoon_end_month);
-  const monsoonPeriod =
-    startMonthName && endMonthName
-      ? `${startMonthName}–${endMonthName}`
-      : "Jun–Sep";
+  // Group raw monthly rows by calendar month and average
+  const monthlyAverages = Array.from({ length: 12 }, (_, i) => {
+    const rows = data.filter(
+      (row: any) => row.observation_date && new Date(row.observation_date).getMonth() === i,
+    );
+    const avgRain = rows.length > 0
+      ? rows.reduce((s: number, r: any) => s + (r.rainfall_mm ?? 0), 0) / rows.length
+      : 0;
+    const avgTempMin = rows.length > 0
+      ? rows.reduce((s: number, r: any) => s + (r.temperature_min_c ?? 0), 0) / rows.length
+      : 0;
+    const avgTempMax = rows.length > 0
+      ? rows.reduce((s: number, r: any) => s + (r.temperature_max_c ?? 0), 0) / rows.length
+      : 0;
+    const avgSolar = rows.length > 0
+      ? rows.reduce((s: number, r: any) => s + (r.solar_radiation_mj_m2 ?? 0), 0) / rows.length
+      : 0;
+    return {
+      month: monthNames[i],
+      rainfall_mm: Math.round(avgRain * 10) / 10,
+      temp_min: Math.round(avgTempMin * 10) / 10,
+      temp_max: Math.round(avgTempMax * 10) / 10,
+      solar: Math.round(avgSolar * 10) / 10,
+    };
+  });
+
+  const startMonthName = summary?.monsoon_start_month != null
+    ? monthNames[summary.monsoon_start_month - 1] : "Jun";
+  const endMonthName = summary?.monsoon_end_month != null
+    ? monthNames[summary.monsoon_end_month - 1] : "Sep";
+  const monsoonPeriod = `${startMonthName}–${endMonthName}`;
 
   const stats = [
     {
@@ -90,23 +128,13 @@ export function Climate() {
   ];
 
   const downloadClimateCsv = async () => {
-    if (!climateData) {
-      alert("No climate data available to download.");
-      return;
-    }
+    if (!climateData) return;
     try {
-      const { data } = climateData;
-      // Create CSV header
       const header = [
-        "Observation Date",
-        "Rainfall (mm)",
-        "Temperature Min (°C)",
-        "Temperature Max (°C)",
-        "Temperature Mean (°C)",
-        "Solar Radiation (MJ/m²)",
-        "Data Source",
+        "Observation Date", "Rainfall (mm)",
+        "Temperature Min (°C)", "Temperature Max (°C)",
+        "Temperature Mean (°C)", "Solar Radiation (MJ/m²)", "Data Source",
       ];
-      // Create CSV rows
       const rows = data.map((row: any) => [
         row.observation_date,
         row.rainfall_mm ?? "",
@@ -116,12 +144,10 @@ export function Climate() {
         row.solar_radiation_mj_m2 ?? "",
         row.data_source ?? "",
       ]);
-      // Combine header and rows
       const csvContent = [header, ...rows]
-        .map((r) => r.map((v: string) => `"${v}"`).join(","))
+        .map((r: any[]) => r.map((v: string) => `"${v}"`).join(","))
         .join("\n");
-      const blob = new Blob([csvContent], { type: "text/csv" });
-      downloadBlob(blob, `climate_${selectedDistrict}.csv`);
+      downloadBlob(new Blob([csvContent], { type: "text/csv" }), `climate_${selectedDistrict}.csv`);
     } catch (err) {
       console.error("Failed to download climate CSV:", err);
       alert("Failed to download climate data. Please try again.");
@@ -151,18 +177,95 @@ export function Climate() {
           </div>
         ))}
       </div>
-      {/* Chart visualizations to be implemented */}
-      <div className="bg-white border border-border rounded-lg p-4">
-        <h3 className="text-lg font-semibold mb-4">Monthly Rainfall Chart</h3>
-        <p className="text-text-center py-8">Chart visualization coming soon</p>
+
+      {/* Monthly Rainfall Chart */}
+      <div className="bg-white border border-border rounded-lg p-4 mb-6">
+        <h3 className="text-lg font-semibold mb-4">Monthly Rainfall</h3>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={monthlyAverages}>
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border-light)" />
+            <XAxis dataKey="month" stroke="var(--color-text-muted)" fontSize={12} />
+            <YAxis stroke="var(--color-text-muted)" fontSize={12} />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "var(--color-bg-primary)",
+                border: "1px solid var(--color-border)",
+                borderRadius: "var(--radius-md)",
+              }}
+            />
+            <Legend />
+            <Bar
+              dataKey="rainfall_mm"
+              name="Rainfall (mm)"
+              fill="var(--color-primary)"
+              radius={[4, 4, 0, 0]}
+            />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
-      <div className="bg-white border border-border rounded-lg p-4">
-        <h3 className="text-lg font-semibold mb-4">Temperature Chart</h3>
-        <p className="text-text-center py-8">Chart visualization coming soon</p>
+
+      {/* Temperature Chart — dual line (min/max) */}
+      <div className="bg-white border border-border rounded-lg p-4 mb-6">
+        <h3 className="text-lg font-semibold mb-4">Monthly Temperature</h3>
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={monthlyAverages}>
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border-light)" />
+            <XAxis dataKey="month" stroke="var(--color-text-muted)" fontSize={12} />
+            <YAxis stroke="var(--color-text-muted)" fontSize={12} />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "var(--color-bg-primary)",
+                border: "1px solid var(--color-border)",
+                borderRadius: "var(--radius-md)",
+              }}
+            />
+            <Legend />
+            <Line
+              type="monotone"
+              dataKey="temp_min"
+              name="Min Temp (°C)"
+              stroke="var(--color-secondary)"
+              strokeWidth={2}
+              connectNulls
+            />
+            <Line
+              type="monotone"
+              dataKey="temp_max"
+              name="Max Temp (°C)"
+              stroke="var(--color-warning)"
+              strokeWidth={2}
+              connectNulls
+            />
+          </LineChart>
+        </ResponsiveContainer>
       </div>
+
+      {/* Solar Radiation Chart */}
       <div className="bg-white border border-border rounded-lg p-4">
-        <h3 className="text-lg font-semibold mb-4">Solar Radiation Chart</h3>
-        <p className="text-text-center py-8">Chart visualization coming soon</p>
+        <h3 className="text-lg font-semibold mb-4">Monthly Solar Radiation</h3>
+        <ResponsiveContainer width="100%" height={300}>
+          <AreaChart data={monthlyAverages}>
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border-light)" />
+            <XAxis dataKey="month" stroke="var(--color-text-muted)" fontSize={12} />
+            <YAxis stroke="var(--color-text-muted)" fontSize={12} />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "var(--color-bg-primary)",
+                border: "1px solid var(--color-border)",
+                borderRadius: "var(--radius-md)",
+              }}
+            />
+            <Legend />
+            <Area
+              type="monotone"
+              dataKey="solar"
+              name="Solar (MJ/m²)"
+              stroke="var(--color-chart-3)"
+              fill="var(--color-chart-3)"
+              fillOpacity={0.3}
+            />
+          </AreaChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );

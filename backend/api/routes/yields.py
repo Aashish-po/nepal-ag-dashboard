@@ -80,7 +80,7 @@ def get_yields(
     )
 
     results = db.execute(stmt).scalars().all()
-    results_for_response = list(reversed(results))
+    results_for_response = list(results)   # already ordered ASC by year
     timeseries = [YieldRecord.model_validate(r) for r in results_for_response]
 
     stats_dict = calculate_yield_statistics(results)

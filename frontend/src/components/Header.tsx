@@ -42,7 +42,7 @@ export function Header() {
             About
           </Link>
           <a
-            href="https://github.com"
+            href="https://github.com/Aashish-po/nepal-ag-dashboard"
             target="_blank"
             rel="noopener noreferrer"
             className="px-3 py-2 rounded-md text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"

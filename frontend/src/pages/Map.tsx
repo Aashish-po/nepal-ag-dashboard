@@ -3,7 +3,7 @@ import { MapPin, X } from "lucide-react";
 import { Button } from "@/shadcn/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/shadcn/card";
 import nepalGeoJSON from "@/data/nepal_districts.json";
-import type { FeatureCollection, Feature, Polygon } from "geojson";
+import type { FeatureCollection } from "geojson";
 import * as d3Geo from "d3-geo";
 
 const PROVINCE_COLORS: Record<string, string> = {
@@ -19,7 +19,10 @@ const PROVINCE_COLORS: Record<string, string> = {
 const DEFAULT_COLOR = "#90A4AE";
 
 export interface DistrictInfo {
+  /** Stable numeric id from GeoJSON properties; 0 means missing/fallback. */
   id: number;
+  /** Derivable fallback key used when id is missing or 0. */
+  uid: string;
   name: string;
   province: string;
   region: string;
@@ -33,10 +36,17 @@ interface DistrictPath {
   color: string;
 }
 
+interface DistrictCircle {
+  cx: number;
+  cy: number;
+  district: DistrictInfo;
+  color: string;
+}
+
 export function Map() {
   const [selected, setSelected] = useState<DistrictInfo | null>(null);
 
-  const { viewBox, paths } = useMemo(() => {
+  const { viewBox, paths, circles } = useMemo(() => {
     const collection = nepalGeoJSON as FeatureCollection;
     const proj = d3Geo.geoMercator();
 
@@ -55,25 +65,44 @@ export function Map() {
     };
 
     const districtPaths: DistrictPath[] = [];
+    const districtCircles: DistrictCircle[] = [];
     for (const feature of collection.features) {
       const props = (feature.properties ?? {}) as Record<string, unknown>;
-      if (props.name == null) continue;
+      if (props.district_name == null && props.name == null) continue;
+      const rawId = Number(props.id ?? 0);
+      const name = String(props.district_name ?? props.name ?? "Unknown");
+      const province = String(props.province ?? "Unknown");
       const district: DistrictInfo = {
-        id: Number(props.id ?? 0),
-        name: String(props.name),
-        province: String(props.province ?? "Unknown"),
+        id: rawId || 0,
+        uid: rawId ? String(rawId) : `${name}__${province}`,
+        name,
+        province,
         region: String(props.region ?? "Unknown"),
-        population: Number(props.population ?? 0),
+        population: Number(props.census_2021_population ?? props.population ?? 0),
         area_sq_km: Number(props.area_sq_km ?? 0),
       };
       if (!feature.geometry) continue;
-      const d = geoPath(feature as Feature<Polygon>);
-      if (!d) continue;
       const color = PROVINCE_COLORS[district.province] ?? DEFAULT_COLOR;
-      districtPaths.push({ d, district, color });
+
+      // Polygon/MultiPolygon geometries render as paths; geoPath returns undefined for Point geometries.
+      const geomType = feature.geometry.type;
+      if (geomType === "Polygon" || geomType === "MultiPolygon") {
+        const d = geoPath(feature);
+        if (d) districtPaths.push({ d, district, color });
+        continue;
+      }
+
+      // Centroid markers: dataset stores Points for each district. Project coordinates manually.
+      if (geomType === "Point") {
+        const point = proj(feature.geometry.coordinates as [number, number]);
+        if (point) {
+          const [cx, cy] = point;
+          districtCircles.push({ cx, cy, district, color });
+        }
+      }
     }
 
-    return { viewBox: `${vb.x} ${vb.y} ${vb.w} ${vb.h}`, paths: districtPaths };
+    return { viewBox: `${vb.x} ${vb.y} ${vb.w} ${vb.h}`, paths: districtPaths, circles: districtCircles };
   }, []);
 
   const setFill = (el: SVGGraphicsElement | null, color: string) => {
@@ -97,10 +126,10 @@ export function Map() {
                 style={{ display: "block" }}
               >
                 {paths.map(({ d, district, color }) => {
-                  const isActive = selected?.id === district.id;
+                  const isActive = selected?.uid === district.uid;
                   return (
                     <g
-                      key={district.id}
+                      key={`path-${district.uid}`}
                       style={{ cursor: "pointer" }}
                       onMouseEnter={(e) => {
                         const p = (e.currentTarget as SVGGElement).querySelector("path");
@@ -111,8 +140,17 @@ export function Map() {
                         setFill(p as SVGPathElement | null, isActive ? color : "transparent");
                       }}
                       onClick={() =>
-                        setSelected((prev) => (prev?.id === district.id ? null : district))
+                        setSelected((prev) => (prev?.uid === district.uid ? null : district))
                       }
+                      tabIndex={0}
+                      role="button"
+                      aria-label={`${district.name} district`}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setSelected((prev) => (prev?.uid === district.uid ? null : district));
+                        }
+                      }}
                     >
                       <title>{district.name}</title>
                       <path
@@ -121,6 +159,38 @@ export function Map() {
                         stroke={color}
                         strokeWidth={isActive ? 2 : 0.5}
                         style={{ transition: "fill 0.15s" }}
+                      />
+                    </g>
+                  );
+                })}
+                {circles.map(({ cx, cy, district, color }) => {
+                  const isActive = selected?.uid === district.uid;
+                  return (
+                    <g
+                      key={`circle-${district.uid}`}
+                      style={{ cursor: "pointer" }}
+                      onClick={() =>
+                        setSelected((prev) => (prev?.uid === district.uid ? null : district))
+                      }
+                      tabIndex={0}
+                      role="button"
+                      aria-label={`${district.name} district`}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setSelected((prev) => (prev?.uid === district.uid ? null : district));
+                        }
+                      }}
+                    >
+                      <title>{district.name}</title>
+                      <circle
+                        cx={cx}
+                        cy={cy}
+                        r={isActive ? 6 : 4}
+                        fill={isActive ? color : "transparent"}
+                        stroke={color}
+                        strokeWidth={isActive ? 2 : 1}
+                        style={{ transition: "r 0.15s, fill 0.15s, stroke-width 0.15s" }}
                       />
                     </g>
                   );

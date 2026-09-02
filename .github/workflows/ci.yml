@@ -14,13 +14,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
       - run: pip install -r requirements.txt -r requirements-dev.txt
+      - run: pip install pip-audit
 
       - run: ruff check .
       - run: ruff format --check .
@@ -33,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v4
 
       - uses: pnpm/action-setup@v6
         with:
@@ -57,15 +58,15 @@ jobs:
       issues: write
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v4
 
       - name: Create GitHub issue on failure
         uses: actions/github-script@v9
         with:
           script: |
-            const repo = context.repo.repo;
+            const repo = context.repo.repository;
             const owner = context.repo.owner;
-            const runUrl = context.payload.repository.html_url + "/actions/runs/" + context.runId;
+            const runUrl = context.repo.html_url + "/actions/runs/" + context.runId;
 
             const failedJobs = [];
             if (context.payload.jobs) {

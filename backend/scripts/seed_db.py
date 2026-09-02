@@ -20,6 +20,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from api.db import check_db_connection, init_db
 from services.etl import load_all
+from services.forecasting import train_all_forecasts
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
@@ -208,6 +209,21 @@ def main():
         results = asyncio.run(load_all(strict=args.strict))
         for table, count in results.items():
             logger.info("  %s: %d rows", table, count)
+
+        # Train forecasts on all district×crop combos (requires open session).
+        from api.db import get_db
+
+        db_next = next(get_db())
+        try:
+            fc_results = train_all_forecasts(db_next, months_ahead=12)
+            total_fc = sum(fc_results.values())
+            logger.info(
+                "Forecast training complete: %d pairs, %d rows written",
+                len(fc_results),
+                total_fc,
+            )
+        finally:
+            db_next.close()
 
     logger.info("Done.")
 

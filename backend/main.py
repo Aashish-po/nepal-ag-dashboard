@@ -68,6 +68,18 @@ if ENVIRONMENT == "development":
     except SQLAlchemyError as exc:
         logger.warning("init_db skipped (no DB available): %s", exc)
 
+# Start APScheduler in production for weekly ETL + forecast training.
+# ponytail: scheduler is only active in production; dev/test rely on the
+# seed script to pre-populate forecasts on demand.
+if ENVIRONMENT == "production":
+    try:
+        from services.scheduler import start_scheduler
+
+        start_scheduler()
+        logger.info("APScheduler started (weekly ETL + forecast job)")
+    except Exception:
+        logger.warning("Failed to start scheduler", exc_info=True)
+
 
 # Root endpoint
 @app.get("/")

@@ -12,11 +12,10 @@ import os
 import sys
 from collections.abc import Generator
 
+from api.models.db_models import Base
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session, sessionmaker
-
-from api.models.db_models import Base
 
 logger = logging.getLogger(__name__)
 

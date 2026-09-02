@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Regenerate Nepal districts GeoJSON from source data."""
 
 import json

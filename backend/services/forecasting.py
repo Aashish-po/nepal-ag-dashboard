@@ -196,8 +196,7 @@ def _fetch_yield_series(db: Session, district_id: int, crop_id: int) -> list[Any
     )
     rows = db.execute(stmt).all()
 
-    # ponytail: lightweight object created inline instead of a module-level class
-    # to avoid mypy complaints about constructor args on ad-hoc types.
+    # Inline helper avoids a module-level class for this ad-hoc accessor.
     def _attr(row: Any, name: str, *, default: Any = None) -> Any:
         """Return an attribute if present; otherwise fall back to a default."""
         if hasattr(row, name):

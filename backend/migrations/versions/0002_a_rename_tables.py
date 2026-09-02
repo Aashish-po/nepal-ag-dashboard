@@ -36,7 +36,7 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    # ponytail: no-op on purpose. Everything (ORM, raw SQL, ETL) targets the
-    # canonical names; renaming back would re-break them. 0001's drop_all uses
-    # the canonical names, so leaving these untouched keeps the round-trip clean.
+    # No-op: everything (ORM, raw SQL, ETL) targets canonical names; renaming back
+    # would re-break them. 0001's drop_all uses canonical names, so leaving these
+    # untouched keeps the round-trip clean.
     pass

@@ -50,7 +50,6 @@ def _export_crop_info(
         production_mt=production_mt,
         area_harvested_ha=area_harvested_ha,
         yield_kg_ha=yield_kg_ha,
-        # ponytail: assume all production is exportable; refine when an export-ratio source exists
         export_potential_mt=production_mt,
         avg_price_usd_per_mt=avg_price_usd_per_mt,
         estimated_revenue_usd=revenue,

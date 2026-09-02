@@ -69,8 +69,7 @@ if ENVIRONMENT == "development":
         logger.warning("init_db skipped (no DB available): %s", exc)
 
 # Start APScheduler in production for weekly ETL + forecast training.
-# ponytail: scheduler is only active in production; dev/test rely on the
-# seed script to pre-populate forecasts on demand.
+# Dev/test rely on the seed script to pre-populate forecasts on demand.
 if ENVIRONMENT == "production":
     try:
         from services.scheduler import start_scheduler

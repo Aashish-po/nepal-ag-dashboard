@@ -397,13 +397,7 @@ def _apply_op(rows, col_name, op_name, value):
         "lt": op_mod.lt,
         "is": lambda x, y: x is y,
         "is_not": lambda x, y: x is not y,
-        "is_not_": lambda x, y: (
-            x is not y
-        ),  # ponytail: handles .isnot() operator name alias
-        "is_": lambda x, y: x is y,  # ponytail: handles .is_(value) operator name alias
-        "isnot": lambda x, y: (
-            x is not y
-        ),  # ponytail: handles .isnot(None) operator name
+        "is_": lambda x, y: x is y,
     }
     func = ops.get(op_name)
     if func is None:

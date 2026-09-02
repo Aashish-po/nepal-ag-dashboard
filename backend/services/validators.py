@@ -28,8 +28,8 @@ class FilterValidator:
     def __init__(self, db: Session):
         self.db = db
         # Session-scoped cache: populated on first access
-        self._provinces_cache: set[str] | None = None
-        self._regions_cache: set[str] | None = None
+        self._provinces_cache: set[str | int] | None = None
+        self._regions_cache: set[str | int] | None = None
         self._crop_ids_cache: set[int] | None = None
         self._district_ids_cache: set[int] | None = None
 
@@ -41,11 +41,10 @@ class FilterValidator:
             column = getattr(table_model, column_name)
             stmt = select(column).where(column.isnot(None)).order_by(column)
             results: Sequence[str | int | None] = self.db.execute(stmt).scalars().all()
-            # ponytail: explicitly exclude None to avoid type confusion with is_ ops
-            result_set = {r for r in results if r is not None}
+            result_set = {v for v in results if v is not None}
             setattr(self, cache_attr, result_set)
             return result_set
-        return cached  # type: ignore[return-value]
+        return cached
 
     def _get_ids(self, table_model) -> set[int]:
         """Lazy-load distinct IDs from a model (once per session)."""
@@ -84,10 +83,12 @@ class FilterValidator:
         return district_id in self._get_ids(Districts)
 
     def get_provinces(self) -> set[str]:
-        return self._get_values(Districts, "province")  # type: ignore[return-value]
+        return {
+            v for v in self._get_values(Districts, "province") if isinstance(v, str)
+        }  # type: ignore[arg-type]
 
     def get_regions(self) -> set[str]:
-        return self._get_values(Districts, "region")  # type: ignore[return-value]
+        return {v for v in self._get_values(Districts, "region") if isinstance(v, str)}  # type: ignore[arg-type]
 
     def get_crop_ids(self) -> set[int]:
         return self._get_ids(Crops)

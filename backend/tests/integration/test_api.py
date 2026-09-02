@@ -291,7 +291,7 @@ def get_table_name(stmt: Any) -> str | None:
                 n = getattr(f, "name", None)
                 if isinstance(n, str):
                     return n
-    except Exception:  # noqa: BLE001,S110 — stub DB layer must swallow any SQLAlchemy introspection failure
+    except (AttributeError, TypeError):
         pass
 
     # Try to get table name from selected_columns

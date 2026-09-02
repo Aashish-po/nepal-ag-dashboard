@@ -148,12 +148,16 @@ def get_district_yields(
             {
                 "crop_id": crop_id,
                 "crop_name": crop.name,
-                "yield_kg_ha": float(year_yield.yield_kg_ha)
-                if year_yield.yield_kg_ha is not None
-                else None,
-                "production_mt": float(year_yield.production_mt)
-                if year_yield.production_mt is not None
-                else None,
+                "yield_kg_ha": (
+                    float(year_yield.yield_kg_ha)
+                    if year_yield.yield_kg_ha is not None
+                    else None
+                ),
+                "production_mt": (
+                    float(year_yield.production_mt)
+                    if year_yield.production_mt is not None
+                    else None
+                ),
                 "trend": stats.trend or "INSUFFICIENT_DATA",
                 "cagr_pct": stats.cagr_pct,
             }

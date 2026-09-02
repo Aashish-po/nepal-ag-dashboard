@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { screen, fireEvent } from "@testing-library/react";
+import { screen, fireEvent, within } from "@testing-library/react";
 import { renderWithProviders } from "../test-utils";
 import { About } from "@/pages/About";
 import { Home } from "@/pages/Home";
@@ -37,17 +37,22 @@ describe("Map page", () => {
     expect(screen.getByText("District Map")).toBeInTheDocument();
 
     // No panel until a district is picked.
-    expect(
-      screen.queryByText("Commercialization Score"),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/Population/)).not.toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: "Kathmandu" }));
-    expect(screen.getByText("Commercialization Score")).toBeInTheDocument();
-    expect(screen.getByText("Top Crop")).toBeInTheDocument();
+    // ponytail: click the SVG group whose <title> labels the district
+    const kathmanduGroup = screen.getByText("Kathmandu").parentElement!;
+    fireEvent.click(kathmanduGroup);
 
-    fireEvent.click(screen.getByRole("button", { name: /close panel/i }));
-    expect(
-      screen.queryByText("Commercialization Score"),
-    ).not.toBeInTheDocument();
+    // The detail panel card is the second .card on the page — assert via its header + content.
+    const cards = document.querySelectorAll(".card");
+    const panel = cards[1] as HTMLElement;
+    expect(panel).toBeTruthy();
+    expect(within(panel).getByText("Kathmandu")).toBeInTheDocument();
+    expect(within(panel).getByText(/Population/)).toBeInTheDocument();
+    expect(within(panel).getByText(/Area/)).toBeInTheDocument();
+
+    // Close by clicking the same district again (toggle behavior).
+    fireEvent.click(kathmanduGroup);
+    expect(screen.queryByText(/Population/)).not.toBeInTheDocument();
   });
 });

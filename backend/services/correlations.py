@@ -112,45 +112,36 @@ def calculate_yield_statistics(yield_rows: Sequence[YieldLike]) -> dict[str, Any
     }
 
 
+def compute_pearson(x: Sequence[float | None], y: Sequence[float | None]) -> float | None:
+    """Compute Pearson correlation coefficient as a plain float.
+
+    Returns None when fewer than 3 paired non-null values exist.
+    """
+    pairs = [(a, b) for a, b in zip(x, y) if a is not None and b is not None]
+    if len(pairs) < 3:
+        return None
+    xs = [p[0] for p in pairs]
+    ys = [p[1] for p in pairs]
+    corr_raw, _ = cast(tuple[float, float], stats.pearsonr(xs, ys))
+    corr = float(corr_raw)
+    if math.isnan(corr):
+        return None
+    return corr
+
+
+def compute_full_correlation(
+    x: Sequence[float | None], y: Sequence[float | None]
+) -> dict[str, Any]:
+    """Compute Pearson correlation with coefficient, p-value, and significance flag."""
+    return compute_pearson_correlation(x, y)
+
+
 # --------------------------------------------------------------------------- #
 # Pearson correlation
 # --------------------------------------------------------------------------- #
 
 
-def compute_pearson(
-    x: Sequence[float | None], y: Sequence[float | None]
-) -> float | None:
-    """Compute Pearson correlation coefficient.
-
-    Args:
-        x: First variable values.
-        y: Second variable values.
-
-    Returns:
-        Correlation coefficient (-1 to +1), or None if insufficient data.
-    """
-    if len(x) < 3 or len(x) != len(y):
-        return None
-
-    # Filter out None/NaN values pairwise
-    pairs = [(a, b) for a, b in zip(x, y) if a is not None and b is not None]
-    if len(pairs) < 3:
-        return None
-
-    xs = [p[0] for p in pairs]
-    ys = [p[1] for p in pairs]
-
-    corr_raw, p_value_raw = cast(tuple[float, float], stats.pearsonr(xs, ys))
-    corr = float(corr_raw)
-    p_value = float(p_value_raw)
-
-    if math.isnan(corr) or math.isnan(p_value):
-        return None
-
-    return float(corr)
-
-
-def compute_full_correlation(
+def compute_pearson_correlation(
     x: Sequence[float | None], y: Sequence[float | None]
 ) -> dict:
     """Compute Pearson correlation with coefficient, p-value, and significance.
@@ -162,9 +153,8 @@ def compute_full_correlation(
     Returns:
         Dict with coefficient, p_value, significant.
     """
-    if len(x) < 3 or len(x) != len(y):
-        return {"coefficient": None, "p_value": None, "significant": False}
-
+    # Pair by shared positions first, then validate observation count.
+    # This allows unequal-length inputs — only the overlapping range is used.
     pairs = [(a, b) for a, b in zip(x, y) if a is not None and b is not None]
     if len(pairs) < 3:
         return {"coefficient": None, "p_value": None, "significant": False}

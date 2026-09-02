@@ -2,12 +2,6 @@ from __future__ import annotations
 
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query
-from services.correlations import calculate_yield_statistics
-from services.validators import FilterValidator, get_filter_validator
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-
 from api.db import get_db
 from api.models.db_models import (
     MAX_SUPPORTED_HARVEST_YEAR,
@@ -22,6 +16,10 @@ from api.models.schemas import (
     YieldStatistics,
     YieldTimeseriesResponse,
 )
+from fastapi import APIRouter, Depends, HTTPException, Query
+from services.correlations import calculate_yield_statistics
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 router = APIRouter()
 
@@ -31,7 +29,6 @@ def get_yields(
     district_id: int,
     crop_id: int,
     db: Annotated[Session, Depends(get_db)],
-    validator: Annotated[FilterValidator, Depends(get_filter_validator)],
     year_start: int = Query(
         2014,
         ge=MIN_SUPPORTED_HARVEST_YEAR,
@@ -52,20 +49,22 @@ def get_yields(
         )
 
     # Validate district exists
-    if not validator.validate_district_id(district_id):
-        raise HTTPException(
-            status_code=404,
-            detail=f"District {district_id} not found",
-        )
+    if (
+        db.execute(
+            select(Districts.id).where(Districts.id == district_id)
+        ).scalar_one_or_none()
+        is None
+    ):
+        raise HTTPException(status_code=404, detail=f"District {district_id} not found")
 
     # Validate crop exists
-    if not validator.validate_crop_id(crop_id):
-        raise HTTPException(
-            status_code=404,
-            detail=f"Crop {crop_id} not found",
-        )
+    if (
+        db.execute(select(Crops.id).where(Crops.id == crop_id)).scalar_one_or_none()
+        is None
+    ):
+        raise HTTPException(status_code=404, detail=f"Crop {crop_id} not found")
 
-    # Get district & crop metadata (cached lookups now)
+    # Get district & crop metadata
     district = db.get(Districts, district_id)
     crop = db.get(Crops, crop_id)
 
@@ -100,7 +99,6 @@ def get_yields(
 def get_district_yields(
     district_id: int,
     db: Annotated[Session, Depends(get_db)],
-    validator: Annotated[FilterValidator, Depends(get_filter_validator)],
     year: int = Query(
         2024,
         ge=MIN_SUPPORTED_HARVEST_YEAR,
@@ -109,11 +107,13 @@ def get_district_yields(
 ):
     """Get all crop yields for a district in a given year."""
 
-    if not validator.validate_district_id(district_id):
-        raise HTTPException(
-            status_code=404,
-            detail=f"District {district_id} not found",
-        )
+    if (
+        db.execute(
+            select(Districts.id).where(Districts.id == district_id)
+        ).scalar_one_or_none()
+        is None
+    ):
+        raise HTTPException(status_code=404, detail=f"District {district_id} not found")
 
     district = db.get(Districts, district_id)
 

@@ -6,13 +6,12 @@ from datetime import date, datetime, timezone
 from io import BytesIO, StringIO
 from typing import Annotated
 
+from api.db import get_db
+from api.models.db_models import Crops, Districts, Forecasts, Yields
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
 from sqlalchemy import Row, select
 from sqlalchemy.orm import Session
-
-from api.db import get_db
-from api.models.db_models import Crops, Districts, Forecasts, Yields
 
 router = APIRouter()
 

@@ -145,4 +145,9 @@
       transform: translateX(100%);
     }
   }
+
+  /* Fixed-width layout container used across all data pages */
+  .max-w-350 {
+    max-width: 896px;
+  }
 }

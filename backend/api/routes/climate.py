@@ -1,14 +1,13 @@
 from datetime import date
 from typing import Annotated
 
+from api.db import get_db
+from api.models.db_models import Districts
+from api.models.schemas import ClimateRecord, ClimateResponse, ClimateSummary
 from fastapi import APIRouter, Depends, HTTPException, Query
 from services.climate import compute_climate_summary
 from sqlalchemy import text
 from sqlalchemy.orm import Session
-
-from api.db import get_db
-from api.models.db_models import Districts
-from api.models.schemas import ClimateRecord, ClimateResponse, ClimateSummary
 
 router = APIRouter()
 

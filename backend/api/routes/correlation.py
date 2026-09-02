@@ -1,12 +1,11 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session
-
 from api.db import get_db
 from api.models.db_models import Crops, Districts, Yields
 from api.models.schemas import CorrelationComponent, CorrelationResponse
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session
 
 router = APIRouter()
 

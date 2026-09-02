@@ -4,14 +4,13 @@ Districts API routes with validation and filtering.
 
 from typing import Annotated
 
+from api.db import get_db
+from api.models.db_models import Districts
+from api.models.schemas import DistrictListResponse, DistrictResponse
 from fastapi import APIRouter, Depends, HTTPException, Query
 from services.validators import FilterValidator, get_filter_validator
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
-from api.db import get_db
-from api.models.db_models import Districts
-from api.models.schemas import DistrictListResponse, DistrictResponse
 
 router = APIRouter()
 

@@ -14,10 +14,9 @@ from apscheduler.schedulers.background import (
     BackgroundScheduler,
 )
 from apscheduler.triggers.cron import CronTrigger
-from sqlalchemy.orm import sessionmaker
-
 from services.etl import load_all
 from services.forecasting import train_all_forecasts
+from sqlalchemy.orm import sessionmaker
 
 logger = logging.getLogger(__name__)
 
@@ -66,12 +65,3 @@ def start_scheduler() -> BackgroundScheduler:
         "APScheduler started: job '%s' scheduled for Tuesdays 00:00 UTC", JOB_ID
     )
     return scheduler
-
-
-def stop_scheduler() -> None:
-    """Gracefully shut down the scheduler."""
-    global _scheduler
-    if _scheduler is not None:
-        _scheduler.shutdown(wait=False)
-        _scheduler = None
-        logger.info("APScheduler stopped")

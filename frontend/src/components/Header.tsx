@@ -1,11 +1,24 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { getDistricts } from "@/lib/api";
+import { useQuery } from "@tanstack/react-query";
 
 export function Header() {
   const location = useLocation();
+  const [query, setQuery] = useState("");
+
+  const { data: districtsData } = useQuery({
+    queryKey: ["districts", query],
+    queryFn: () => getDistricts(),
+    staleTime: 300000,
+    enabled: query.length >= 1,
+  });
+  const districts = (districtsData?.districts || [])
+    .filter((d: { name: string }) => d.name.toLowerCase().includes(query.toLowerCase()))
+    .slice(0, 10);
 
   return (
     <header className="sticky top-0 z-30 h-15 bg-bg-primary border-b border-border-primary">
@@ -19,14 +32,22 @@ export function Header() {
         </div>
 
         <div className="hidden md:flex items-center flex-1 max-w-md mx-8">
-          <div className="relative w-full">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-            <input
-              type="search"
-              placeholder="Search districts or crops..."
-              className="input pl-10"
-            />
-          </div>
+          <input
+            type="search"
+            placeholder="Search district…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="w-full h-9 rounded-md border border-border bg-bg-primary px-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/50"
+          />
+          {query.length >= 1 && districts.length > 0 && (
+            <ul className="absolute z-50 mt-1 w-full max-w-md bg-bg-primary border border-border rounded-md shadow-lg">
+              {districts.slice(0, 10).map((d: { id: number; name: string }) => (
+                <li key={d.id} className="px-3 py-2 text-sm hover:bg-bg-tertiary cursor-pointer">
+                  {d.name}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         <nav className="flex items-center gap-2">

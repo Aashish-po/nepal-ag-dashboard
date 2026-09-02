@@ -1,12 +1,11 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Query
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-
 from api.db import get_db
 from api.models.db_models import Crops
 from api.models.schemas import CropListResponse, CropResponse
+from fastapi import APIRouter, Depends, Query
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 router = APIRouter()
 

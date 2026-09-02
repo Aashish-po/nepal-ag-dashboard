@@ -1,9 +1,5 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-
 from api.db import get_db
 from api.models.db_models import (
     MAX_SUPPORTED_HARVEST_YEAR,
@@ -14,6 +10,9 @@ from api.models.db_models import (
     Yields,
 )
 from api.models.schemas import ExportCropInfo, ExportCropsResponse, ExportSeason
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 router = APIRouter()
 

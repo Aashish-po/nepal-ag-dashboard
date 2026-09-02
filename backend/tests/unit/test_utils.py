@@ -243,6 +243,27 @@ class TestCorrelation:
         assert result["significant"]
         assert result["coefficient"] > 0.99
 
+    def test_unequal_length_inputs(self):
+        """Unequal-length inputs should pair on shared positions and succeed."""
+        from services.correlations import compute_full_correlation
+
+        x = [1.0, 2.0, 3.0, 4.0, 5.0]
+        y = [10.0, 20.0, 30.0]
+        result = compute_full_correlation(x, y)
+        assert result["coefficient"] is not None
+        assert abs(result["coefficient"] - 1.0) < 1e-6
+
+    def test_unequal_length_no_valid_pairs(self):
+        """No valid paired observations after zip should return null."""
+        from services.correlations import compute_full_correlation
+
+        x = [None, None]
+        y = [1.0]
+        result = compute_full_correlation(x, y)
+        assert result["coefficient"] is None
+        assert result["p_value"] is None
+        assert result["significant"] is False
+
 
 # --------------------------------------------------------------------------- #
 # Climate summary tests

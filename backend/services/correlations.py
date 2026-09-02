@@ -112,7 +112,9 @@ def calculate_yield_statistics(yield_rows: Sequence[YieldLike]) -> dict[str, Any
     }
 
 
-def compute_pearson(x: Sequence[float | None], y: Sequence[float | None]) -> float | None:
+def compute_pearson(
+    x: Sequence[float | None], y: Sequence[float | None]
+) -> float | None:
     """Compute Pearson correlation coefficient as a plain float.
 
     Returns None when fewer than 3 paired non-null values exist.

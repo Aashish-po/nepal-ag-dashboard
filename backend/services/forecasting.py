@@ -298,7 +298,7 @@ def _fit_sarimax(
         )
         fit = model.fit(disp=False, maxiter=200)
         steps = min(36, len(series))
-        pred = fit.get_forecast(steps=steps)
+        pred = fit.get_forecast(steps=steps)  # type: ignore[union-attr]
         mean = pred.predicted_mean
         ci = pred.conf_int(alpha=0.05)
         split = int(len(series) * 0.8)
@@ -321,7 +321,7 @@ def _fit_sarimax(
             nonzero = actual[nonzero_mask]
             mape = (
                 float(np.mean(np.abs(residuals[nonzero_mask] / nonzero)) * 100)
-                if len(nonzero) > 0
+                if len(nonzero) > 0  # type: ignore[arg-type]
                 else 0.0
             )
         else:
@@ -373,7 +373,7 @@ def _fit_es(series: pd.Series) -> _FitResult | None:  # pragma: no cover — sta
             nonzero = actual[nonzero_mask]
             mape = (
                 float(np.mean(np.abs(residuals[nonzero_mask] / nonzero)) * 100)
-                if len(nonzero) > 0
+                if len(nonzero) > 0  # type: ignore[arg-type]
                 else 0.0
             )
         else:

@@ -113,12 +113,12 @@ export function Home() {
 
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-8">
-      <section className="text-center py-12">
+      <section className="py-12 text-center">
         <h1 className="text-5xl font-bold mb-4">
           Analyze agricultural productivity across Nepal
         </h1>
 
-        <p className="max-w-3xl mx-auto text-lg text-muted-foreground mb-8">
+        <p className="max-w-3xl mx-auto w-full text-lg text-muted-foreground mb-8 text-center">
           Data-driven insights on crop yields, climate patterns, export
           potential, and forecasts for all {districtCount} districts.
         </p>

@@ -42,7 +42,7 @@ export function Sidebar() {
       <aside
         className={cn(
           'fixed top-0 left-0 h-screen bg-bg-secondary border-r border-border-primary z-40 transition-transform duration-300',
-          'w-70',
+          'w-72',
           isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         )}
       >

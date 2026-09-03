@@ -206,19 +206,19 @@ export function Commercialization() {
               <div>
                 <p className="text-sm text-text-secondary">Export Area</p>
                 <p className="text-xl font-bold">
-                  {formatNumber(districtDetail.export_crop_area_pct)}%
+                  {formatNumber(districtDetail.export_crop_area_pct ?? 0)}%
                 </p>
               </div>
               <div>
                 <p className="text-sm text-text-secondary">Subsistence Area</p>
                 <p className="text-xl font-bold">
-                  {formatNumber(districtDetail.subsistence_area_pct)}%
+                  {formatNumber(districtDetail.subsistence_area_pct ?? 0)}%
                 </p>
               </div>
               <div>
                 <p className="text-sm text-text-secondary">Avg Holding Size</p>
                 <p className="text-xl font-bold">
-                  {formatNumber(districtDetail.avg_holding_size_ha)} ha
+                  {formatNumber(districtDetail.avg_holding_size_ha ?? 0)} ha
                 </p>
               </div>
             </div>

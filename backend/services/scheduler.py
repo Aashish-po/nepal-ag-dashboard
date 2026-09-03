@@ -7,9 +7,11 @@ Delegates to ``services.etl.load_all`` and ``services.forecasting.train_all_fore
 
 from __future__ import annotations
 
+import asyncio
 import logging
 
 from api.db import _sync_engine as engine
+from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.schedulers.background import (
     BackgroundScheduler,
 )
@@ -32,7 +34,9 @@ def _run_weekly_job() -> None:
     db = Session()
     try:
         logger.info("Starting weekly ETL + forecast job")
-        results = load_all()
+        # load_all is async but this runs in a sync thread via ThreadPoolExecutor;
+        # asyncio.run bridges the gap so we can schedule it alongside train_all_forecasts.
+        results = asyncio.run(load_all())
         logger.info("ETL results: %s", results)
         forecast_results = train_all_forecasts(db, months_ahead=12)
         logger.info(
@@ -52,7 +56,10 @@ def start_scheduler() -> BackgroundScheduler:
         The running scheduler instance.
     """
     global _scheduler
-    scheduler = BackgroundScheduler(timezone="UTC")
+    scheduler = BackgroundScheduler(
+        timezone="UTC",
+        executors={"default": ThreadPoolExecutor(max_workers=4)},
+    )
     scheduler.add_job(
         _run_weekly_job,
         trigger=CronTrigger(day_of_week="tue", hour=0, minute=0),

@@ -12,10 +12,27 @@ import { Button } from "@/shadcn/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/shadcn/card";
 import { formatNumber } from "@/lib/utils";
 import { getYields, downloadYieldsCsv } from "@/lib/api";
+import type { YieldRecord } from "@/lib/types";
 import { useFilterStore } from "@/hooks/useFilters";
 import { FilterBar } from "@/components/FilterBar";
 import { downloadBlob } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
+
+// ponytail: extracted from 4 duplicate early-return blocks — each shares the
+// same header + FilterBar shell, only the message differs.
+function StateShell({ message }: { message: string }) {
+  return (
+    <div className="max-w-350 mx-auto p-6">
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-h1 font-bold">Yield Analysis</h1>
+      </div>
+      <FilterBar showCropSelector showYearRange />
+      <div className="text-center py-12">
+        <p className="text-text-secondary">{message}</p>
+      </div>
+    </div>
+  );
+}
 
 export function Yields() {
   const { selectedDistrict, selectedCrop, yearStart, yearEnd } =
@@ -39,81 +56,28 @@ export function Yields() {
   });
 
   if (error) {
-    return (
-      <div className="max-w-350 mx-auto p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-h1 font-bold">Yield Analysis</h1>
-          <Button variant="outline" onClick={() => downloadYields()}>
-            Export CSV
-          </Button>
-        </div>
-        <FilterBar showCropSelector showYearRange />
-        <div className="text-center py-12">
-          <p className="text-text-secondary">Could not load yield data.</p>
-        </div>
-      </div>
-    );
+    return <StateShell message="Could not load yield data." />;
   }
 
   if (!selectedDistrict || !selectedCrop) {
     return (
-      <div className="max-w-350 mx-auto p-6">
-        {" "}
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-h1 font-bold">Yield Analysis</h1>
-          <Button variant="outline" onClick={() => downloadYields()}>
-            Export CSV
-          </Button>
-        </div>
-        <FilterBar showCropSelector showYearRange />
-        <div className="text-center py-12">
-          <p className="text-text-secondary">
-            Select a district and crop to view yield trends.
-          </p>
-        </div>
-      </div>
+      <StateShell message="Select a district and crop to view yield trends." />
     );
   }
 
   if (isLoading && yieldsData === undefined) {
-    return (
-      <div className="max-w-350 mx-auto p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-h1 font-bold">Yield Analysis</h1>
-          <Button variant="outline" onClick={() => downloadYields()}>
-            Export CSV
-          </Button>
-        </div>
-        <FilterBar showCropSelector showYearRange />
-        <div className="text-center py-12">
-          <p className="text-text-secondary">Loading yield data...</p>
-        </div>
-      </div>
-    );
+    return <StateShell message="Loading yield data..." />;
   }
 
   if (!yieldsData) {
     return (
-      <div className="max-w-350 mx-auto p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-h1 font-bold">Yield Analysis</h1>
-          <Button variant="outline" onClick={() => downloadYields()}>
-            Export CSV
-          </Button>
-        </div>
-        <FilterBar showCropSelector showYearRange />
-        <div className="text-center py-12">
-          <p className="text-text-secondary">
-            No yield data available for the selected filters.
-          </p>
-        </div>
-      </div>
+      <StateShell message="No yield data available for the selected filters." />
     );
   }
 
   const { timeseries, statistics, district_name, crop_name } = yieldsData;
 
-  const chartData = timeseries.map((t: any) => ({
+  const chartData = timeseries.map((t: YieldRecord) => ({
     year: t.year,
     yield: t.yield_kg_ha,
     production: t.production_mt,

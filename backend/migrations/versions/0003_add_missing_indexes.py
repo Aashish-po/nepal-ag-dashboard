@@ -1,9 +1,10 @@
-"""Add missing performance indexes to Climate, CommercializationIndex, and Forecasts.
+"""Add missing performance indexes to CommercializationIndex and Forecasts.
 
 Revision ID: 0003
 Revises: 0002_add_indexes
 Create Date: 2026-08-29 09:30:00.000000
 
+Note: Climate table indexes were added in 0002_add_indexes.
 """
 
 from alembic import op
@@ -17,19 +18,6 @@ depends_on = None
 
 def upgrade() -> None:
     """Add indexes for query performance on fact tables."""
-
-    # ===== Climate Table Indexes =====
-    # Primary query pattern: SELECT * FROM climate WHERE district_id = X AND observation_date BETWEEN Y AND Z
-    op.create_index(
-        "ix_climate_district_date",
-        "climate",
-        ["district_id", "observation_date"],
-        if_not_exists=True,
-    )
-    # Direct district lookups
-    op.create_index(
-        "ix_climate_district_id", "climate", ["district_id"], if_not_exists=True
-    )
 
     # ===== CommercializationIndex Table Indexes =====
     # Primary query pattern: SELECT * FROM commercialization_index WHERE district_id = X
@@ -69,7 +57,3 @@ def downgrade() -> None:
         table_name="commercialization_index",
         if_exists=True,
     )
-
-    # Climate
-    op.drop_index("ix_climate_district_id", table_name="climate", if_exists=True)
-    op.drop_index("ix_climate_district_date", table_name="climate", if_exists=True)

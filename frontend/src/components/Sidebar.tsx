@@ -87,7 +87,7 @@ export function Sidebar() {
 
           <div className="p-4 border-t border-border-light">
             <p className="text-xs text-text-muted text-center">
-              Phase 1 · v0.1.0
+              v1.0.0
             </p>
           </div>
         </div>

@@ -17,9 +17,13 @@ beforeEach(() => {
   useFilterStore.getState().reset();
   // FilterBar loads these on every page; the always-on commercialization
   // list query must resolve a defined value (react-query rejects undefined).
-  vi.mocked(api.getDistricts).mockResolvedValue({ districts: [] });
-  vi.mocked(api.getCrops).mockResolvedValue({ crops: [] });
-  vi.mocked(api.getCommercializationList).mockResolvedValue({ districts: [] });
+  vi.mocked(api.getDistricts).mockResolvedValue({ total: 0, districts: [] });
+  vi.mocked(api.getCrops).mockResolvedValue({ total: 0, crops: [] });
+  vi.mocked(api.getCommercializationList).mockResolvedValue({
+    year: 2024,
+    total: 0,
+    districts: [],
+  });
 });
 
 describe("data pages — default empty states", () => {
@@ -81,14 +85,20 @@ describe("Yields — data + export journey", () => {
   beforeEach(() => {
     useFilterStore.setState({ selectedDistrict: 1, selectedCrop: 1 });
     vi.mocked(api.getYields).mockResolvedValue({
+      district_id: 1,
       district_name: "Kathmandu",
+      crop_id: 1,
       crop_name: "Rice",
-      timeseries: [{ year: 2020, yield_kg_ha: 3000, production_mt: 100 }],
+      timeseries: [
+        { year: 2020, yield_kg_ha: 3000, production_mt: 100 } as any,
+      ],
       statistics: {
         avg_yield_kg_ha: 3000,
         max_yield_kg_ha: 3200,
         min_yield_kg_ha: 2800,
         volatility: 100,
+        cagr_pct: null,
+        trend: null,
       },
     });
   });
@@ -128,15 +138,23 @@ describe("Forecasts — data + export journey", () => {
   beforeEach(() => {
     useFilterStore.setState({ selectedDistrict: 1, selectedCrop: 1 });
     vi.mocked(api.getForecasts).mockResolvedValue({
+      district_id: 1,
+      district_name: "Kathmandu",
+      crop_id: 1,
+      crop_name: "Rice",
+      forecast_horizon_months: 12,
       forecast_model: "ARIMA",
       recommendation: "Stable outlook",
-      model_diagnostics: { rmse_kg_ha: 120 },
+      model_diagnostics: { rmse_kg_ha: 120, mae_kg_ha: 90, mape_pct: 3.2 },
       forecasts: [
         {
           forecast_month: "2025-01",
           forecast_yield_kg_ha: 3000,
           lower_ci_95: 2800,
           upper_ci_95: 3200,
+          forecast_model: null,
+          forecast_date: null,
+          confidence: null,
         },
       ],
     });
@@ -172,10 +190,21 @@ describe("Correlation — loaded analysis", () => {
   beforeEach(() => {
     useFilterStore.setState({ selectedDistrict: 1, selectedCrop: 2 });
     vi.mocked(api.getCorrelation).mockResolvedValue({
+      district_id: 1,
+      district_name: "Kathmandu",
+      crop_id: 2,
+      crop_name: "Tea",
+      lag_months: 0,
       correlations: {
         rainfall_mm: { coefficient: 0.52, p_value: 0.01, significant: true },
-        temperature_mean_c: { coefficient: -0.3, p_value: 0.2, significant: false },
+        temperature_mean_c: {
+          coefficient: -0.3,
+          p_value: 0.2,
+          significant: false,
+        },
       },
+      r_squared: null,
+      interpretation: null,
     });
   });
 

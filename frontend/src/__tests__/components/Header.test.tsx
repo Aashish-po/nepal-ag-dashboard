@@ -39,16 +39,23 @@ describe("Header component", () => {
 
   it("renders search input", () => {
     // Mock districts so the useQuery doesn't hang
-    vi.mocked(api.getDistricts).mockResolvedValue({ districts: [] });
+    vi.mocked(api.getDistricts).mockResolvedValue({ total: 0, districts: [] });
     renderHeader();
     expect(screen.getByPlaceholderText(/search district/i)).toBeInTheDocument();
   });
 
   it("returns at most ten district results when typing a non-empty query", async () => {
     vi.mocked(api.getDistricts).mockResolvedValue({
+      total: 15,
       districts: Array.from({ length: 15 }, (_, i) => ({
         id: i,
         name: `District ${i}`,
+        province: "Central",
+        region: "Hill" as const,
+        latitude: null,
+        longitude: null,
+        population: null,
+        area_sq_km: null,
       })),
     });
     renderHeader();

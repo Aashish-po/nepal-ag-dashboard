@@ -23,6 +23,8 @@ eggs/
 .eggs/
 lib/
 lib64/
+# Keep the types file in frontend/src/lib (needed by api.ts and Yields.tsx)
+!frontend/src/lib/types.ts
 parts/
 sdist/
 var/

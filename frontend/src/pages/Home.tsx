@@ -118,9 +118,9 @@ export function Home() {
           Analyze agricultural productivity across Nepal
         </h1>
 
-        <p className="max-w-3xl mx-auto w-full text-lg text-muted-foreground mb-8 text-center">
+        <p className="max-w-xl mx-auto w-full text-lg text-muted-foreground mb-8 text-center">
           Data-driven insights on crop yields, climate patterns, export
-          potential, and forecasts for all {districtCount} districts.
+          potential, and forecasts for all 77 districts.
         </p>
 
         <div className="flex flex-wrap justify-center gap-3">

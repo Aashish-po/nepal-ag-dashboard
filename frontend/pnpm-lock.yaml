@@ -11,9 +11,9 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.102.2
         version: 5.102.2(react@19.2.8)
-      '@vercel/speed-insights':
-        specifier: ^2.0.0
-        version: 2.0.0(react@19.2.8)
+      '@vercel/analytics':
+        specifier: ^2.0.1
+        version: 2.0.1(react@19.2.8)
       axios:
         specifier: ^1.6.0
         version: 1.19.0
@@ -562,9 +562,10 @@ packages:
   '@ungap/structured-clone@1.3.3':
     resolution: {integrity: sha512-60YRaenCQcVjYEKOcG824+DRGGIQ3VKErcBoAEDJZz5bKIs2ZG+X/H9Nk+Q6EVkwJk5QNApxbrc5QtBSwtrXAg==}
 
-  '@vercel/speed-insights@2.0.0':
-    resolution: {integrity: sha512-jwkNcrTeafWxjmWq4AHBaptSqZiJkYU5adLC9QBSqeim0GcqDMgN5Ievh8OG1rJ6W3A4l1oiP7qr9CWxGuzu3w==}
+  '@vercel/analytics@2.0.1':
+    resolution: {integrity: sha512-MTQG6V9qQrt1tsDeF+2Uoo5aPjqbVPys1xvnIftXSJYG2SrwXRHnqEvVoYID7BTruDz4lCd2Z7rM1BdkUehk2g==}
     peerDependencies:
+      '@remix-run/react': ^2
       '@sveltejs/kit': ^1 || ^2
       next: '>= 13'
       nuxt: '>= 3'
@@ -573,6 +574,8 @@ packages:
       vue: ^3
       vue-router: ^4
     peerDependenciesMeta:
+      '@remix-run/react':
+        optional: true
       '@sveltejs/kit':
         optional: true
       next:
@@ -2650,7 +2653,7 @@ snapshots:
 
   '@ungap/structured-clone@1.3.3': {}
 
-  '@vercel/speed-insights@2.0.0(react@19.2.8)':
+  '@vercel/analytics@2.0.1(react@19.2.8)':
     optionalDependencies:
       react: 19.2.8
 

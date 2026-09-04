@@ -39,7 +39,7 @@ export function Climate() {
         <FilterBar showCropSelector={false} />
         <div className="text-center py-12 border border-border">
           <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
-            {"// Could not load climate data. — "}
+            {"// Could not load climate data. - "}
             <button
               type="button"
               onClick={() => refetch()}
@@ -205,7 +205,7 @@ export function Climate() {
     <div className="max-w-350 mx-auto p-6">
       <div className="flex items-center justify-between mb-6 border-b border-border pb-3">
         <h1 className="font-black uppercase tracking-tight text-h1">
-          Climate Intelligence
+          Climate Data
         </h1>
         <button
           className="px-4 py-2 border border-border font-mono text-xs uppercase tracking-widest hover:bg-bg-secondary"

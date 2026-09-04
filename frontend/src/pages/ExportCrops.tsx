@@ -39,7 +39,7 @@ export function ExportCrops() {
         <FilterBar showCropSelector={false} showYearRange={false} />
         <div className="text-center py-12 border border-border">
           <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
-            {"// Could not load export crop data. — "}
+            {"// Could not load export crop data. - "}
             <button
               type="button"
               onClick={() => refetch()}

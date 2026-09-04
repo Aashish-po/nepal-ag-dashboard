@@ -26,7 +26,7 @@ beforeEach(() => {
   });
 });
 
-describe("data pages — default empty states", () => {
+describe("data pages - default empty states", () => {
   it("Yields prompts for district + crop", async () => {
     renderWithProviders(<Yields />);
     expect(
@@ -81,7 +81,7 @@ describe("data pages — default empty states", () => {
   });
 });
 
-describe("Yields — data + export journey", () => {
+describe("Yields - data + export journey", () => {
   beforeEach(() => {
     useFilterStore.setState({ selectedDistrict: 1, selectedCrop: 1 });
     vi.mocked(api.getYields).mockResolvedValue({
@@ -106,7 +106,7 @@ describe("Yields — data + export journey", () => {
   it("renders stats and chart title from loaded data", async () => {
     renderWithProviders(<Yields />);
     expect(
-      await screen.findByText("Rice — Kathmandu Yield Trends"),
+      await screen.findByText("Rice - Kathmandu Yield Trends"),
     ).toBeInTheDocument();
     expect(screen.getByText("Average Yield")).toBeInTheDocument();
     expect(screen.getByText("3,000 kg/ha")).toBeInTheDocument();
@@ -120,7 +120,7 @@ describe("Yields — data + export journey", () => {
     );
 
     renderWithProviders(<Yields />);
-    await screen.findByText("Rice — Kathmandu Yield Trends");
+    await screen.findByText("Rice - Kathmandu Yield Trends");
     fireEvent.click(screen.getByRole("button", { name: /export csv/i }));
 
     await waitFor(() =>
@@ -134,7 +134,7 @@ describe("Yields — data + export journey", () => {
   });
 });
 
-describe("Forecasts — data + export journey", () => {
+describe("Forecasts - data + export journey", () => {
   beforeEach(() => {
     useFilterStore.setState({ selectedDistrict: 1, selectedCrop: 1 });
     vi.mocked(api.getForecasts).mockResolvedValue({
@@ -186,7 +186,7 @@ describe("Forecasts — data + export journey", () => {
   });
 });
 
-describe("Correlation — loaded analysis", () => {
+describe("Correlation - loaded analysis", () => {
   beforeEach(() => {
     useFilterStore.setState({ selectedDistrict: 1, selectedCrop: 2 });
     vi.mocked(api.getCorrelation).mockResolvedValue({

@@ -48,7 +48,7 @@ export function Commercialization() {
         <FilterBar showCropSelector={false} />
         <div className="text-center py-12 border border-border">
           <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
-            {"// Could not load commercialization data. — "}
+            {"// Could not load commercialization data. - "}
             <button
               type="button"
               onClick={() => refetchDetail()}
@@ -68,7 +68,7 @@ export function Commercialization() {
         <FilterBar showCropSelector={false} />
         <div className="text-center py-12 border border-border">
           <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
-            {"// Could not load commercialization rankings. — "}
+            {"// Could not load commercialization rankings. - "}
             <button
               type="button"
               onClick={() => refetchHeatmap()}

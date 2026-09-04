@@ -62,7 +62,7 @@ export function Forecasts() {
         <FilterBar showCropSelector />
         <div className="text-center py-12 border border-border">
           <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
-            {"// Could not load forecast data. — "}
+            {"// Could not load forecast data. - "}
             <button
               type="button"
               onClick={() => refetch()}

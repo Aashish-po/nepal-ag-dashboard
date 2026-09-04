@@ -69,7 +69,7 @@ export function Sidebar() {
               </div>
               <div>
                 <h1 className="font-black text-sm uppercase tracking-tight leading-tight">Nepal Ag</h1>
-                <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted">Intelligence Dashboard — REV 2.6</p>
+                <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted">Intelligence Dashboard - REV 2.6</p>
               </div>
             </div>
           </div>
@@ -112,7 +112,7 @@ export function Sidebar() {
           <div className="p-3 border-t border-border-light">
             <div className="flex items-center justify-center gap-2 font-mono text-[10px] uppercase tracking-widest text-text-muted">
               <span className="w-2 h-2 bg-accent inline-block" aria-hidden />
-              V1.0.0 — 77 DISTS · 35 CROPS
+              V1.0.0 - 77 DISTS - 35 CROPS
             </div>
           </div>
         </div>

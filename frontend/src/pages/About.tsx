@@ -5,7 +5,7 @@ export function About() {
   return (
     <div className="max-w-180 mx-auto p-6">
       <div className="border-b border-border pb-3 mb-8">
-        <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted mb-1">DOCUMENT — REV 2.6</p>
+        <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted mb-1">DOCUMENT - REV 2.6</p>
         <h1 className="font-black uppercase tracking-tight text-h1">About & Methodology</h1>
       </div>
 
@@ -19,17 +19,15 @@ export function About() {
           </CardHeader>
           <CardContent className="space-y-4 leading-relaxed">
             <p className="text-sm text-text-secondary">
-              The Nepal Agricultural Intelligence Dashboard is a data-driven
-              platform providing insights into agricultural productivity across
-              Nepal&apos;s 77 districts. It integrates crop yield data, climate
-              records, and predictive models to support evidence-based decision
-              making for policymakers, researchers, and development
-              organizations.
+              This dashboard shows crop yields, climate records, and forecasts
+              for Nepal&apos;s 77 districts. It pulls together FAOSTAT yield
+              data, NASA POWER and CHIRPS climate data, and a weekly forecast
+              model. Use it to compare districts, check trends, and download the
+              underlying CSVs.
             </p>
             <p className="text-sm text-text-secondary">
-              The dashboard is designed to be intuitive and accessible,
-              following WCAG 2.1 AA standards. All data sources are openly
-              documented and regularly updated.
+              Sources and methods are listed below. Data updates weekly. The
+              interface meets WCAG 2.1 AA.
             </p>
           </CardContent>
         </Card>

@@ -297,7 +297,7 @@ export function Compare() {
       ) : error ? (
         <div className="text-center py-12 border border-border">
           <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
-            {"// Could not load comparison data. — "}
+            {"// Could not load comparison data. - "}
             <button
               type="button"
               onClick={() => refetch()}

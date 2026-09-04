@@ -25,7 +25,7 @@ export function Correlation() {
         <FilterBar showCropSelector />
         <div className="text-center py-12 border border-border">
           <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
-            {"// Could not load correlation data. — "}
+            {"// Could not load correlation data. - "}
             <button
               type="button"
               onClick={() => refetch()}

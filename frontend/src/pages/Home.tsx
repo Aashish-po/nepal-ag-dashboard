@@ -21,7 +21,7 @@ export function Home() {
       href: "/yields",
     },
     {
-      title: "Climate Intelligence",
+      title: "Climate Data",
       description: "Rainfall, temperature, and solar data",
       icon: Cloud,
       href: "/climate",
@@ -89,21 +89,21 @@ export function Home() {
 
   const stats = [
     { label: "Districts", value: `${districtCount}` },
-    { label: "Crops tracked", value: `${cropCount}+` },
-    { label: "Data range", value: "2014–2024" },
-    { label: "Climate records", value: "10+ years" },
+    { label: "Crops tracked", value: `${cropCount}` },
+    { label: "Data range", value: "2014-2024" },
+    { label: "Climate records", value: "Daily, 2014-2024" },
   ];
 
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-8">
-      {/* Hero — ruled, stamped */}
+      {/* Hero - ruled, stamped */}
       <section className="border border-border border-t-4 border-t-accent p-8 md:p-10">
         <div className="flex flex-wrap gap-2 mb-4">
           <span className="font-mono text-[10px] uppercase tracking-widest border border-border px-2 py-1">
             REV 2.6
           </span>
           <span className="font-mono text-[10px] uppercase tracking-widest border border-border px-2 py-1">
-            77 DISTS · 35 CROPS · 2014–2024
+            77 DISTS - 35 CROPS - 2014-2024
           </span>
         </div>
         <h1 className="font-black uppercase tracking-tight leading-[0.9] text-[clamp(32px,6vw,56px)]">
@@ -112,9 +112,9 @@ export function Home() {
           Intelligence
         </h1>
         <p className="max-w-[60ch] mt-4 font-mono text-xs uppercase tracking-wider text-text-secondary leading-relaxed">
-          Analyze agricultural productivity across Nepal — data-driven insights
-          on crop yields, climate patterns, export potential, and forecasts for
-          all 77 districts.
+          Browse yields, rainfall and temperature, export crops, and 12 to 36
+          month forecasts for every district. Sourced from FAOSTAT, NASA POWER,
+          and CHIRPS. Updated weekly.
         </p>
         <div className="flex flex-wrap gap-3 mt-6">
           <Link to="/yields">
@@ -133,7 +133,7 @@ export function Home() {
         </div>
       </section>
 
-      {/* Telemetry strip — ruled grid */}
+      {/* Telemetry strip - ruled grid */}
       <section className="ruled-grid grid-cols-2 md:grid-cols-4">
         {stats.map((stat) => (
           <div key={stat.label} className="p-4 text-center">
@@ -143,7 +143,7 @@ export function Home() {
         ))}
       </section>
 
-      {/* Bento — 1px-gap ink grid */}
+      {/* Bento - 1px-gap ink grid */}
       <section>
         <div className="flex items-center gap-2 mb-3">
           <div className="h-px flex-1 bg-border" />
@@ -178,9 +178,9 @@ export function Home() {
         <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted">
           Data last updated:{" "}
           {healthData?.timestamp
-            ? new Date(healthData.timestamp).toLocaleString()
+            ? new Date(healthData.timestamp).toLocaleDateString("en-CA")
             : "Not yet synchronized"}{" "}
-          · Sources: FAOSTAT · POWER · CHIRPS
+          - Sources: FAOSTAT - POWER - CHIRPS
         </p>
       </div>
     </div>

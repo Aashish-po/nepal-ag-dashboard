@@ -5,7 +5,7 @@ import { About } from "@/pages/About";
 import { Home } from "@/pages/Home";
 import { Map } from "@/pages/Map";
 
-// Static pages: no API, no store — render + (for Map) interaction only.
+// Static pages: no API, no store - render + (for Map) interaction only.
 
 describe("About page", () => {
   it("renders heading and data sources", () => {
@@ -21,7 +21,7 @@ describe("Home page", () => {
   it("renders hero and feature links", () => {
     renderWithProviders(<Home />);
     expect(
-      screen.getByText(/Analyze agricultural productivity across Nepal/i),
+      screen.getByText(/Browse yields, rainfall and temperature/i),
     ).toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: /explore yields/i }),
@@ -43,7 +43,7 @@ describe("Map page", () => {
     const kathmanduGroup = screen.getByText("Kathmandu").parentElement!;
     fireEvent.click(kathmanduGroup);
 
-    // ponytail: map container is no longer a Card — only the detail panel has .card; scope to it
+    // ponytail: map container is no longer a Card - only the detail panel has .card; scope to it
     const panel = document.querySelector(".card") as HTMLElement;
     expect(panel).toBeTruthy();
     expect(within(panel).getByText("Kathmandu")).toBeInTheDocument();

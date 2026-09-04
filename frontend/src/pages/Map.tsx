@@ -103,32 +103,31 @@ export function Map() {
     <div className="max-w-7xl mx-auto p-6">
       <div className="flex items-center justify-between mb-6 border-b border-border pb-3">
         <h1 className="font-black uppercase tracking-tight text-h1">District Map</h1>
-        <span className="hidden sm:inline font-mono text-[10px] uppercase tracking-widest border border-border px-2 py-1">77 DISTS · CROSSHAIR TO SELECT</span>
+        <span className="hidden sm:inline font-mono text-[10px] uppercase tracking-widest border border-border px-2 py-1">77 DISTS - CLICK TO SELECT</span>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-0 border border-border">
         <div className="border-r border-border">
           <div className="p-4 border-b border-border-light">
             <p className="font-mono text-xs uppercase tracking-widest font-bold">Nepal Districts</p>
-            <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted mt-1">Ink choropleth — province tint at 6% · hover 14% · selected ink reversed</p>
+            <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted mt-1">Ink choropleth - province tint at 6% / hover 14% / selected ink reversed</p>
           </div>
           <div className="p-4">
             <div className="w-full overflow-x-auto border border-border-light p-2 bg-bg-primary">
               <svg
                 viewBox={viewBox}
                 className="w-full max-w-200 h-auto"
-                style={{ display: "block", cursor: "crosshair" }}
+                style={{ display: "block" }}
               >
                 {paths.map(({ d, district, color }) => {
                   const isActive = selected?.uid === district.uid;
                   return (
                     <g
                       key={`path-${district.uid}`}
-                      style={{ cursor: "crosshair" }}
                       onMouseEnter={(e) => {
                         if (isActive) return;
                         const p = (e.currentTarget as SVGGElement).querySelector("path");
-                        // hover: bump to 14% equivalent by overlaying — use muted tint
+                        // hover: bump to 14% equivalent by overlaying - use muted tint
                         setFill(p as SVGPathElement | null, color === "#050505" ? "#1a1a1a" : color);
                         (p as SVGPathElement | null)?.setAttribute("fill-opacity", "0.14");
                       }}
@@ -173,7 +172,6 @@ export function Map() {
                   return (
                     <g
                       key={`circle-${district.uid}`}
-                      style={{ cursor: "crosshair" }}
                       onClick={() =>
                         setSelected((prev) => (prev?.uid === district.uid ? null : district))
                       }
@@ -205,7 +203,7 @@ export function Map() {
               </svg>
             </div>
             <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted mt-3">
-              Crosshair to select · ink density = province
+              Click to select - ink density = province
             </p>
             <div className="flex flex-wrap gap-3 mt-3 border-t border-border-light pt-3">
               {Object.entries(PROVINCE_COLORS).map(([prov, c]) => (
@@ -234,7 +232,7 @@ export function Map() {
                 <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-text-secondary">
                   <MapPin className="w-4 h-4 shrink-0" />
                   <span>
-                    {selected.province} · {selected.region}
+                    {selected.province} - {selected.region}
                   </span>
                 </div>
                 <div className="border-t border-border-light pt-3">

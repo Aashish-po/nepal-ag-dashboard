@@ -40,7 +40,7 @@ function StateShell({
           {message}
           {actionLabel && onAction ? (
             <>
-              {" — "}
+              {" - "}
               <button
                 type="button"
                 onClick={onAction}
@@ -186,7 +186,7 @@ export function Yields() {
       <Card className="mb-6">
         <CardHeader>
           <CardTitle>
-            {crop_name} — {district_name} Yield Trends
+            {crop_name} - {district_name} Yield Trends
           </CardTitle>
         </CardHeader>
         <CardContent>

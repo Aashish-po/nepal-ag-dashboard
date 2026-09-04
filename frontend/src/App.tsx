@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Analytics } from "@vercel/analytics/react";
 import { Sidebar } from "@/components/Sidebar";
 import { Header } from "@/components/Header";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
@@ -41,6 +42,7 @@ export default function App() {
           </main>
         </div>
       </div>
+      <Analytics />
     </BrowserRouter>
   );
 }

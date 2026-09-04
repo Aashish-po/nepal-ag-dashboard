@@ -1,45 +1,44 @@
-## Vercel Web Analytics Installation
+## Vercel Speed Insights Installation
 
-Successfully installed and configured Vercel Web Analytics for the Nepal Agriculture Dashboard project.
+Successfully installed and configured Vercel Speed Insights for the Nepal Agriculture Dashboard project.
 
 ### Changes Made
 
-**1. Installed @vercel/analytics package (v2.0.1)**
-   - Added dependency to package.json using pnpm
-   - Updated pnpm-lock.yaml with new dependency tree
-
-**2. Modified src/App.tsx**
-   - Added import: `import { Analytics } from "@vercel/analytics/react";`
-   - Placed `<Analytics />` component at the end of the BrowserRouter component
-   - Follows official Vercel documentation for React/Vite projects
+**Modified Files:**
+1. `package.json` - Added `@vercel/speed-insights` v2.0.0 dependency
+2. `pnpm-lock.yaml` - Updated with new package and its dependencies
+3. `src/App.tsx` - Added SpeedInsights component integration
 
 ### Implementation Details
 
-The implementation follows the official Vercel Analytics quickstart guide for React/Vite applications:
-- Fetched the latest documentation from https://vercel.com/docs/analytics/quickstart
-- Used framework-specific instructions for React/Vite projects
-- Added the Analytics component in the root App component to track all page views
-- Component placement ensures analytics are tracked across all routes
+**1. Package Installation:**
+- Installed `@vercel/speed-insights` version 2.0.0 using pnpm
+- Package manager: pnpm v10.15.0
 
-### Verification Steps Completed
+**2. Component Integration:**
+- Imported `SpeedInsights` from `@vercel/speed-insights/react`
+- Added `<SpeedInsights />` component to App.tsx, placed alongside the existing `<Analytics />` component
+- The component is positioned at the root level of the application, inside the `<BrowserRouter>` wrapper, ensuring it tracks all page navigation and performance metrics
 
-✅ Type checking passed (tsc --noEmit)
-✅ Build completed successfully (pnpm run build)
-✅ Linter passed with 0 warnings (pnpm run lint)
-✅ All 30 tests passed (pnpm run test:run)
+**3. Framework Configuration:**
+- Project: React + Vite
+- Following official Vercel documentation from https://vercel.com/docs/speed-insights/quickstart
+- Used React-specific import path: `@vercel/speed-insights/react`
 
-### Next Steps for Deployment
+### Verification Completed
 
-To complete the setup:
-1. Deploy the application to Vercel
-2. Enable Web Analytics in the Vercel dashboard (Project Settings > Analytics)
-3. After deployment, verify analytics tracking by checking for XHR requests to `/_vercel/insights/*`
-4. Analytics data will appear in the Vercel dashboard within a few days of user traffic
+All verification steps completed successfully:
+✅ TypeScript type checking passed (tsc --noEmit)
+✅ ESLint linting passed with 0 warnings
+✅ Production build successful (1.25s build time)
+✅ All 30 tests passed across 7 test files
 
-### Files Modified
+### Next Steps
 
-- frontend/package.json - Added @vercel/analytics dependency
-- frontend/pnpm-lock.yaml - Updated lockfile with new dependencies
-- frontend/src/App.tsx - Added Analytics component import and usage
+Once deployed to Vercel, Speed Insights will automatically:
+- Track Core Web Vitals (LCP, FID, CLS, etc.)
+- Collect real user performance metrics
+- Make data available in the Vercel dashboard under Speed Insights section
+- Deploy tracking script routes at `/_vercel/speed-insights/*`
 
-The implementation is production-ready and follows Vercel's recommended best practices for React/Vite applications.
+No additional configuration is required. The integration follows the same pattern as the existing Vercel Analytics setup in the project.

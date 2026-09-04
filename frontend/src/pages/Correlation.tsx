@@ -11,6 +11,7 @@ export function Correlation() {
     data: correlationData,
     isLoading,
     error,
+    refetch,
   } = useQuery({
     queryKey: ["correlation", selectedDistrict, selectedCrop],
     queryFn: () => getCorrelation(selectedDistrict!, selectedCrop!),
@@ -22,9 +23,16 @@ export function Correlation() {
     return (
       <div className="max-w-350 mx-auto p-6">
         <FilterBar showCropSelector />
-        <div className="text-center py-12">
-          <p className="text-text-secondary">
-            Could not load correlation data.
+        <div className="text-center py-12 border border-border">
+          <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
+            {"// Could not load correlation data. — "}
+            <button
+              type="button"
+              onClick={() => refetch()}
+              className="underline hover:text-text-primary focus:outline-none focus:ring-1 focus:ring-accent"
+            >
+              [ RETRY ]
+            </button>
           </p>
         </div>
       </div>
@@ -35,8 +43,8 @@ export function Correlation() {
     return (
       <div className="max-w-350 mx-auto p-6">
         <FilterBar showCropSelector />
-        <div className="text-center py-12">
-          <p className="text-text-secondary">
+        <div className="text-center py-12 border border-border">
+          <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
             {isLoading
               ? "Loading correlation data..."
               : "Select a district and crop to view correlation analysis."}
@@ -50,9 +58,9 @@ export function Correlation() {
     return (
       <div className="max-w-350 mx-auto p-6">
         <FilterBar showCropSelector />
-        <div className="text-center py-12">
-          <p className="text-text-secondary">
-            No correlation results for this district and crop.
+        <div className="text-center py-12 border border-border">
+          <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
+            {"// No correlation results for this district and crop."}
           </p>
         </div>
       </div>
@@ -69,14 +77,16 @@ export function Correlation() {
   );
   return (
     <div className="max-w-350 mx-auto p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-h1 font-bold">Yield-Climate Correlation</h1>
+      <div className="flex items-center justify-between mb-6 border-b border-border pb-3">
+        <h1 className="font-black uppercase tracking-tight text-h1">
+          Yield-Climate Correlation
+        </h1>
       </div>
 
       <FilterBar showCropSelector />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <Card>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 border border-border mb-6">
+        <Card className="border-0 border-r border-border">
           <CardHeader>
             <CardTitle>Correlation Heatmap</CardTitle>
           </CardHeader>
@@ -84,31 +94,33 @@ export function Correlation() {
             <div className="space-y-3">
               {corrRows.map((row) => (
                 <div key={row.variable} className="flex items-center gap-4">
-                  <div className="w-40 text-sm font-medium">{row.variable}</div>
+                  <div className="w-40 font-mono text-xs uppercase tracking-wider font-medium">
+                    {row.variable}
+                  </div>
                   <div
-                    className="flex-1 h-8 rounded-md relative overflow-hidden"
+                    className="flex-1 h-8 relative overflow-hidden border border-border"
                     style={{
                       backgroundColor:
                         row.coefficient > 0
-                          ? "rgba(46, 125, 50, 0.15)"
-                          : "rgba(229, 57, 53, 0.15)",
+                          ? "rgba(5, 5, 5, 0.06)"
+                          : "rgba(230, 25, 25, 0.08)",
                     }}
                   >
                     <div
-                      className="absolute inset-y-0 left-0 rounded-md"
+                      className="absolute inset-y-0 left-0"
                       style={{
                         width: `${Math.abs(row.coefficient) * 100}%`,
                         backgroundColor:
                           row.coefficient > 0
-                            ? "var(--color-primary)"
-                            : "var(--color-error)",
+                            ? "var(--color-text-primary)"
+                            : "var(--color-accent)",
                       }}
                     />
-                    <span className="absolute inset-0 flex items-center justify-center text-sm font-medium">
+                    <span className="absolute inset-0 flex items-center justify-center font-mono text-xs uppercase tracking-wider font-medium">
                       r = {row.coefficient.toFixed(2)}
                     </span>
                   </div>
-                  <div className="w-24 text-right text-sm text-text-secondary">
+                  <div className="w-24 text-right font-mono text-xs text-text-secondary">
                     p = {row.pValue.toFixed(3)}
                   </div>
                 </div>
@@ -117,19 +129,17 @@ export function Correlation() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-0">
           <CardHeader>
             <CardTitle>Rainfall vs. Yield</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4 text-center py-8">
-              <div className="text-2xl font-bold">
+              <div className="metric">
                 {correlations?.rainfall_mm?.coefficient?.toFixed(3) ?? "0.000"}
               </div>
-              <p className="text-sm text-text-secondary">
-                Correlation coefficient (r)
-              </p>
-              <p className="text-xs text-text-muted">
+              <p className="caption">Correlation coefficient (r)</p>
+              <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted border border-border inline-block px-2 py-1">
                 {correlations?.rainfall_mm?.significant
                   ? "Statistically significant"
                   : "Not statistically significant"}
@@ -137,20 +147,18 @@ export function Correlation() {
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-0 border-t border-border border-r">
           <CardHeader>
             <CardTitle>Temperature vs. Yield</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4 text-center py-8">
-              <div className="text-2xl font-bold">
+              <div className="metric">
                 {correlations?.temperature_mean_c?.coefficient?.toFixed(3) ??
                   "0.000"}
               </div>
-              <p className="text-sm text-text-secondary">
-                Correlation coefficient (r)
-              </p>
-              <p className="text-xs text-text-muted">
+              <p className="caption">Correlation coefficient (r)</p>
+              <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted border border-border inline-block px-2 py-1">
                 {correlations?.temperature_mean_c?.significant
                   ? "Statistically significant"
                   : "Not statistically significant"}
@@ -158,20 +166,18 @@ export function Correlation() {
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-0 border-t border-border">
           <CardHeader>
             <CardTitle>Solar Radiation vs. Yield</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4 text-center py-8">
-              <div className="text-2xl font-bold">
+              <div className="metric">
                 {correlations?.solar_radiation_mj_m2?.coefficient?.toFixed(3) ??
                   "0.000"}
               </div>
-              <p className="text-sm text-text-secondary">
-                Correlation coefficient (r)
-              </p>
-              <p className="text-xs text-text-muted">
+              <p className="caption">Correlation coefficient (r)</p>
+              <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted border border-border inline-block px-2 py-1">
                 {correlations?.solar_radiation_mj_m2?.significant
                   ? "Statistically significant"
                   : "Not statistically significant"}
@@ -187,17 +193,14 @@ export function Correlation() {
             <CardTitle>Summary Statistics</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="ruled-grid grid-cols-1 md:grid-cols-3">
               {corrRows.map((row) => (
-                <div
-                  key={row.variable}
-                  className="p-4 bg-bg-secondary rounded-lg"
-                >
-                  <p className="text-sm text-text-secondary">{row.variable}</p>
-                  <p className="text-xl font-bold mt-1">
+                <div key={row.variable} className="p-4">
+                  <p className="caption">{row.variable}</p>
+                  <p className="metric text-lg mt-1">
                     r = {row.coefficient.toFixed(2)}
                   </p>
-                  <p className="text-sm text-text-muted mt-1">
+                  <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted mt-1">
                     {row.significant
                       ? "Statistically significant"
                       : "Not significant"}{" "}

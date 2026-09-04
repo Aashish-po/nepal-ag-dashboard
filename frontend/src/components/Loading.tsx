@@ -20,16 +20,16 @@ export function Loading({ className, height = '20px', width = '100%' }: Skeleton
 export function TableSkeleton({ rows = 5 }: { rows?: number }) {
   return (
     <div className="card overflow-hidden">
-      <div className="border-b border-border-light pb-3 mb-3">
-        <Loading height="18px" width="150px" />
+      <div className="border-b-2 border-border pb-3 mb-3">
+        <Loading height="14px" width="150px" />
       </div>
       <div className="space-y-2">
         {Array.from({ length: rows }).map((_, i) => (
           <div key={i} className="flex gap-4">
-            <Loading height="16px" width="25%" />
-            <Loading height="16px" width="20%" />
-            <Loading height="16px" width="20%" />
-            <Loading height="16px" width="15%" />
+            <Loading height="14px" width="25%" />
+            <Loading height="14px" width="20%" />
+            <Loading height="14px" width="20%" />
+            <Loading height="14px" width="15%" />
           </div>
         ))}
       </div>

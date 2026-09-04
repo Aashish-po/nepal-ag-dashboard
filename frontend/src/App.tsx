@@ -18,9 +18,9 @@ export default function App() {
     <BrowserRouter>
       <div className="flex min-h-screen bg-bg-primary">
         <Sidebar />
-        <div className="flex-1 min-w-0 md:ml-72">
+        <div className="flex-1 min-w-0 lg:ml-72">
           <Header />
-          <main className="min-h-[calc(100vh-60px)]">
+          <main className="min-h-[calc(100vh-64px)]">
             <ErrorBoundary>
               <Routes>
                 <Route path="/" element={<Home />} />

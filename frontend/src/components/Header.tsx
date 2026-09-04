@@ -21,28 +21,30 @@ export function Header() {
     .slice(0, 10);
 
   return (
-    <header className="sticky top-0 z-30 h-15 bg-bg-primary border-b border-border-primary">
-      <div className="max-w-350 mx-auto h-full flex items-center justify-between px-4 md:px-6">
-        <div className="flex items-center gap-3">
-          <div className="md:hidden w-8" />
-          <h2 className="text-lg font-semibold">
-            <span className="text-text-secondary font-normal">Nepal Ag</span>{" "}
+    <header className="sticky top-0 z-30 bg-bg-primary border-b border-border">
+      <div className="h-0.75 bg-accent w-full" aria-hidden />
+      <div className="max-w-350 mx-auto h-16 flex items-center justify-between px-4 md:px-6 gap-4">
+        <div className="flex items-center gap-3 shrink-0">
+          <div className="block lg:hidden w-8 shrink-0" aria-hidden />
+          <h2 className="font-black text-sm uppercase tracking-tight leading-none">
+            <span className="text-text-secondary font-medium font-mono text-xs tracking-widest">Nepal Ag</span>{" "}
             Intelligence
           </h2>
+          <span className="hidden sm:inline font-mono text-[10px] uppercase tracking-widest text-text-muted border border-border-light px-1.5 py-0.5">REV 2.6</span>
         </div>
 
-        <div className="hidden md:flex items-center flex-1 max-w-md mx-8">
+        <div className="hidden md:flex items-center flex-1 max-w-md mx-4 relative">
           <input
             type="search"
             placeholder="Search district…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-full h-9 rounded-md border border-border bg-bg-primary px-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/50"
+            className="w-full h-9 border border-border bg-bg-primary px-3 font-mono text-xs uppercase tracking-wider text-text-primary placeholder:text-text-muted placeholder:normal-case placeholder:tracking-normal focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
           />
           {query.length >= 1 && districts.length > 0 && (
-            <ul className="absolute z-50 mt-1 w-full max-w-md bg-bg-primary border border-border rounded-md shadow-lg">
+            <ul className="absolute top-full left-0 z-50 mt-1 w-full bg-bg-primary border border-border">
               {districts.slice(0, 10).map((d: { id: number; name: string }) => (
-                <li key={d.id} className="px-3 py-2 text-sm hover:bg-bg-tertiary cursor-pointer">
+                <li key={d.id} className="px-3 py-2 font-mono text-xs uppercase tracking-wider hover:bg-bg-tertiary cursor-pointer border-b border-border-light last:border-0">
                   {d.name}
                 </li>
               ))}
@@ -50,14 +52,14 @@ export function Header() {
           )}
         </div>
 
-        <nav className="flex items-center gap-2">
+        <nav className="flex items-center gap-1 shrink-0">
           <Link
             to="/about"
             className={cn(
-              "px-3 py-2 rounded-md text-sm font-medium transition-colors",
+              "px-3 py-2 font-mono text-xs uppercase tracking-widest transition-colors border border-transparent",
               location.pathname === "/about"
-                ? "text-primary bg-primary/10"
-                : "text-text-secondary hover:text-text-primary",
+                ? "text-text-primary bg-bg-tertiary border-border"
+                : "text-text-secondary hover:text-text-primary hover:bg-bg-tertiary",
             )}
           >
             About
@@ -66,10 +68,13 @@ export function Header() {
             href="https://github.com/Aashish-po/nepal-ag-dashboard"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-3 py-2 rounded-md text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
+            className="px-3 py-2 font-mono text-xs uppercase tracking-widest text-text-secondary hover:text-text-primary hover:bg-bg-tertiary border border-transparent transition-colors"
           >
             GitHub
           </a>
+          <span className="hidden lg:inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-text-muted border border-border-light px-2 py-1 ml-1">
+            <span className="w-2 h-2 bg-accent inline-block" aria-hidden /> LIVE
+          </span>
         </nav>
       </div>
     </header>

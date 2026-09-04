@@ -3,21 +3,21 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 font-mono uppercase tracking-wider',
   {
     variants: {
       variant: {
-        default: 'bg-primary text-white hover:bg-primary-dark',
-        destructive: 'bg-error text-white hover:bg-error/90',
-        outline: 'border border-border-primary bg-transparent hover:bg-bg-tertiary',
-        secondary: 'bg-secondary text-white hover:bg-secondary-dark',
-        ghost: 'hover:bg-bg-tertiary',
-        link: 'text-primary underline-offset-4 hover:underline',
+        default: 'bg-accent text-white border border-secondary-dark hover:bg-secondary-dark',
+        destructive: 'bg-accent text-white border border-secondary-dark hover:bg-secondary-dark',
+        outline: 'border border-border bg-transparent hover:bg-bg-secondary text-text-primary',
+        secondary: 'bg-text-primary text-bg-primary border border-text-primary hover:bg-[#1a1a1a]',
+        ghost: 'hover:bg-bg-secondary text-text-primary border border-transparent',
+        link: 'text-accent underline-offset-4 hover:underline border-0',
       },
       size: {
         default: 'h-10 px-4 py-2',
-        sm: 'h-9 rounded-md px-3',
-        lg: 'h-11 rounded-md px-8',
+        sm: 'h-8 px-3 text-xs',
+        lg: 'h-12 px-8',
         icon: 'h-10 w-10',
       },
     },

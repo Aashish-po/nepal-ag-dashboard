@@ -17,21 +17,25 @@ import { TableSkeleton } from "@/components/Loading";
 import { formatNumber } from "@/lib/utils";
 
 export function Commercialization() {
-  const { selectedDistrict, yearEnd, setSelectedDistrict } =
-    useFilterStore();
+  const { selectedDistrict, yearEnd, setSelectedDistrict } = useFilterStore();
   const year = yearEnd || 2024;
 
   const {
     data: heatmapData,
     isLoading: heatmapLoading,
     error: heatmapError,
+    refetch: refetchHeatmap,
   } = useQuery({
     queryKey: ["commercialization-list", year],
     queryFn: () => getCommercializationList(year),
     staleTime: 300000,
   });
 
-  const { data: districtDetail, error: detailError } = useQuery({
+  const {
+    data: districtDetail,
+    error: detailError,
+    refetch: refetchDetail,
+  } = useQuery({
     queryKey: ["commercialization-detail", selectedDistrict, year],
     queryFn: () => getCommercialization(selectedDistrict!, year),
     enabled: !!selectedDistrict,
@@ -42,9 +46,16 @@ export function Commercialization() {
     return (
       <div className="max-w-350 mx-auto p-6">
         <FilterBar showCropSelector={false} />
-        <div className="text-center py-12">
-          <p className="text-text-secondary">
-            Could not load commercialization data.
+        <div className="text-center py-12 border border-border">
+          <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
+            {"// Could not load commercialization data. — "}
+            <button
+              type="button"
+              onClick={() => refetchDetail()}
+              className="underline hover:text-text-primary focus:outline-none focus:ring-1 focus:ring-accent"
+            >
+              [ RETRY ]
+            </button>
           </p>
         </div>
       </div>
@@ -55,9 +66,16 @@ export function Commercialization() {
     return (
       <div className="max-w-350 mx-auto p-6">
         <FilterBar showCropSelector={false} />
-        <div className="text-center py-12">
-          <p className="text-text-secondary">
-            Could not load commercialization rankings.
+        <div className="text-center py-12 border border-border">
+          <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
+            {"// Could not load commercialization rankings. — "}
+            <button
+              type="button"
+              onClick={() => refetchHeatmap()}
+              className="underline hover:text-text-primary focus:outline-none focus:ring-1 focus:ring-accent"
+            >
+              [ RETRY ]
+            </button>
           </p>
         </div>
       </div>
@@ -101,14 +119,16 @@ export function Commercialization() {
 
   return (
     <div className="max-w-350 mx-auto p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-h1 font-bold">Commercialization Dashboard</h1>
+      <div className="flex items-center justify-between mb-6 border-b border-border pb-3">
+        <h1 className="font-black uppercase tracking-tight text-h1">
+          Commercialization Dashboard
+        </h1>
       </div>
 
       <FilterBar showCropSelector={false} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="lg:col-span-2">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-0 border border-border mb-6">
+        <Card className="lg:col-span-2 border-0 border-r border-border">
           <CardHeader>
             <CardTitle>Commercialization Scores by District</CardTitle>
           </CardHeader>
@@ -116,41 +136,48 @@ export function Commercialization() {
             <ResponsiveContainer width="100%" height={350}>
               <BarChart data={heatmapRows} layout="vertical">
                 <CartesianGrid
-                  strokeDasharray="3 3"
-                  stroke="var(--color-border-light)"
+                  stroke="var(--color-grid)"
+                  strokeDasharray="0"
+                  vertical={false}
                 />
                 <XAxis
                   type="number"
                   domain={[0, 100]}
-                  stroke="var(--color-text-muted)"
-                  fontSize={12}
+                  stroke="var(--color-axis)"
+                  fontSize={11}
+                  fontFamily="var(--font-family-mono)"
+                  tickLine={false}
                 />
                 <YAxis
                   type="category"
                   dataKey="district"
-                  stroke="var(--color-text-muted)"
-                  fontSize={12}
+                  stroke="var(--color-axis)"
+                  fontSize={11}
+                  fontFamily="var(--font-family-mono)"
+                  tickLine={false}
                   width={100}
                 />
                 <Tooltip
                   contentStyle={{
                     backgroundColor: "var(--color-bg-primary)",
                     border: "1px solid var(--color-border)",
-                    borderRadius: "var(--radius-md)",
+                    borderRadius: "0",
+                    fontFamily: "var(--font-family-mono)",
+                    fontSize: "11px",
+                    textTransform: "uppercase",
                   }}
                 />
                 <Bar
                   dataKey="score"
-                  radius={[0, 4, 4, 0]}
                   name="Score"
-                  fill="var(--color-primary)"
+                  fill="var(--color-text-primary)"
                 />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-0">
           <CardHeader>
             <CardTitle>Provincial Comparison</CardTitle>
           </CardHeader>
@@ -158,30 +185,39 @@ export function Commercialization() {
             <ResponsiveContainer width="100%" height={350}>
               <BarChart data={provincialData}>
                 <CartesianGrid
-                  strokeDasharray="3 3"
-                  stroke="var(--color-border-light)"
+                  stroke="var(--color-grid)"
+                  strokeDasharray="0"
+                  vertical={false}
                 />
                 <XAxis
                   dataKey="province"
-                  stroke="var(--color-text-muted)"
-                  fontSize={12}
+                  stroke="var(--color-axis)"
+                  fontSize={11}
+                  fontFamily="var(--font-family-mono)"
+                  tickLine={false}
+                  axisLine={{ stroke: "var(--color-border-light)" }}
                 />
                 <YAxis
                   domain={[0, 100]}
-                  stroke="var(--color-text-muted)"
-                  fontSize={12}
+                  stroke="var(--color-axis)"
+                  fontSize={11}
+                  fontFamily="var(--font-family-mono)"
+                  tickLine={false}
+                  axisLine={false}
                 />
                 <Tooltip
                   contentStyle={{
                     backgroundColor: "var(--color-bg-primary)",
                     border: "1px solid var(--color-border)",
-                    borderRadius: "var(--radius-md)",
+                    borderRadius: "0",
+                    fontFamily: "var(--font-family-mono)",
+                    fontSize: "11px",
+                    textTransform: "uppercase",
                   }}
                 />
                 <Bar
                   dataKey="score"
-                  fill="var(--color-secondary)"
-                  radius={[4, 4, 0, 0]}
+                  fill="var(--color-accent)"
                   name="Avg Score"
                 />
               </BarChart>
@@ -196,28 +232,28 @@ export function Commercialization() {
             <CardTitle>{districtDetail.district_name} Details</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div>
-                <p className="text-sm text-text-secondary">Score</p>
-                <p className="text-xl font-bold">
+            <div className="ruled-grid grid-cols-2 md:grid-cols-4">
+              <div className="p-4 text-center">
+                <p className="caption">Score</p>
+                <p className="metric text-lg mt-1">
                   {districtDetail.commercialization_score} / 100
                 </p>
               </div>
-              <div>
-                <p className="text-sm text-text-secondary">Export Area</p>
-                <p className="text-xl font-bold">
+              <div className="p-4 text-center">
+                <p className="caption">Export Area</p>
+                <p className="metric text-lg mt-1">
                   {formatNumber(districtDetail.export_crop_area_pct ?? 0)}%
                 </p>
               </div>
-              <div>
-                <p className="text-sm text-text-secondary">Subsistence Area</p>
-                <p className="text-xl font-bold">
+              <div className="p-4 text-center">
+                <p className="caption">Subsistence Area</p>
+                <p className="metric text-lg mt-1">
                   {formatNumber(districtDetail.subsistence_area_pct ?? 0)}%
                 </p>
               </div>
-              <div>
-                <p className="text-sm text-text-secondary">Avg Holding Size</p>
-                <p className="text-xl font-bold">
+              <div className="p-4 text-center">
+                <p className="caption">Avg Holding Size</p>
+                <p className="metric text-lg mt-1">
                   {formatNumber(districtDetail.avg_holding_size_ha ?? 0)} ha
                 </p>
               </div>

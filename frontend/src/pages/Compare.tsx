@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/shadcn/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/shadcn/card";
-import { Table, TableBody, TableRow, TableCell } from "@/shadcn/table";
+import { TableBody, TableRow, TableCell } from "@/shadcn/table";
 import { getYields, downloadYieldsCsv } from "@/lib/api";
 import { getDistricts } from "@/lib/api";
 import { useFilterStore } from "@/hooks/useFilters";
@@ -22,22 +22,25 @@ import {
 
 const MAX_COMPARE = 5;
 const COLORS = [
-  "var(--color-primary)",
-  "var(--color-secondary)",
-  "var(--color-warning)",
-  "var(--color-error)",
+  "var(--color-text-primary)",
+  "var(--color-accent)",
+  "var(--color-data-yield)",
+  "var(--color-data-climate)",
   "var(--color-chart-5)",
 ];
 
 export function Compare() {
-  const { selectedCrop, yearStart, yearEnd, selectedDistricts, setSelectedDistricts } =
-    useFilterStore();
+  const {
+    selectedCrop,
+    yearStart,
+    yearEnd,
+    selectedDistricts,
+    setSelectedDistricts,
+  } = useFilterStore();
 
-  // Multi-select state for district chips (client-side only, synced to store on submit)
   const [draftIds, setDraftIds] = useState<number[]>([]);
   const [showSelector, setShowSelector] = useState(false);
 
-  // Load districts list for selector
   const { data: districtsData } = useQuery({
     queryKey: ["districts"],
     queryFn: () => getDistricts(),
@@ -46,8 +49,8 @@ export function Compare() {
   const allDistricts = districtsData?.districts || [];
 
   const toggleDraft = (id: number) => {
-    setDraftIds(prev => {
-      if (prev.includes(id)) return prev.filter(x => x !== id);
+    setDraftIds((prev) => {
+      if (prev.includes(id)) return prev.filter((x) => x !== id);
       if (prev.length >= MAX_COMPARE) return prev;
       return [...prev, id];
     });
@@ -65,7 +68,6 @@ export function Compare() {
     setDraftIds([]);
   };
 
-  // Use store-based selectedDistricts for actual queries
   const compareDistricts = selectedDistricts;
   const cropId = selectedCrop;
 
@@ -95,7 +97,7 @@ export function Compare() {
     staleTime: 300000,
   });
 
-  const { data: compareData, isLoading, error } = queries;
+  const { data: compareData, isLoading, error, refetch } = queries;
 
   const chartData = useMemo(() => {
     if (!compareData) return [];
@@ -157,10 +159,16 @@ export function Compare() {
 
   return (
     <div className="max-w-350 mx-auto p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-h1 font-bold">Compare Districts</h1>
+      <div className="flex items-center justify-between mb-6 border-b border-border pb-3">
+        <h1 className="font-black uppercase tracking-tight text-h1">
+          Compare Districts
+        </h1>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={handleExport} disabled={!compareDistricts.length}>
+          <Button
+            variant="outline"
+            onClick={handleExport}
+            disabled={!compareDistricts.length}
+          >
             Export Comparison
           </Button>
           <Button
@@ -175,34 +183,42 @@ export function Compare() {
         </div>
       </div>
 
-      {/* Multi-district selector modal */}
       {showSelector && (
-        <div className="mb-6 bg-white border border-border rounded-lg p-4">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-semibold">Select Districts to Compare</h3>
+        <div className="mb-6 border border-border p-4">
+          <div className="flex items-center justify-between mb-3 border-b border-border-light pb-2">
+            <h3 className="font-mono text-xs uppercase tracking-widest font-bold">
+              Select Districts to Compare
+            </h3>
             <button
-              className="text-xs text-text-secondary hover:text-text-primary"
+              className="font-mono text-xs uppercase tracking-widest text-text-secondary hover:text-text-primary border border-border px-2 py-1"
               onClick={() => setShowSelector(false)}
             >
               ✕
             </button>
           </div>
-          <p className="text-xs text-text-muted mb-3">
+          <p className="font-mono text-[11px] uppercase tracking-wider text-text-muted mb-3">
             Click to select up to {MAX_COMPARE} districts. Selected:{" "}
             {draftIds.length > 0
-              ? draftIds.map((id) => allDistricts.find((d: { id: number; name: string }) => d.id === id)?.name).join(", ")
+              ? draftIds
+                  .map(
+                    (id) =>
+                      allDistricts.find(
+                        (d: { id: number; name: string }) => d.id === id,
+                      )?.name,
+                  )
+                  .join(", ")
               : "None"}
           </p>
-          <div className="grid grid-cols-3 gap-2 max-h-48 overflow-y-auto mb-3">
+          <div className="grid grid-cols-3 gap-0 border border-border max-h-48 overflow-y-auto mb-3">
             {allDistricts.map((d: { id: number; name: string }) => {
               const isSelected = draftIds.includes(d.id);
               return (
                 <button
                   key={d.id}
-                  className={`px-2 py-1.5 text-xs rounded-md border text-left transition-colors ${
+                  className={`px-2 py-1.5 font-mono text-xs uppercase tracking-wider text-left border-r border-b border-border transition-colors ${
                     isSelected
-                      ? "bg-primary text-white border-primary"
-                      : "border-border hover:bg-bg-tertiary"
+                      ? "bg-text-primary text-bg-primary"
+                      : "hover:bg-bg-secondary"
                   }`}
                   onClick={() => toggleDraft(d.id)}
                 >
@@ -228,20 +244,25 @@ export function Compare() {
         </div>
       )}
 
-      {/* Active comparison chips */}
       {compareDistricts.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-4">
           {compareDistricts.map((id) => {
-            const d = allDistricts.find((dist: { id: number; name: string }) => dist.id === id);
+            const d = allDistricts.find(
+              (dist: { id: number; name: string }) => dist.id === id,
+            );
             return (
               <span
                 key={id}
-                className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-bg-tertiary text-sm"
+                className="inline-flex items-center gap-1 px-2 py-1 border border-border font-mono text-xs uppercase tracking-wider"
               >
                 {d?.name ?? `ID ${id}`}
                 <button
-                  className="text-text-muted hover:text-text-primary"
-                  onClick={() => setSelectedDistricts(compareDistricts.filter((x) => x !== id))}
+                  className="ml-1 font-mono text-xs hover:text-accent"
+                  onClick={() =>
+                    setSelectedDistricts(
+                      compareDistricts.filter((x) => x !== id),
+                    )
+                  }
                 >
                   ✕
                 </button>
@@ -250,7 +271,7 @@ export function Compare() {
           })}
           {compareDistricts.length > 0 && (
             <button
-              className="text-xs text-text-muted hover:text-text-primary underline"
+              className="font-mono text-[10px] uppercase tracking-widest text-text-muted hover:text-text-primary border border-border px-2 py-1"
               onClick={clearCompare}
             >
               Clear all
@@ -262,20 +283,29 @@ export function Compare() {
       <FilterBar showCropSelector />
 
       {!compareDistricts.length ? (
-        <div className="text-center py-12">
-          <p className="text-text-secondary">
+        <div className="text-center py-12 border border-border">
+          <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
             Select 2–{MAX_COMPARE} districts above to compare yield trends.
           </p>
         </div>
       ) : compareDistricts.length === 1 ? (
-        <div className="text-center py-12">
-          <p className="text-text-secondary">
+        <div className="text-center py-12 border border-border">
+          <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
             Select at least 2 districts to compare.
           </p>
         </div>
       ) : error ? (
-        <div className="text-center py-12">
-          <p className="text-text-secondary">Could not load comparison data.</p>
+        <div className="text-center py-12 border border-border">
+          <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
+            {"// Could not load comparison data. — "}
+            <button
+              type="button"
+              onClick={() => refetch()}
+              className="underline hover:text-text-primary focus:outline-none focus:ring-1 focus:ring-accent"
+            >
+              [ RETRY ]
+            </button>
+          </p>
         </div>
       ) : isLoading || !compareData ? (
         <TableSkeleton rows={5} />
@@ -289,19 +319,53 @@ export function Compare() {
               <CardContent>
                 <ResponsiveContainer width="100%" height={350}>
                   <LineChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border-light)" />
-                    <XAxis dataKey="year" stroke="var(--color-text-muted)" fontSize={12} />
-                    <YAxis stroke="var(--color-text-muted)" fontSize={12} />
+                    <CartesianGrid
+                      stroke="var(--color-grid)"
+                      strokeDasharray="0"
+                      vertical={false}
+                    />
+                    <XAxis
+                      dataKey="year"
+                      stroke="var(--color-axis)"
+                      fontSize={11}
+                      fontFamily="var(--font-family-mono)"
+                      tickLine={false}
+                      axisLine={{ stroke: "var(--color-border-light)" }}
+                    />
+                    <YAxis
+                      stroke="var(--color-axis)"
+                      fontSize={11}
+                      fontFamily="var(--font-family-mono)"
+                      tickLine={false}
+                      axisLine={false}
+                    />
                     <Tooltip
                       contentStyle={{
                         backgroundColor: "var(--color-bg-primary)",
                         border: "1px solid var(--color-border)",
-                        borderRadius: "var(--radius-md)",
+                        borderRadius: "0",
+                        fontFamily: "var(--font-family-mono)",
+                        fontSize: "11px",
+                        textTransform: "uppercase",
+                      }}
+                      cursor={{
+                        stroke: "var(--color-accent)",
+                        strokeWidth: 1,
+                        strokeDasharray: "4 4",
                       }}
                     />
-                    <Legend />
+                    <Legend
+                      wrapperStyle={{
+                        fontFamily: "var(--font-family-mono)",
+                        fontSize: 11,
+                        textTransform: "uppercase",
+                        letterSpacing: ".06em",
+                      }}
+                    />
                     {compareData.map((d: any, idx: number) => {
-                      const key = d.district_name.replace(/\s+/g, "_").toLowerCase();
+                      const key = d.district_name
+                        .replace(/\s+/g, "_")
+                        .toLowerCase();
                       return (
                         <Line
                           key={key}
@@ -310,6 +374,7 @@ export function Compare() {
                           stroke={COLORS[idx % COLORS.length]}
                           strokeWidth={2}
                           name={d.district_name}
+                          dot={false}
                           connectNulls
                         />
                       );
@@ -325,19 +390,50 @@ export function Compare() {
               <CardTitle>Stats Comparison</CardTitle>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableBody>
-                  {statsRows.map((row: any) => (
-                    <TableRow key={row.district}>
-                      <TableCell className="font-medium">{row.district}</TableCell>
-                      <TableCell>{row.avg} kg/ha</TableCell>
-                      <TableCell>{row.max} kg/ha</TableCell>
-                      <TableCell>{row.volatility} kg/ha</TableCell>
-                      <TableCell>{row.cagr}%</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b-2 border-border">
+                      <th className="text-left p-2 font-mono text-[10px] uppercase tracking-widest text-text-muted">
+                        District
+                      </th>
+                      <th className="text-right p-2 font-mono text-[10px] uppercase tracking-widest text-text-muted">
+                        Avg (kg/ha)
+                      </th>
+                      <th className="text-right p-2 font-mono text-[10px] uppercase tracking-widest text-text-muted">
+                        Max (kg/ha)
+                      </th>
+                      <th className="text-right p-2 font-mono text-[10px] uppercase tracking-widest text-text-muted">
+                        Volatility
+                      </th>
+                      <th className="text-right p-2 font-mono text-[10px] uppercase tracking-widest text-text-muted">
+                        CAGR %
+                      </th>
+                    </tr>
+                  </thead>
+                  <TableBody>
+                    {statsRows.map((row: any) => (
+                      <TableRow key={row.district}>
+                        <TableCell className="font-bold uppercase tracking-wider">
+                          {row.district}
+                        </TableCell>
+                        <TableCell className="text-right tabular-nums">
+                          {row.avg} kg/ha
+                        </TableCell>
+                        <TableCell className="text-right tabular-nums">
+                          {row.max} kg/ha
+                        </TableCell>
+                        <TableCell className="text-right tabular-nums">
+                          {row.volatility} kg/ha
+                        </TableCell>
+                        <TableCell className="text-right tabular-nums">
+                          {row.cagr}%
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </table>
+              </div>
             </CardContent>
           </Card>
         </>

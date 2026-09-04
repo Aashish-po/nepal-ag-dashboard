@@ -43,9 +43,8 @@ describe("Map page", () => {
     const kathmanduGroup = screen.getByText("Kathmandu").parentElement!;
     fireEvent.click(kathmanduGroup);
 
-    // The detail panel card is the second .card on the page — assert via its header + content.
-    const cards = document.querySelectorAll(".card");
-    const panel = cards[1] as HTMLElement;
+    // ponytail: map container is no longer a Card — only the detail panel has .card; scope to it
+    const panel = document.querySelector(".card") as HTMLElement;
     expect(panel).toBeTruthy();
     expect(within(panel).getByText("Kathmandu")).toBeInTheDocument();
     expect(within(panel).getByText(/Population/)).toBeInTheDocument();

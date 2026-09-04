@@ -18,30 +18,53 @@ import { FilterBar } from "@/components/FilterBar";
 import { downloadBlob } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 
-// ponytail: extracted from 4 duplicate early-return blocks — each shares the
-// same header + FilterBar shell, only the message differs.
-function StateShell({ message }: { message: string }) {
+function StateShell({
+  message,
+  actionLabel,
+  onAction,
+}: {
+  message: string;
+  actionLabel?: string;
+  onAction?: () => void;
+}) {
   return (
     <div className="max-w-350 mx-auto p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-h1 font-bold">Yield Analysis</h1>
+      <div className="flex items-center justify-between mb-6 border-b border-border pb-3">
+        <h1 className="font-black uppercase tracking-tight text-h1">
+          Yield Analysis
+        </h1>
       </div>
       <FilterBar showCropSelector showYearRange />
-      <div className="text-center py-12">
-        <p className="text-text-secondary">{message}</p>
+      <div className="text-center py-12 border border-border">
+        <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
+          {message}
+          {actionLabel && onAction ? (
+            <>
+              {" — "}
+              <button
+                type="button"
+                onClick={onAction}
+                className="underline hover:text-text-primary focus:outline-none focus:ring-1 focus:ring-accent"
+              >
+                [ {actionLabel} ]
+              </button>
+            </>
+          ) : null}
+        </p>
       </div>
     </div>
   );
 }
 
 export function Yields() {
-  const { selectedDistrict, selectedCrop, yearStart, yearEnd } =
+  const { selectedDistrict, selectedCrop, yearStart, yearEnd, reset } =
     useFilterStore();
 
   const {
     data: yieldsData,
     isLoading,
     error,
+    refetch,
   } = useQuery({
     queryKey: ["yields", selectedDistrict, selectedCrop, yearStart, yearEnd],
     queryFn: () =>
@@ -56,7 +79,13 @@ export function Yields() {
   });
 
   if (error) {
-    return <StateShell message="Could not load yield data." />;
+    return (
+      <StateShell
+        message="Could not load yield data."
+        actionLabel="RETRY"
+        onAction={() => refetch()}
+      />
+    );
   }
 
   if (!selectedDistrict || !selectedCrop) {
@@ -71,7 +100,11 @@ export function Yields() {
 
   if (!yieldsData) {
     return (
-      <StateShell message="No yield data available for the selected filters." />
+      <StateShell
+        message="No yield data available for the selected filters."
+        actionLabel="CLEAR FILTERS"
+        onAction={() => reset()}
+      />
     );
   }
 
@@ -131,22 +164,22 @@ export function Yields() {
 
   return (
     <div className="max-w-350 mx-auto p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-h1 font-bold">Yield Analysis</h1>
+      <div className="flex items-center justify-between mb-6 border-b border-border pb-3">
+        <h1 className="font-black uppercase tracking-tight text-h1">
+          Yield Analysis
+        </h1>
         <Button variant="outline" onClick={downloadYields}>
           Export CSV
         </Button>
       </div>
       <FilterBar showCropSelector showYearRange />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div className="ruled-grid grid-cols-1 md:grid-cols-4 mb-6">
         {stats.map((stat) => (
-          <Card key={stat.label}>
-            <CardContent className="pt-6">
-              <p className="text-sm text-text-secondary">{stat.label}</p>
-              <p className="text-2xl font-bold mt-1">{stat.value}</p>
-            </CardContent>
-          </Card>
+          <div key={stat.label} className="p-4 text-center">
+            <p className="caption">{stat.label}</p>
+            <p className="metric mt-1 text-lg">{stat.value}</p>
+          </div>
         ))}
       </div>
 
@@ -160,33 +193,57 @@ export function Yields() {
           <ResponsiveContainer width="100%" height={350}>
             <LineChart data={chartData}>
               <CartesianGrid
-                strokeDasharray="3 3"
-                stroke="var(--color-border-light)"
+                stroke="var(--color-grid)"
+                strokeDasharray="0"
+                vertical={false}
               />
               <XAxis
                 dataKey="year"
-                stroke="var(--color-text-muted)"
-                fontSize={12}
+                stroke="var(--color-axis)"
+                fontSize={11}
+                fontFamily="var(--font-family-mono)"
+                tickLine={false}
+                axisLine={{ stroke: "var(--color-border-light)" }}
               />
               <YAxis
-                stroke="var(--color-text-muted)"
-                fontSize={12}
+                stroke="var(--color-axis)"
+                fontSize={11}
+                fontFamily="var(--font-family-mono)"
+                tickLine={false}
+                axisLine={false}
                 tickFormatter={(v) => formatNumber(v)}
               />
               <Tooltip
                 contentStyle={{
                   backgroundColor: "var(--color-bg-primary)",
                   border: "1px solid var(--color-border)",
-                  borderRadius: "var(--radius-md)",
+                  borderRadius: "0",
+                  fontFamily: "var(--font-family-mono)",
+                  fontSize: "11px",
+                  textTransform: "uppercase",
+                }}
+                cursor={{
+                  stroke: "var(--color-accent)",
+                  strokeWidth: 1,
+                  strokeDasharray: "4 4",
                 }}
               />
-              <Legend />
+              <Legend
+                wrapperStyle={{
+                  fontFamily: "var(--font-family-mono)",
+                  fontSize: 11,
+                  textTransform: "uppercase",
+                  letterSpacing: ".06em",
+                }}
+              />
               <Line
                 type="monotone"
                 dataKey="yield"
-                stroke="var(--color-primary)"
+                stroke="var(--color-text-primary)"
                 strokeWidth={2}
                 name="Yield (kg/ha)"
+                dot={false}
+                activeDot={{ r: 0 } as any}
               />
             </LineChart>
           </ResponsiveContainer>

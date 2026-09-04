@@ -38,15 +38,15 @@ export function FilterBar({
     staleTime: 3600000,
   });
 
-const districts = districtsData?.districts || [];
+  const districts = districtsData?.districts || [];
   const crops = cropsData?.crops || [];
 
   return (
-    <div className="flex flex-wrap gap-4 items-end mb-6">
+    <div className="flex flex-wrap gap-3 items-end mb-6 border border-border bg-bg-secondary p-3">
       <div className="flex flex-col">
-        <label className="text-xs text-text-secondary mb-1">District</label>
+        <label className="font-mono text-[10px] uppercase tracking-widest text-text-muted mb-1">District</label>
         <select
-          className="w-50 h-10 px-3 rounded-md border border-border bg-bg-primary text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+          className="w-50 h-10 px-3 border border-border bg-bg-primary font-mono text-xs uppercase tracking-wider text-text-primary focus:outline-none focus:border-accent"
           value={selectedDistrict?.toString() || ""}
           onChange={(e) =>
             setSelectedDistrict(
@@ -65,9 +65,9 @@ const districts = districtsData?.districts || [];
 
       {showCropSelector && (
         <div className="flex flex-col">
-          <label className="text-xs text-text-secondary mb-1">Crop</label>
+          <label className="font-mono text-[10px] uppercase tracking-widest text-text-muted mb-1">Crop</label>
           <select
-            className="w-50 h-10 px-3 rounded-md border border-border bg-bg-primary text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-50 h-10 px-3 border border-border bg-bg-primary font-mono text-xs uppercase tracking-wider text-text-primary focus:outline-none focus:border-accent"
             value={selectedCrop?.toString() || ""}
             onChange={(e) =>
               setSelectedCrop(e.target.value ? parseInt(e.target.value) : null)
@@ -86,11 +86,11 @@ const districts = districtsData?.districts || [];
       {showYearRange && (
         <>
           <div className="flex flex-col">
-            <label className="text-xs text-text-secondary mb-1">
+            <label className="font-mono text-[10px] uppercase tracking-widest text-text-muted mb-1">
               Year Start
             </label>
             <select
-              className="w-30 h-10 px-3 rounded-md border border-border bg-bg-primary text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-30 h-10 px-3 border border-border bg-bg-primary font-mono text-xs uppercase tracking-wider text-text-primary focus:outline-none focus:border-accent"
               value={yearStart?.toString() || ""}
               onChange={(e) =>
                 setYearStart(e.target.value ? parseInt(e.target.value) : null)
@@ -105,9 +105,9 @@ const districts = districtsData?.districts || [];
             </select>
           </div>
           <div className="flex flex-col">
-            <label className="text-xs text-text-secondary mb-1">Year End</label>
+            <label className="font-mono text-[10px] uppercase tracking-widest text-text-muted mb-1">Year End</label>
             <select
-              className="w-30 h-10 px-3 rounded-md border border-border bg-bg-primary text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-30 h-10 px-3 border border-border bg-bg-primary font-mono text-xs uppercase tracking-wider text-text-primary focus:outline-none focus:border-accent"
               value={yearEnd?.toString() || ""}
               onChange={(e) =>
                 setYearEnd(e.target.value ? parseInt(e.target.value) : null)
@@ -123,7 +123,6 @@ const districts = districtsData?.districts || [];
           </div>
         </>
       )}
-
     </div>
   );
 }

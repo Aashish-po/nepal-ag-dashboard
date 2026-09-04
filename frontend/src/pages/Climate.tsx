@@ -1,4 +1,4 @@
-import {
+﻿import {
   LineChart,
   Line,
   XAxis,
@@ -26,6 +26,7 @@ export function Climate() {
     data: climateData,
     isLoading,
     error,
+    refetch,
   } = useQuery({
     queryKey: ["climate", selectedDistrict],
     queryFn: () => getClimate(selectedDistrict!),
@@ -36,8 +37,17 @@ export function Climate() {
     return (
       <div className="max-w-350 mx-auto p-6">
         <FilterBar showCropSelector={false} />
-        <div className="text-center py-12">
-          <p className="text-text-secondary">Could not load climate data.</p>
+        <div className="text-center py-12 border border-border">
+          <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
+            {"// Could not load climate data. — "}
+            <button
+              type="button"
+              onClick={() => refetch()}
+              className="underline hover:text-text-primary focus:outline-none focus:ring-1 focus:ring-accent"
+            >
+              [ RETRY ]
+            </button>
+          </p>
         </div>
       </div>
     );
@@ -47,8 +57,8 @@ export function Climate() {
     return (
       <div className="max-w-350 mx-auto p-6">
         <FilterBar showCropSelector={false} />
-        <div className="text-center py-12">
-          <p className="text-text-secondary">
+        <div className="text-center py-12 border border-border">
+          <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
             Select a district to view climate data.
           </p>
         </div>
@@ -60,8 +70,10 @@ export function Climate() {
     return (
       <div className="max-w-350 mx-auto p-6">
         <FilterBar showCropSelector={false} />
-        <div className="text-center py-12">
-          <p className="text-text-secondary">Loading climate data...</p>
+        <div className="text-center py-12 border border-border">
+          <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
+            Loading climate data...
+          </p>
         </div>
       </div>
     );
@@ -70,27 +82,51 @@ export function Climate() {
   const { summary, data } = climateData;
 
   const monthNames = [
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
   ];
 
-  // Group raw monthly rows by calendar month and average
   const monthlyAverages = Array.from({ length: 12 }, (_, i) => {
     const rows = data.filter(
-      (row: any) => row.observation_date && new Date(row.observation_date).getMonth() === i,
+      (row: any) =>
+        row.observation_date && new Date(row.observation_date).getMonth() === i,
     );
-    const avgRain = rows.length > 0
-      ? rows.reduce((s: number, r: any) => s + (r.rainfall_mm ?? 0), 0) / rows.length
-      : 0;
-    const avgTempMin = rows.length > 0
-      ? rows.reduce((s: number, r: any) => s + (r.temperature_min_c ?? 0), 0) / rows.length
-      : 0;
-    const avgTempMax = rows.length > 0
-      ? rows.reduce((s: number, r: any) => s + (r.temperature_max_c ?? 0), 0) / rows.length
-      : 0;
-    const avgSolar = rows.length > 0
-      ? rows.reduce((s: number, r: any) => s + (r.solar_radiation_mj_m2 ?? 0), 0) / rows.length
-      : 0;
+    const avgRain =
+      rows.length > 0
+        ? rows.reduce((s: number, r: any) => s + (r.rainfall_mm ?? 0), 0) /
+          rows.length
+        : 0;
+    const avgTempMin =
+      rows.length > 0
+        ? rows.reduce(
+            (s: number, r: any) => s + (r.temperature_min_c ?? 0),
+            0,
+          ) / rows.length
+        : 0;
+    const avgTempMax =
+      rows.length > 0
+        ? rows.reduce(
+            (s: number, r: any) => s + (r.temperature_max_c ?? 0),
+            0,
+          ) / rows.length
+        : 0;
+    const avgSolar =
+      rows.length > 0
+        ? rows.reduce(
+            (s: number, r: any) => s + (r.solar_radiation_mj_m2 ?? 0),
+            0,
+          ) / rows.length
+        : 0;
     return {
       month: monthNames[i],
       rainfall_mm: Math.round(avgRain * 10) / 10,
@@ -100,10 +136,14 @@ export function Climate() {
     };
   });
 
-  const startMonthName = summary?.monsoon_start_month != null
-    ? monthNames[summary.monsoon_start_month - 1] : "Jun";
-  const endMonthName = summary?.monsoon_end_month != null
-    ? monthNames[summary.monsoon_end_month - 1] : "Sep";
+  const startMonthName =
+    summary?.monsoon_start_month != null
+      ? monthNames[summary.monsoon_start_month - 1]
+      : "Jun";
+  const endMonthName =
+    summary?.monsoon_end_month != null
+      ? monthNames[summary.monsoon_end_month - 1]
+      : "Sep";
   const monsoonPeriod = `${startMonthName}–${endMonthName}`;
 
   const stats = [
@@ -131,9 +171,13 @@ export function Climate() {
     if (!climateData) return;
     try {
       const header = [
-        "Observation Date", "Rainfall (mm)",
-        "Temperature Min (°C)", "Temperature Max (°C)",
-        "Temperature Mean (°C)", "Solar Radiation (MJ/m²)", "Data Source",
+        "Observation Date",
+        "Rainfall (mm)",
+        "Temperature Min (°C)",
+        "Temperature Max (°C)",
+        "Temperature Mean (°C)",
+        "Solar Radiation (MJ/m²)",
+        "Data Source",
       ];
       const rows = data.map((row: any) => [
         row.observation_date,
@@ -147,7 +191,10 @@ export function Climate() {
       const csvContent = [header, ...rows]
         .map((r: any[]) => r.map((v: string) => `"${v}"`).join(","))
         .join("\n");
-      downloadBlob(new Blob([csvContent], { type: "text/csv" }), `climate_${selectedDistrict}.csv`);
+      downloadBlob(
+        new Blob([csvContent], { type: "text/csv" }),
+        `climate_${selectedDistrict}.csv`,
+      );
     } catch (err) {
       console.error("Failed to download climate CSV:", err);
       alert("Failed to download climate data. Please try again.");
@@ -156,113 +203,194 @@ export function Climate() {
 
   return (
     <div className="max-w-350 mx-auto p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-h1 font-bold">Climate Intelligence</h1>
+      <div className="flex items-center justify-between mb-6 border-b border-border pb-3">
+        <h1 className="font-black uppercase tracking-tight text-h1">
+          Climate Intelligence
+        </h1>
         <button
-          className="px-4 py-2 border border-border rounded-md text-sm hover:bg-bg-tertiary"
+          className="px-4 py-2 border border-border font-mono text-xs uppercase tracking-widest hover:bg-bg-secondary"
           onClick={downloadClimateCsv}
         >
           Download CSV
         </button>
       </div>
       <FilterBar showCropSelector={false} />
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div className="ruled-grid grid-cols-1 md:grid-cols-3 mb-6">
         {stats.map((stat) => (
-          <div
-            key={stat.label}
-            className="bg-white border border-border rounded-lg p-4"
-          >
-            <p className="text-sm text-text-secondary">{stat.label}</p>
-            <p className="text-2xl font-bold mt-1">{stat.value}</p>
+          <div key={stat.label} className="p-4 text-center">
+            <p className="caption">{stat.label}</p>
+            <p className="metric text-lg mt-1">{stat.value}</p>
           </div>
         ))}
       </div>
 
-      {/* Monthly Rainfall Chart */}
-      <div className="bg-white border border-border rounded-lg p-4 mb-6">
-        <h3 className="text-lg font-semibold mb-4">Monthly Rainfall</h3>
+      <div className="border border-border p-4 mb-6">
+        <h3 className="font-mono text-xs uppercase tracking-widest mb-4">
+          Monthly Rainfall
+        </h3>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={monthlyAverages}>
-            <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border-light)" />
-            <XAxis dataKey="month" stroke="var(--color-text-muted)" fontSize={12} />
-            <YAxis stroke="var(--color-text-muted)" fontSize={12} />
+            <CartesianGrid
+              stroke="var(--color-grid)"
+              strokeDasharray="0"
+              vertical={false}
+            />
+            <XAxis
+              dataKey="month"
+              stroke="var(--color-axis)"
+              fontSize={11}
+              fontFamily="var(--font-family-mono)"
+              tickLine={false}
+            />
+            <YAxis
+              stroke="var(--color-axis)"
+              fontSize={11}
+              fontFamily="var(--font-family-mono)"
+              tickLine={false}
+              axisLine={false}
+            />
             <Tooltip
               contentStyle={{
                 backgroundColor: "var(--color-bg-primary)",
                 border: "1px solid var(--color-border)",
-                borderRadius: "var(--radius-md)",
+                borderRadius: "0",
+                fontFamily: "var(--font-family-mono)",
+                fontSize: "11px",
+                textTransform: "uppercase",
               }}
             />
-            <Legend />
+            <Legend
+              wrapperStyle={{
+                fontFamily: "var(--font-family-mono)",
+                fontSize: 11,
+                textTransform: "uppercase",
+                letterSpacing: ".06em",
+              }}
+            />
             <Bar
               dataKey="rainfall_mm"
               name="Rainfall (mm)"
-              fill="var(--color-primary)"
-              radius={[4, 4, 0, 0]}
+              fill="var(--color-text-primary)"
             />
           </BarChart>
         </ResponsiveContainer>
       </div>
 
-      {/* Temperature Chart — dual line (min/max) */}
-      <div className="bg-white border border-border rounded-lg p-4 mb-6">
-        <h3 className="text-lg font-semibold mb-4">Monthly Temperature</h3>
+      <div className="border border-border p-4 mb-6">
+        <h3 className="font-mono text-xs uppercase tracking-widest mb-4">
+          Monthly Temperature
+        </h3>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={monthlyAverages}>
-            <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border-light)" />
-            <XAxis dataKey="month" stroke="var(--color-text-muted)" fontSize={12} />
-            <YAxis stroke="var(--color-text-muted)" fontSize={12} />
+            <CartesianGrid
+              stroke="var(--color-grid)"
+              strokeDasharray="0"
+              vertical={false}
+            />
+            <XAxis
+              dataKey="month"
+              stroke="var(--color-axis)"
+              fontSize={11}
+              fontFamily="var(--font-family-mono)"
+              tickLine={false}
+            />
+            <YAxis
+              stroke="var(--color-axis)"
+              fontSize={11}
+              fontFamily="var(--font-family-mono)"
+              tickLine={false}
+              axisLine={false}
+            />
             <Tooltip
               contentStyle={{
                 backgroundColor: "var(--color-bg-primary)",
                 border: "1px solid var(--color-border)",
-                borderRadius: "var(--radius-md)",
+                borderRadius: "0",
+                fontFamily: "var(--font-family-mono)",
+                fontSize: "11px",
+                textTransform: "uppercase",
               }}
             />
-            <Legend />
+            <Legend
+              wrapperStyle={{
+                fontFamily: "var(--font-family-mono)",
+                fontSize: 11,
+                textTransform: "uppercase",
+                letterSpacing: ".06em",
+              }}
+            />
             <Line
               type="monotone"
               dataKey="temp_min"
               name="Min Temp (°C)"
-              stroke="var(--color-secondary)"
+              stroke="var(--color-data-climate)"
               strokeWidth={2}
+              dot={false}
               connectNulls
             />
             <Line
               type="monotone"
               dataKey="temp_max"
               name="Max Temp (°C)"
-              stroke="var(--color-warning)"
+              stroke="var(--color-accent)"
               strokeWidth={2}
+              dot={false}
               connectNulls
             />
           </LineChart>
         </ResponsiveContainer>
       </div>
 
-      {/* Solar Radiation Chart */}
-      <div className="bg-white border border-border rounded-lg p-4">
-        <h3 className="text-lg font-semibold mb-4">Monthly Solar Radiation</h3>
+      <div className="border border-border p-4">
+        <h3 className="font-mono text-xs uppercase tracking-widest mb-4">
+          Monthly Solar Radiation
+        </h3>
         <ResponsiveContainer width="100%" height={300}>
           <AreaChart data={monthlyAverages}>
-            <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border-light)" />
-            <XAxis dataKey="month" stroke="var(--color-text-muted)" fontSize={12} />
-            <YAxis stroke="var(--color-text-muted)" fontSize={12} />
+            <CartesianGrid
+              stroke="var(--color-grid)"
+              strokeDasharray="0"
+              vertical={false}
+            />
+            <XAxis
+              dataKey="month"
+              stroke="var(--color-axis)"
+              fontSize={11}
+              fontFamily="var(--font-family-mono)"
+              tickLine={false}
+            />
+            <YAxis
+              stroke="var(--color-axis)"
+              fontSize={11}
+              fontFamily="var(--font-family-mono)"
+              tickLine={false}
+              axisLine={false}
+            />
             <Tooltip
               contentStyle={{
                 backgroundColor: "var(--color-bg-primary)",
                 border: "1px solid var(--color-border)",
-                borderRadius: "var(--radius-md)",
+                borderRadius: "0",
+                fontFamily: "var(--font-family-mono)",
+                fontSize: "11px",
+                textTransform: "uppercase",
               }}
             />
-            <Legend />
+            <Legend
+              wrapperStyle={{
+                fontFamily: "var(--font-family-mono)",
+                fontSize: 11,
+                textTransform: "uppercase",
+                letterSpacing: ".06em",
+              }}
+            />
             <Area
               type="monotone"
               dataKey="solar"
               name="Solar (MJ/m²)"
-              stroke="var(--color-chart-3)"
-              fill="var(--color-chart-3)"
-              fillOpacity={0.3}
+              stroke="var(--color-text-primary)"
+              fill="var(--color-text-primary)"
+              fillOpacity={0.08}
             />
           </AreaChart>
         </ResponsiveContainer>

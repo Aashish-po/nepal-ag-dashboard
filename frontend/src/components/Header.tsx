@@ -1,13 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { getDistricts } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
+import { useFilterStore } from "@/hooks/useFilters";
 
 export function Header() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const setSelectedDistrict = useFilterStore((s) => s.setSelectedDistrict);
   const [query, setQuery] = useState("");
 
   const { data: districtsData } = useQuery({
@@ -19,6 +22,12 @@ export function Header() {
   const districts = (districtsData?.districts || [])
     .filter((d: { name: string }) => d.name.toLowerCase().includes(query.toLowerCase()))
     .slice(0, 10);
+
+  const handleDistrictSelect = (districtId: number) => {
+    setSelectedDistrict(districtId);
+    navigate("/yields");
+    setQuery("");
+  };
 
   return (
     <header className="sticky top-0 z-30 bg-bg-primary border-b border-border">
@@ -54,12 +63,21 @@ export function Header() {
             placeholder="Search district…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && districts.length > 0) {
+                handleDistrictSelect(districts[0].id);
+              }
+            }}
             className="w-full h-9 border border-border bg-bg-primary px-3 font-mono text-xs uppercase tracking-wider text-text-primary placeholder:text-text-muted placeholder:normal-case placeholder:tracking-normal focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
           />
           {query.length >= 1 && districts.length > 0 && (
             <ul className="absolute top-full left-0 z-50 mt-1 w-full bg-bg-primary border border-border">
               {districts.slice(0, 10).map((d: { id: number; name: string }) => (
-                <li key={d.id} className="px-3 py-2 font-mono text-xs uppercase tracking-wider hover:bg-bg-tertiary cursor-pointer border-b border-border-light last:border-0">
+                <li
+                  key={d.id}
+                  onClick={() => handleDistrictSelect(d.id)}
+                  className="px-3 py-2 font-mono text-xs uppercase tracking-wider hover:bg-bg-tertiary cursor-pointer border-b border-border-light last:border-0"
+                >
                   {d.name}
                 </li>
               ))}

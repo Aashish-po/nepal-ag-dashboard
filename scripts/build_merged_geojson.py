@@ -137,18 +137,22 @@ def main() -> None:
     if len(polygons) != 77:
         raise ValueError(f"Expected 77 polygons in source, got {len(polygons)}")
 
-    missing = sorted(set(canonical_name(n) for n in df["name"]) - set(polygons))
+    missing = sorted({canonical_name(str(n)) for n in df["name"]} - set(polygons))
     if missing:
         raise ValueError(f"CSV districts with no polygon: {missing}")
-    extra = sorted(set(polygons) - set(canonical_name(n) for n in df["name"]))
+    extra = sorted(set(polygons) - {canonical_name(str(n)) for n in df["name"]})
     if extra:
         raise ValueError(f"Polygons with no CSV row: {extra}")
 
     # Sanity: CSV is canonical; source must agree on province
     mismatched = [
-        (str(canonical_name(n)), row["province"], polygons[str(canonical_name(n))]["province"])
+        (
+            canonical_name(str(n)),
+            row["province"],
+            polygons[canonical_name(str(n))]["province"],
+        )
         for n, row in df.set_index("name").iterrows()
-        if polygons[str(canonical_name(n))]["province"] != row["province"]
+        if polygons[canonical_name(str(n))]["province"] != row["province"]
     ]
     if mismatched:
         raise ValueError(f"Province mismatch between polygon and CSV: {mismatched}")
@@ -156,14 +160,16 @@ def main() -> None:
     # Simplify each district polygon
     features: list[dict] = []
     for _, row in df.iterrows():
-        name = canonical_name(row["name"])
+        name = canonical_name(str(row["name"]))
         simple_geom = polygons[name]["geometry"].simplify(
             SIMPLIFY_TOLERANCE, preserve_topology=True
         )
         features.append(build_feature(row, simple_geom))
 
     # Country outline: dissolve all districts into one polygon
-    unioned = unary_union([polygons[canonical_name(n)]["geometry"] for n in df["name"]])
+    unioned = unary_union(
+        [polygons[canonical_name(str(n))]["geometry"] for n in df["name"]]
+    )
     outline = unioned.simplify(SIMPLIFY_TOLERANCE, preserve_topology=True)
     outline_feature = {
         "type": "Feature",

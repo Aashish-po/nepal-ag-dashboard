@@ -1,5 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Nepal Ag">
-  <rect width="32" height="32" fill="#050505"/>
-  <rect x="0" y="0" width="32" height="3" fill="#E61919"/>
-  <text x="50%" y="57%" dominant-baseline="middle" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="15" font-weight="900" fill="#F4F4F0">N</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Nepal Ag Intelligence">
+  <rect width="32" height="32" fill="#050505" />
+  <rect x="0" y="0" width="32" height="3" fill="#E61919" />
+  <rect x="6" y="9" width="3" height="14" fill="#F4F4F0" />
+  <rect x="14" y="9" width="3" height="11" fill="#F4F4F0" />
+  <rect x="23" y="9" width="3" height="14" fill="#F4F4F0" />
+  <rect x="6" y="22" width="20" height="3" fill="#E61919" />
 </svg>

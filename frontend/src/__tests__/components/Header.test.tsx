@@ -25,6 +25,7 @@ describe("Header component", () => {
   it("renders brand name", () => {
     renderHeader();
     expect(screen.getByText("Intelligence")).toBeInTheDocument();
+    expect(screen.getByLabelText(/nepal ag intelligence/i)).toBeInTheDocument();
   });
 
   it("renders About link", () => {

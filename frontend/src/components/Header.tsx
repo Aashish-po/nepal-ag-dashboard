@@ -24,8 +24,23 @@ export function Header() {
     <header className="sticky top-0 z-30 bg-bg-primary border-b border-border">
       <div className="h-0.75 bg-accent w-full" aria-hidden />
       <div className="max-w-350 mx-auto h-16 flex items-center justify-between px-4 md:px-6 gap-4">
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2.5 shrink-0">
           <div className="block lg:hidden w-8 shrink-0" aria-hidden />
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 32 32"
+            role="img"
+            aria-label="Nepal Ag Intelligence"
+            className="shrink-0"
+          >
+            <rect width="32" height="32" fill="#050505" />
+            <rect x="0" y="0" width="32" height="3" fill="#E61919" />
+            <rect x="6" y="9" width="3" height="14" fill="#F4F4F0" />
+            <rect x="14" y="9" width="3" height="11" fill="#F4F4F0" />
+            <rect x="23" y="9" width="3" height="14" fill="#F4F4F0" />
+            <rect x="6" y="22" width="20" height="3" fill="#E61919" />
+          </svg>
           <h2 className="font-black text-sm uppercase tracking-tight leading-none">
             <span className="text-text-secondary font-medium font-mono text-xs tracking-widest">Nepal Ag</span>{" "}
             Intelligence

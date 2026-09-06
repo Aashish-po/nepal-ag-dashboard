@@ -14,7 +14,7 @@ from collections.abc import Generator
 
 from api.models.db_models import Base
 from dotenv import load_dotenv
-from sqlalchemy import create_engine, text
+from sqlalchemy import Engine, create_engine, text
 from sqlalchemy.orm import Session, sessionmaker
 
 logger = logging.getLogger(__name__)
@@ -77,3 +77,13 @@ def check_db_connection() -> str:
     except Exception as exc:  # noqa: BLE001
         logger.error("Database connection failed: %s", exc)
         return "error"
+
+
+def get_engine() -> Engine:
+    """Return the synchronous SQLAlchemy engine."""
+    try:
+        _sync_engine.connect()
+    except Exception as exc:
+        logger.error("Database connection failed: %s", exc)
+        raise
+    return _sync_engine

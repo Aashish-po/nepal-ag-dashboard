@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/shadcn/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/shadcn/card";
@@ -38,9 +38,6 @@ export function Compare() {
     setSelectedDistricts,
   } = useFilterStore();
 
-  const [draftIds, setDraftIds] = useState<number[]>([]);
-  const [showSelector, setShowSelector] = useState(false);
-
   const { data: districtsData } = useQuery({
     queryKey: ["districts"],
     queryFn: () => getDistricts(),
@@ -48,25 +45,18 @@ export function Compare() {
   });
   const allDistricts = districtsData?.districts || [];
 
-  const toggleDraft = (id: number) => {
-    setDraftIds((prev) => {
-      if (prev.includes(id)) return prev.filter((x) => x !== id);
-      if (prev.length >= MAX_COMPARE) return prev;
-      return [...prev, id];
-    });
+  // ponytail: native <select multiple> is the smallest working thing here.
+  // Selection is immediate — no draft/commit step. Cmd/Ctrl-click to multi-select.
+  const onSelectDistricts = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const ids = Array.from(e.target.selectedOptions).map((o) => parseInt(o.value));
+    setSelectedDistricts(ids.slice(0, MAX_COMPARE));
   };
 
-  const commitCompare = () => {
-    if (draftIds.length > 0) {
-      setSelectedDistricts(draftIds);
-    }
-    setShowSelector(false);
+  const removeOne = (id: number) => {
+    setSelectedDistricts(selectedDistricts.filter((x) => x !== id));
   };
 
-  const clearCompare = () => {
-    setSelectedDistricts([]);
-    setDraftIds([]);
-  };
+  const clearCompare = () => setSelectedDistricts([]);
 
   const compareDistricts = selectedDistricts;
   const cropId = selectedCrop;
@@ -163,86 +153,51 @@ export function Compare() {
         <h1 className="font-black uppercase tracking-tight text-h1">
           Compare Districts
         </h1>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            onClick={handleExport}
-            disabled={!compareDistricts.length}
-          >
-            Export Comparison
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => setShowSelector(true)}
-            disabled={compareDistricts.length >= MAX_COMPARE}
-          >
-            {compareDistricts.length > 0
-              ? `Select (${compareDistricts.length}/${MAX_COMPARE})`
-              : `Select Districts (0/${MAX_COMPARE})`}
-          </Button>
-        </div>
+        <Button
+          variant="outline"
+          onClick={handleExport}
+          disabled={!compareDistricts.length}
+        >
+          Export Comparison
+        </Button>
       </div>
 
-      {showSelector && (
-        <div className="mb-6 border border-border p-4">
-          <div className="flex items-center justify-between mb-3 border-b border-border-light pb-2">
-            <h3 className="font-mono text-xs uppercase tracking-widest font-bold">
-              Select Districts to Compare
-            </h3>
+      <div className="mb-6 border border-border p-4">
+        <div className="flex items-center justify-between mb-2">
+          <label
+            htmlFor="compare-districts"
+            className="font-mono text-[10px] uppercase tracking-widest text-text-muted"
+          >
+            Select Districts to Compare ({compareDistricts.length}/{MAX_COMPARE})
+          </label>
+          {compareDistricts.length > 0 && (
             <button
-              className="font-mono text-xs uppercase tracking-widest text-text-secondary hover:text-text-primary border border-border px-2 py-1"
-              onClick={() => setShowSelector(false)}
+              type="button"
+              onClick={clearCompare}
+              className="font-mono text-[10px] uppercase tracking-widest text-text-muted hover:text-text-primary border border-border px-2 py-1"
             >
-              ✕
+              Clear all
             </button>
-          </div>
-          <p className="font-mono text-[11px] uppercase tracking-wider text-text-muted mb-3">
-            Click to select up to {MAX_COMPARE} districts. Selected:{" "}
-            {draftIds.length > 0
-              ? draftIds
-                  .map(
-                    (id) =>
-                      allDistricts.find(
-                        (d: { id: number; name: string }) => d.id === id,
-                      )?.name,
-                  )
-                  .join(", ")
-              : "None"}
-          </p>
-          <div className="grid grid-cols-3 gap-0 border border-border max-h-48 overflow-y-auto mb-3">
-            {allDistricts.map((d: { id: number; name: string }) => {
-              const isSelected = draftIds.includes(d.id);
-              return (
-                <button
-                  key={d.id}
-                  className={`px-2 py-1.5 font-mono text-xs uppercase tracking-wider text-left border-r border-b border-border transition-colors ${
-                    isSelected
-                      ? "bg-text-primary text-bg-primary"
-                      : "hover:bg-bg-secondary"
-                  }`}
-                  onClick={() => toggleDraft(d.id)}
-                >
-                  {d.name}
-                </button>
-              );
-            })}
-          </div>
-          <div className="flex gap-2 justify-end">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                setDraftIds([]);
-              }}
-            >
-              Clear
-            </Button>
-            <Button size="sm" onClick={commitCompare}>
-              Confirm Selection
-            </Button>
-          </div>
+          )}
         </div>
-      )}
+        <select
+          id="compare-districts"
+          multiple
+          size={Math.min(8, Math.max(4, allDistricts.length))}
+          value={compareDistricts.map(String)}
+          onChange={onSelectDistricts}
+          className="w-full border border-border bg-bg-primary font-mono text-xs uppercase tracking-wider text-text-primary focus:outline-none focus:border-accent"
+        >
+          {allDistricts.map((d: { id: number; name: string }) => (
+            <option key={d.id} value={d.id}>
+              {d.name}
+            </option>
+          ))}
+        </select>
+        <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted mt-2">
+          {"// Cmd/Ctrl-click to select multiple. Max "}{MAX_COMPARE}{"."}
+        </p>
+      </div>
 
       {compareDistricts.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-4">
@@ -258,25 +213,14 @@ export function Compare() {
                 {d?.name ?? `ID ${id}`}
                 <button
                   className="ml-1 font-mono text-xs hover:text-accent"
-                  onClick={() =>
-                    setSelectedDistricts(
-                      compareDistricts.filter((x) => x !== id),
-                    )
-                  }
+                  onClick={() => removeOne(id)}
+                  aria-label={`Remove ${d?.name ?? id}`}
                 >
                   ✕
                 </button>
               </span>
             );
           })}
-          {compareDistricts.length > 0 && (
-            <button
-              className="font-mono text-[10px] uppercase tracking-widest text-text-muted hover:text-text-primary border border-border px-2 py-1"
-              onClick={clearCompare}
-            >
-              Clear all
-            </button>
-          )}
         </div>
       )}
 

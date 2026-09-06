@@ -1,3 +1,4 @@
+import logging
 from typing import Annotated
 
 from api.db import get_db
@@ -7,6 +8,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from services.correlations import calculate_yield_statistics
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -52,11 +55,11 @@ def get_forecasts(
     historical = db.execute(historical_stmt).scalars().all()
     years_of_data = len({int(row.year) for row in historical})
 
-    if years_of_data < 5:
+    if years_of_data < 3:
         raise HTTPException(
             status_code=400,
             detail=(
-                f"Forecast requires >= 5 years of historical data. "
+                f"Forecast requires >= 3 years of historical data. "
                 f"Only {years_of_data} year(s) available for {crop.name} in {district.name}."
             ),
         )

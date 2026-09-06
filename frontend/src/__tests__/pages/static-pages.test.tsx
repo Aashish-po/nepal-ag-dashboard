@@ -40,7 +40,13 @@ describe("Map page", () => {
     expect(screen.queryByText(/Population/)).not.toBeInTheDocument();
 
     // ponytail: click the SVG group whose <title> labels the district
-    const kathmanduGroup = screen.getByText("Kathmandu").parentElement!;
+    const kathmanduGroups = screen.getAllByRole("button", {
+      name: "Kathmandu district",
+    });
+    // Find the group that contains a path element (the actual map shape, not a marker)
+    const kathmanduGroup = kathmanduGroups.find(
+      (group) => group.querySelector("path") !== null,
+    )!;
     fireEvent.click(kathmanduGroup);
 
     // ponytail: map container is no longer a Card - only the detail panel has .card; scope to it

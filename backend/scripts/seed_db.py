@@ -62,12 +62,28 @@ def generate_synthetic_data():
         "Cash": (50000, 100000),  # Sugarcane
     }
 
+    # Area (ha) ranges by category — export crops use MUCH smaller areas so
+    # production_mt * price_usd_per_mt doesn't blow up into billions.
+    # ponytail: lifted from generic 50k-500k ha; export crops by definition
+    # occupy <5% of cropped area in Nepal (FAOSTAT 2022).
+    category_area_ranges = {
+        "Cereal": (50000, 500000),
+        "Legume": (10000, 80000),
+        "Vegetable": (1000, 20000),
+        "Fruit": (500, 15000),
+        "Oilseed": (5000, 80000),
+        "Spice": (100, 5000),  # cardamom, large cardamom
+        "Export": (200, 8000),  # generic export bucket
+        "Cash": (20000, 200000),  # sugarcane (high volume, low unit price)
+    }
+
     # Generate yields
     yield_rows = []
     for _, district in districts.iterrows():
         for _, crop in crops.iterrows():
             category = crop["category"]
             lo, hi = category_ranges.get(category, (1500, 4000))
+            area_lo, area_hi = category_area_ranges.get(category, (50000, 500000))
 
             for year in range(2014, 2025):
                 # Add trend and noise
@@ -76,7 +92,7 @@ def generate_synthetic_data():
                 noise = random.gauss(0, (hi - lo) * 0.15)
                 yield_val = max(lo * 0.5, min(hi * 1.5, base_yield + trend + noise))
 
-                area = random.uniform(50000, 500000)
+                area = random.uniform(area_lo, area_hi)
                 production = (yield_val * area) / 1000
 
                 yield_rows.append(

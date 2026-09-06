@@ -195930,6 +195930,1623 @@
           ]
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 1,
+        "district_name": "Taplejung",
+        "province": "Koshi",
+        "region": "Mountain",
+        "census_2021_population": 132000,
+        "area_sq_km": 3646.0,
+        "population_density": 36.2,
+        "urban": false,
+        "headquarters": "Taplejung"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.82187534142776,
+          27.606567800863388
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 2,
+        "district_name": "Panchthar",
+        "province": "Koshi",
+        "region": "Hill",
+        "census_2021_population": 191000,
+        "area_sq_km": 1241.0,
+        "population_density": 153.9,
+        "urban": false,
+        "headquarters": "Panchthar"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.85768457708795,
+          27.14864692526544
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 3,
+        "district_name": "Ilam",
+        "province": "Koshi",
+        "region": "Hill",
+        "census_2021_population": 290000,
+        "area_sq_km": 1703.0,
+        "population_density": 170.3,
+        "urban": false,
+        "headquarters": "Ilam"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.92300771482675,
+          26.885068800534754
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 4,
+        "district_name": "Jhapa",
+        "province": "Koshi",
+        "region": "Terai",
+        "census_2021_population": 998000,
+        "area_sq_km": 1606.0,
+        "population_density": 621.4,
+        "urban": false,
+        "headquarters": "Jhapa"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.88759590313117,
+          26.582841862112303
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 5,
+        "district_name": "Morang",
+        "province": "Koshi",
+        "region": "Terai",
+        "census_2021_population": 1147000,
+        "area_sq_km": 1855.0,
+        "population_density": 618.3,
+        "urban": false,
+        "headquarters": "Morang"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.47697005542832,
+          26.61151229975289
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 6,
+        "district_name": "Sunsari",
+        "province": "Koshi",
+        "region": "Terai",
+        "census_2021_population": 934000,
+        "area_sq_km": 1257.0,
+        "population_density": 743.0,
+        "urban": false,
+        "headquarters": "Sunsari"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.14394098308577,
+          26.639582112574487
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 7,
+        "district_name": "Dhankuta",
+        "province": "Koshi",
+        "region": "Hill",
+        "census_2021_population": 163000,
+        "area_sq_km": 891.0,
+        "population_density": 182.9,
+        "urban": false,
+        "headquarters": "Dhankuta"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.31587748990985,
+          27.01702333141168
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 8,
+        "district_name": "Terhathum",
+        "province": "Koshi",
+        "region": "Hill",
+        "census_2021_population": 101000,
+        "area_sq_km": 679.0,
+        "population_density": 148.7,
+        "urban": false,
+        "headquarters": "Terhathum"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.52667718848939,
+          27.1316188320435
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 9,
+        "district_name": "Sankhuwasabha",
+        "province": "Koshi",
+        "region": "Mountain",
+        "census_2021_population": 159000,
+        "area_sq_km": 3480.0,
+        "population_density": 45.7,
+        "urban": false,
+        "headquarters": "Sankhuwasabha"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.22886941271761,
+          27.548503175930875
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 10,
+        "district_name": "Bhojpur",
+        "province": "Koshi",
+        "region": "Hill",
+        "census_2021_population": 153000,
+        "area_sq_km": 1507.0,
+        "population_density": 101.5,
+        "urban": false,
+        "headquarters": "Bhojpur"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          87.09624159890527,
+          27.175378550030103
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 11,
+        "district_name": "Solukhumbu",
+        "province": "Koshi",
+        "region": "Mountain",
+        "census_2021_population": 106000,
+        "area_sq_km": 3312.0,
+        "population_density": 32.0,
+        "urban": false,
+        "headquarters": "Solukhumbu"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.78384480351772,
+          27.725145363267956
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 12,
+        "district_name": "Okhaldhunga",
+        "province": "Koshi",
+        "region": "Hill",
+        "census_2021_population": 147000,
+        "area_sq_km": 1074.0,
+        "population_density": 136.9,
+        "urban": false,
+        "headquarters": "Okhaldhunga"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.4510414128291,
+          27.335347925816166
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 13,
+        "district_name": "Khotang",
+        "province": "Koshi",
+        "region": "Hill",
+        "census_2021_population": 206000,
+        "area_sq_km": 1591.0,
+        "population_density": 129.5,
+        "urban": false,
+        "headquarters": "Khotang"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.68177174491476,
+          27.15423773793131
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 14,
+        "district_name": "Udayapur",
+        "province": "Koshi",
+        "region": "Hill",
+        "census_2021_population": 341000,
+        "area_sq_km": 2063.0,
+        "population_density": 165.3,
+        "urban": false,
+        "headquarters": "Udayapur"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.52084245077228,
+          26.931967737471155
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 15,
+        "district_name": "Saptari",
+        "province": "Madhesh",
+        "region": "Terai",
+        "census_2021_population": 706000,
+        "area_sq_km": 1363.0,
+        "population_density": 518.0,
+        "urban": false,
+        "headquarters": "Saptari"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.75198425874865,
+          26.60706686274557
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 16,
+        "district_name": "Siraha",
+        "province": "Madhesh",
+        "region": "Terai",
+        "census_2021_population": 637000,
+        "area_sq_km": 1188.0,
+        "population_density": 536.2,
+        "urban": false,
+        "headquarters": "Siraha"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.35071463853912,
+          26.740950831515704
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 17,
+        "district_name": "Dhanusha",
+        "province": "Madhesh",
+        "region": "Terai",
+        "census_2021_population": 755000,
+        "area_sq_km": 1180.0,
+        "population_density": 639.8,
+        "urban": false,
+        "headquarters": "Dhanusha"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.03802989602482,
+          26.85101401928162
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 18,
+        "district_name": "Mahottari",
+        "province": "Madhesh",
+        "region": "Terai",
+        "census_2021_population": 628000,
+        "area_sq_km": 1002.0,
+        "population_density": 626.7,
+        "urban": false,
+        "headquarters": "Mahottari"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          85.79980430332333,
+          26.88467789401966
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 19,
+        "district_name": "Sarlahi",
+        "province": "Madhesh",
+        "region": "Terai",
+        "census_2021_population": 770000,
+        "area_sq_km": 1259.0,
+        "population_density": 611.6,
+        "urban": false,
+        "headquarters": "Sarlahi"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          85.56610162797311,
+          26.968183956524427
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 20,
+        "district_name": "Rautahat",
+        "province": "Madhesh",
+        "region": "Terai",
+        "census_2021_population": 687000,
+        "area_sq_km": 1126.0,
+        "population_density": 610.1,
+        "urban": false,
+        "headquarters": "Rautahat"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          85.28519578126588,
+          26.987629675169444
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 21,
+        "district_name": "Bara",
+        "province": "Madhesh",
+        "region": "Terai",
+        "census_2021_population": 743000,
+        "area_sq_km": 1190.0,
+        "population_density": 624.4,
+        "urban": false,
+        "headquarters": "Bara"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          85.07156210039122,
+          27.10646592576191
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 22,
+        "district_name": "Parsa",
+        "province": "Madhesh",
+        "region": "Terai",
+        "census_2021_population": 719000,
+        "area_sq_km": 1353.0,
+        "population_density": 531.4,
+        "urban": false,
+        "headquarters": "Parsa"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          84.82902757188968,
+          27.220905581527433
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 23,
+        "district_name": "Dolakha",
+        "province": "Bagmati",
+        "region": "Hill",
+        "census_2021_population": 186000,
+        "area_sq_km": 2191.0,
+        "population_density": 84.9,
+        "urban": false,
+        "headquarters": "Dolakha"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.22400879941159,
+          27.82404820725901
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 24,
+        "district_name": "Sindhupalchok",
+        "province": "Bagmati",
+        "region": "Hill",
+        "census_2021_population": 287000,
+        "area_sq_km": 2542.0,
+        "population_density": 112.9,
+        "urban": false,
+        "headquarters": "Sindhupalchok"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          85.75828485297725,
+          27.90684570741351
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 25,
+        "district_name": "Rasuwa",
+        "province": "Bagmati",
+        "region": "Mountain",
+        "census_2021_population": 44000,
+        "area_sq_km": 1544.0,
+        "population_density": 28.5,
+        "urban": false,
+        "headquarters": "Rasuwa"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          85.4838657855806,
+          28.17576833264249
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 26,
+        "district_name": "Dhading",
+        "province": "Bagmati",
+        "region": "Hill",
+        "census_2021_population": 337000,
+        "area_sq_km": 1926.0,
+        "population_density": 175.0,
+        "urban": false,
+        "headquarters": "Dhading"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          84.9084741133102,
+          28.006389739245122
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 27,
+        "district_name": "Nuwakot",
+        "province": "Bagmati",
+        "region": "Hill",
+        "census_2021_population": 278000,
+        "area_sq_km": 1121.0,
+        "population_density": 248.0,
+        "urban": false,
+        "headquarters": "Nuwakot"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          85.25084430675327,
+          27.926046457478094
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 28,
+        "district_name": "Kathmandu",
+        "province": "Bagmati",
+        "region": "Hill",
+        "census_2021_population": 2041000,
+        "area_sq_km": 395.0,
+        "population_density": 5167.1,
+        "urban": false,
+        "headquarters": "Kathmandu"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          85.28717663820727,
+          27.693581238683294
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 29,
+        "district_name": "Bhaktapur",
+        "province": "Bagmati",
+        "region": "Hill",
+        "census_2021_population": 432000,
+        "area_sq_km": 119.0,
+        "population_density": 3630.3,
+        "urban": false,
+        "headquarters": "Bhaktapur"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          85.42908140771316,
+          27.674605332170387
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 30,
+        "district_name": "Lalitpur",
+        "province": "Bagmati",
+        "region": "Hill",
+        "census_2021_population": 551000,
+        "area_sq_km": 385.0,
+        "population_density": 1431.2,
+        "urban": false,
+        "headquarters": "Lalitpur"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          85.32566484233845,
+          27.54906080056554
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 31,
+        "district_name": "Kabhrepalanchok",
+        "province": "Bagmati",
+        "region": "Hill",
+        "census_2021_population": 381000,
+        "area_sq_km": 1396.0,
+        "population_density": 272.9,
+        "urban": false,
+        "headquarters": "Kabhrepalanchok"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          85.62564742907097,
+          27.545313769864634
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 32,
+        "district_name": "Ramechhap",
+        "province": "Bagmati",
+        "region": "Hill",
+        "census_2021_population": 202000,
+        "area_sq_km": 1546.0,
+        "population_density": 130.7,
+        "urban": false,
+        "headquarters": "Ramechhap"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.25994543845351,
+          27.537590425407842
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 33,
+        "district_name": "Sindhuli",
+        "province": "Bagmati",
+        "region": "Hill",
+        "census_2021_population": 300000,
+        "area_sq_km": 2491.0,
+        "population_density": 120.4,
+        "urban": false,
+        "headquarters": "Sindhuli"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          86.07298709850369,
+          27.184626238160405
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 34,
+        "district_name": "Makawanpur",
+        "province": "Bagmati",
+        "region": "Hill",
+        "census_2021_population": 466000,
+        "area_sq_km": 2426.0,
+        "population_density": 192.1,
+        "urban": false,
+        "headquarters": "Makawanpur"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          85.05629806863351,
+          27.436706394734387
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 35,
+        "district_name": "Chitawan",
+        "province": "Bagmati",
+        "region": "Terai",
+        "census_2021_population": 720000,
+        "area_sq_km": 2238.0,
+        "population_density": 321.7,
+        "urban": false,
+        "headquarters": "Chitawan"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          84.45552342162304,
+          27.617888457336477
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 36,
+        "district_name": "Gorkha",
+        "province": "Gandaki",
+        "region": "Hill",
+        "census_2021_population": 252000,
+        "area_sq_km": 3610.0,
+        "population_density": 69.8,
+        "urban": false,
+        "headquarters": "Gorkha"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          84.84311013058107,
+          28.274321113728462
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 37,
+        "district_name": "Manang",
+        "province": "Gandaki",
+        "region": "Mountain",
+        "census_2021_population": 6000,
+        "area_sq_km": 2246.0,
+        "population_density": 2.7,
+        "urban": false,
+        "headquarters": "Manang"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          84.17225815950141,
+          28.672031489361814
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 38,
+        "district_name": "Mustang",
+        "province": "Gandaki",
+        "region": "Mountain",
+        "census_2021_population": 14000,
+        "area_sq_km": 3573.0,
+        "population_density": 3.9,
+        "urban": false,
+        "headquarters": "Mustang"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.90378547204634,
+          28.950521486077804
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 39,
+        "district_name": "Myagdi",
+        "province": "Gandaki",
+        "region": "Hill",
+        "census_2021_population": 113000,
+        "area_sq_km": 2297.0,
+        "population_density": 49.2,
+        "urban": false,
+        "headquarters": "Myagdi"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.46579749926354,
+          28.544336083393574
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 40,
+        "district_name": "Kaski",
+        "province": "Gandaki",
+        "region": "Hill",
+        "census_2021_population": 609000,
+        "area_sq_km": 2017.0,
+        "population_density": 301.9,
+        "urban": false,
+        "headquarters": "Kaski"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.97370125748611,
+          28.34449830170533
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 41,
+        "district_name": "Lamjung",
+        "province": "Gandaki",
+        "region": "Hill",
+        "census_2021_population": 168000,
+        "area_sq_km": 1692.0,
+        "population_density": 99.3,
+        "urban": false,
+        "headquarters": "Lamjung"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          84.42257354629749,
+          28.282626207583462
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 42,
+        "district_name": "Tanahu",
+        "province": "Gandaki",
+        "region": "Hill",
+        "census_2021_population": 323000,
+        "area_sq_km": 1546.0,
+        "population_density": 208.9,
+        "urban": false,
+        "headquarters": "Tanahu"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          84.22600352337773,
+          27.935075832483733
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 43,
+        "district_name": "Nawalpur",
+        "province": "Gandaki",
+        "region": "Terai",
+        "census_2021_population": 311000,
+        "area_sq_km": 1043.0,
+        "population_density": 298.2,
+        "urban": false,
+        "headquarters": "Nawalpur"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          84.03265683684197,
+          27.653517144800446
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 44,
+        "district_name": "Syangja",
+        "province": "Gandaki",
+        "region": "Hill",
+        "census_2021_population": 290000,
+        "area_sq_km": 1164.0,
+        "population_density": 249.1,
+        "urban": false,
+        "headquarters": "Syangja"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.8292736166947,
+          28.044924676732506
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 45,
+        "district_name": "Parbat",
+        "province": "Gandaki",
+        "region": "Hill",
+        "census_2021_population": 146000,
+        "area_sq_km": 494.0,
+        "population_density": 295.5,
+        "urban": false,
+        "headquarters": "Parbat"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.72938914280732,
+          28.20106198911955
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 46,
+        "district_name": "Baglung",
+        "province": "Gandaki",
+        "region": "Hill",
+        "census_2021_population": 269000,
+        "area_sq_km": 1784.0,
+        "population_density": 150.8,
+        "urban": false,
+        "headquarters": "Baglung"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.1447931812236,
+          28.35623455198305
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 47,
+        "district_name": "Rukum East",
+        "province": "Lumbini",
+        "region": "Hill",
+        "census_2021_population": 53000,
+        "area_sq_km": 1161.0,
+        "population_density": 45.7,
+        "urban": false,
+        "headquarters": "Rukum East"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          82.86117329914563,
+          28.67168620770235
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 48,
+        "district_name": "Rolpa",
+        "province": "Lumbini",
+        "region": "Hill",
+        "census_2021_population": 224000,
+        "area_sq_km": 1879.0,
+        "population_density": 119.2,
+        "urban": false,
+        "headquarters": "Rolpa"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          82.64595661696183,
+          28.32515926918498
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 49,
+        "district_name": "Pyuthan",
+        "province": "Lumbini",
+        "region": "Hill",
+        "census_2021_population": 228000,
+        "area_sq_km": 1309.0,
+        "population_density": 174.2,
+        "urban": false,
+        "headquarters": "Pyuthan"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          82.83207956484347,
+          28.11989898879733
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 50,
+        "district_name": "Gulmi",
+        "province": "Lumbini",
+        "region": "Hill",
+        "census_2021_population": 246000,
+        "area_sq_km": 1149.0,
+        "population_density": 214.1,
+        "urban": false,
+        "headquarters": "Gulmi"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.33099971256107,
+          28.09543892606564
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 51,
+        "district_name": "Arghakhanchi",
+        "province": "Lumbini",
+        "region": "Hill",
+        "census_2021_population": 197000,
+        "area_sq_km": 1193.0,
+        "population_density": 165.1,
+        "urban": false,
+        "headquarters": "Arghakhanchi"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.14808860870585,
+          27.93165036382331
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 52,
+        "district_name": "Palpa",
+        "province": "Lumbini",
+        "region": "Hill",
+        "census_2021_population": 246000,
+        "area_sq_km": 1373.0,
+        "population_density": 179.2,
+        "urban": false,
+        "headquarters": "Palpa"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.63226044981043,
+          27.809896239020276
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 53,
+        "district_name": "Rupandehi",
+        "province": "Lumbini",
+        "region": "Terai",
+        "census_2021_population": 1115000,
+        "area_sq_km": 1360.0,
+        "population_density": 819.9,
+        "urban": false,
+        "headquarters": "Rupandehi"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.4053537777437,
+          27.548960426332656
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 54,
+        "district_name": "Kapilbastu",
+        "province": "Lumbini",
+        "region": "Terai",
+        "census_2021_population": 572000,
+        "area_sq_km": 1738.0,
+        "population_density": 329.1,
+        "urban": false,
+        "headquarters": "Kapilbastu"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          82.98382435985306,
+          27.619400176327133
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 55,
+        "district_name": "Dang",
+        "province": "Lumbini",
+        "region": "Terai",
+        "census_2021_population": 675000,
+        "area_sq_km": 2955.0,
+        "population_density": 228.4,
+        "urban": false,
+        "headquarters": "Dang"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          82.48064242046468,
+          27.96604905077311
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 56,
+        "district_name": "Banke",
+        "province": "Lumbini",
+        "region": "Terai",
+        "census_2021_population": 614000,
+        "area_sq_km": 2337.0,
+        "population_density": 262.7,
+        "urban": false,
+        "headquarters": "Banke"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          81.77501200685806,
+          28.095457770010114
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 57,
+        "district_name": "Bardiya",
+        "province": "Lumbini",
+        "region": "Terai",
+        "census_2021_population": 427000,
+        "area_sq_km": 2025.0,
+        "population_density": 210.9,
+        "urban": false,
+        "headquarters": "Bardiya"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          81.44924919211157,
+          28.372790707974843
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 58,
+        "district_name": "Parasi",
+        "province": "Lumbini",
+        "region": "Terai",
+        "census_2021_population": 281000,
+        "area_sq_km": 634.0,
+        "population_density": 443.2,
+        "urban": false,
+        "headquarters": "Parasi"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.73903791545496,
+          27.519655363204492
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 59,
+        "district_name": "Dolpa",
+        "province": "Karnali",
+        "region": "Mountain",
+        "census_2021_population": 43000,
+        "area_sq_km": 7889.0,
+        "population_density": 5.5,
+        "urban": false,
+        "headquarters": "Dolpa"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          83.03808890761701,
+          29.214579021404774
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 60,
+        "district_name": "Mugu",
+        "province": "Karnali",
+        "region": "Mountain",
+        "census_2021_population": 55000,
+        "area_sq_km": 3535.0,
+        "population_density": 15.6,
+        "urban": false,
+        "headquarters": "Mugu"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          82.5326966205919,
+          29.678217365239277
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 61,
+        "district_name": "Humla",
+        "province": "Karnali",
+        "region": "Mountain",
+        "census_2021_population": 50000,
+        "area_sq_km": 5655.0,
+        "population_density": 8.8,
+        "urban": false,
+        "headquarters": "Humla"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          81.83529741606424,
+          30.02601958423648
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 62,
+        "district_name": "Jumla",
+        "province": "Karnali",
+        "region": "Hill",
+        "census_2021_population": 119000,
+        "area_sq_km": 2531.0,
+        "population_density": 47.0,
+        "urban": false,
+        "headquarters": "Jumla"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          82.20069288294475,
+          29.238987271495432
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 63,
+        "district_name": "Kalikot",
+        "province": "Karnali",
+        "region": "Hill",
+        "census_2021_population": 137000,
+        "area_sq_km": 1741.0,
+        "population_density": 78.7,
+        "urban": false,
+        "headquarters": "Kalikot"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          81.69081905857155,
+          29.21624323978375
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 64,
+        "district_name": "Dailekh",
+        "province": "Karnali",
+        "region": "Hill",
+        "census_2021_population": 262000,
+        "area_sq_km": 1502.0,
+        "population_density": 174.4,
+        "urban": false,
+        "headquarters": "Dailekh"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          81.70139192187204,
+          28.88691292743971
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 65,
+        "district_name": "Jajarkot",
+        "province": "Karnali",
+        "region": "Hill",
+        "census_2021_population": 171000,
+        "area_sq_km": 2230.0,
+        "population_density": 76.7,
+        "urban": false,
+        "headquarters": "Jajarkot"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          82.17019316293926,
+          28.869400021393915
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 66,
+        "district_name": "Rukum West",
+        "province": "Karnali",
+        "region": "Hill",
+        "census_2021_population": 155000,
+        "area_sq_km": 1213.0,
+        "population_density": 127.8,
+        "urban": false,
+        "headquarters": "Rukum West"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          82.42966969553265,
+          28.754339488976314
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 67,
+        "district_name": "Salyan",
+        "province": "Karnali",
+        "region": "Hill",
+        "census_2021_population": 243000,
+        "area_sq_km": 1567.0,
+        "population_density": 155.1,
+        "urban": false,
+        "headquarters": "Salyan"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          82.1745145049806,
+          28.39871567683707
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 68,
+        "district_name": "Surkhet",
+        "province": "Karnali",
+        "region": "Hill",
+        "census_2021_population": 405000,
+        "area_sq_km": 2451.0,
+        "population_density": 165.2,
+        "urban": false,
+        "headquarters": "Surkhet"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          81.51592358223085,
+          28.657283395612268
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 69,
+        "district_name": "Bajura",
+        "province": "Sudurpashchim",
+        "region": "Mountain",
+        "census_2021_population": 189000,
+        "area_sq_km": 2188.0,
+        "population_density": 86.4,
+        "urban": false,
+        "headquarters": "Bajura"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          81.57713279295022,
+          29.61194017814674
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 70,
+        "district_name": "Bajhang",
+        "province": "Sudurpashchim",
+        "region": "Mountain",
+        "census_2021_population": 195000,
+        "area_sq_km": 3422.0,
+        "population_density": 57.0,
+        "urban": false,
+        "headquarters": "Bajhang"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          81.24799311635388,
+          29.72315139681956
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 71,
+        "district_name": "Darchula",
+        "province": "Sudurpashchim",
+        "region": "Mountain",
+        "census_2021_population": 134000,
+        "area_sq_km": 2322.0,
+        "population_density": 57.7,
+        "urban": false,
+        "headquarters": "Darchula"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.91038374547983,
+          30.0342941465577
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 72,
+        "district_name": "Baitadi",
+        "province": "Sudurpashchim",
+        "region": "Hill",
+        "census_2021_population": 251000,
+        "area_sq_km": 1519.0,
+        "population_density": 165.2,
+        "urban": false,
+        "headquarters": "Baitadi"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.56016432964839,
+          29.50863152127775
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 73,
+        "district_name": "Dadeldhura",
+        "province": "Sudurpashchim",
+        "region": "Hill",
+        "census_2021_population": 143000,
+        "area_sq_km": 1538.0,
+        "population_density": 93.0,
+        "urban": false,
+        "headquarters": "Dadeldhura"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.50293857240314,
+          29.2082925525593
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 74,
+        "district_name": "Doti",
+        "province": "Sudurpashchim",
+        "region": "Hill",
+        "census_2021_population": 211000,
+        "area_sq_km": 2025.0,
+        "population_density": 104.2,
+        "urban": false,
+        "headquarters": "Doti"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.86351411235566,
+          29.18808833535843
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 75,
+        "district_name": "Achham",
+        "province": "Sudurpashchim",
+        "region": "Hill",
+        "census_2021_population": 257000,
+        "area_sq_km": 1692.0,
+        "population_density": 151.9,
+        "urban": false,
+        "headquarters": "Achham"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          81.29587911081191,
+          29.067859302464882
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 76,
+        "district_name": "Kailali",
+        "province": "Sudurpashchim",
+        "region": "Terai",
+        "census_2021_population": 904000,
+        "area_sq_km": 3235.0,
+        "population_density": 279.4,
+        "urban": false,
+        "headquarters": "Kailali"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.90572387335713,
+          28.731766176917603
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 77,
+        "district_name": "Kanchanpur",
+        "province": "Sudurpashchim",
+        "region": "Terai",
+        "census_2021_population": 527000,
+        "area_sq_km": 1610.0,
+        "population_density": 327.3,
+        "urban": false,
+        "headquarters": "Kanchanpur"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.28502876346668,
+          28.8459228331223
+        ]
+      }
     }
   ]
 }

@@ -187,9 +187,24 @@ def main() -> None:
         "geometry": mapping(outline),
     }
 
+    # District centroids as Point features (same props as the polygon, Point geom)
+    # ponytail: representative_point() vs centroid() — representative_point
+    # guarantees the marker is inside the polygon, useful for non-convex districts.
+    centroid_features: list[dict] = []
+    for poly_feat in features:
+        centroid_features.append(
+            {
+                "type": "Feature",
+                "properties": dict(poly_feat["properties"]),
+                "geometry": mapping(
+                    shape(poly_feat["geometry"]).representative_point()
+                ),
+            }
+        )
+
     collection = {
         "type": "FeatureCollection",
-        "features": [outline_feature, *features],
+        "features": [outline_feature, *features, *centroid_features],
     }
 
     OUT_MAP_JSON.parent.mkdir(parents=True, exist_ok=True)
@@ -205,8 +220,8 @@ def main() -> None:
     print(f"Wrote {OUT_MAP_JSON.relative_to(REPO)} ({map_kb:,.1f} KB)")
     print(f"Wrote {OUT_EXPORT_GEOJSON.relative_to(REPO)} ({export_kb:,.1f} KB)")
     print(
-        f"{len(features)} districts + 1 country outline, "
-        f"simplified to tolerance={SIMPLIFY_TOLERANCE} deg"
+        f"{len(features)} districts + 1 country outline + {len(centroid_features)} "
+        f"centroid points, simplified to tolerance={SIMPLIFY_TOLERANCE} deg"
     )
 
 

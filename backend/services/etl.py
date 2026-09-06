@@ -209,6 +209,130 @@ def load_export_crops(filepath: str | None = None) -> int:
 
 
 # --------------------------------------------------------------------------- #
+# Commercialization index
+# --------------------------------------------------------------------------- #
+
+
+def compute_commercialization_index(
+    seed_dir: str | None = None,
+    strict: bool = False,
+) -> int:
+    """Compute the per-district commercialization index from yields and exports.
+
+    Formula (matches the API route's ``components`` math):
+
+        score = (export_crop_area_pct * 0.40)
+              + (holding / 5.0 * 0.30)
+              + (export_volume_ratio * 0.30)
+
+    Each term is already in [0, 100]; the score is clipped to [0, 100] to
+    keep the frontend's bar-chart domain sane.
+
+    ``holding`` (avg holding size) is a coarse proxy from total cropped area:
+    Nepal's median farm is ~0.5-1.5 ha, so we scale so the median district
+    lands around 1.0 ha and clamp to a plausible [0.05, 10.0] range.
+
+    Returns the number of rows upserted.
+    """
+    seed_dir = seed_dir or DATA_DIR
+    yields_path = os.path.join(seed_dir, "faostat_2014_2024.csv")
+    if not os.path.exists(yields_path):
+        logger.warning("Yields CSV missing; skipping commercialization compute")
+        return 0
+
+    yields_df = pd.read_csv(yields_path)
+
+    # Identify export crops from the crops table (single source of truth).
+    from api.db import get_engine
+    from api.models.db_models import Crops
+    from sqlalchemy.orm import Session
+
+    engine = get_engine()
+    with Session(engine) as db:
+        export_crop_ids = {
+            int(c.id)
+            for c in db.query(Crops).filter(Crops.is_export_crop.is_(True)).all()
+        }
+
+    if yields_df.empty or not export_crop_ids:
+        logger.info("No yields or no export crops; skipping commercialization compute")
+        return 0
+
+    yields_df = yields_df.copy()
+    yields_df["is_export"] = yields_df["crop_id"].isin(export_crop_ids)
+
+    # Aggregate by (district_id, year).
+    grouped = (
+        yields_df.assign(
+            _export_area=lambda d: d["area_harvested_ha"].where(d["is_export"], 0)
+        )
+        .assign(_export_prod=lambda d: d["production_mt"].where(d["is_export"], 0))
+        .groupby(["district_id", "year"], dropna=False)
+        .agg(
+            total_area=("area_harvested_ha", "sum"),
+            export_area=("_export_area", "sum"),
+            total_production=("production_mt", "sum"),
+            export_production=("_export_prod", "sum"),
+        )
+        .reset_index()
+    )
+
+    rows: list[dict[str, Any]] = []
+    for _, r in grouped.iterrows():
+        district_id = int(r["district_id"])
+        year = int(r["year"])
+        total_area = float(r["total_area"] or 0)
+        export_area = float(r["export_area"] or 0)
+        total_prod = float(r["total_production"] or 0)
+        export_prod = float(r["export_production"] or 0)
+
+        # % of cropped area that is export crops (clamped 0-100).
+        export_crop_area_pct = (
+            (export_area / total_area * 100.0) if total_area > 0 else 0.0
+        )
+        export_crop_area_pct = max(0.0, min(100.0, export_crop_area_pct))
+        # Remaining area is treated as subsistence (Nepal's subsistence share
+        # is ~60-80% of total — using 100% - export keeps the sum = 100).
+        subsistence_area_pct = max(0.0, 100.0 - export_crop_area_pct)
+
+        # Export volume ratio (clamped to 0-100).
+        export_volume_ratio = (
+            (export_prod / total_prod * 100.0) if total_prod > 0 else 0.0
+        )
+        export_volume_ratio = max(0.0, min(100.0, export_volume_ratio))
+
+        # Holding-size proxy: total_area / 100_000 ha so the median district
+        # maps to ~1.0 ha; clamp to a plausible Nepal range.
+        avg_holding_size_ha = max(0.05, min(10.0, total_area / 100_000.0))
+
+        # Score = weighted contributions, each term in 0-100. Clip at 100.
+        holding_term = min(100.0, (avg_holding_size_ha / 5.0) * 100.0)
+        score = (
+            export_crop_area_pct * 0.40
+            + holding_term * 0.30
+            + export_volume_ratio * 0.30
+        )
+        score = round(max(0.0, min(100.0, score)), 2)
+
+        rows.append(
+            {
+                "district_id": district_id,
+                "year": year,
+                "export_crop_area_pct": round(export_crop_area_pct, 2),
+                "subsistence_area_pct": round(subsistence_area_pct, 2),
+                "avg_holding_size_ha": round(avg_holding_size_ha, 2),
+                "export_volume_ratio": round(export_volume_ratio, 2),
+                "commercialization_score": score,
+            }
+        )
+
+    logger.info("Computed %d commercialization_index rows", len(rows))
+    return _upsert_table_rows(
+        "commercialization_index", rows, conflict_cols=["district_id", "year"]
+    )
+
+
+# --------------------------------------------------------------------------- #
 # Data validation
 # --------------------------------------------------------------------------- #
 
@@ -416,7 +540,7 @@ def _upsert_table_rows(
 async def load_all(seed_dir: str | None = None, strict: bool = False) -> dict[str, int]:
     """Load all seed data in the correct order.
 
-    Order: districts → crops → yields → climate → export_crops
+    Order: districts → crops → yields → climate → export_crops → commercialization_index
 
     Args:
         seed_dir: Directory containing seed data CSV files.
@@ -456,6 +580,14 @@ async def load_all(seed_dir: str | None = None, strict: bool = False) -> dict[st
     # 5. Export crops
     results["export_crops"] = await asyncio.to_thread(
         load_export_crops, os.path.join(seed_dir, "export_crops.csv")
+    )
+
+    # 6. Commercialization index (derived from yields + export_crops).
+    # ponytail: runs after export_crops because export_crop_ids comes from the
+    # crops table populated earlier; runs after yields because the input
+    # aggregates over faostat_2014_2024.csv.
+    results["commercialization_index"] = await asyncio.to_thread(
+        compute_commercialization_index, seed_dir, strict
     )
 
     logger.info("All seed data loaded successfully")

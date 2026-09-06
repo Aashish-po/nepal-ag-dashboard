@@ -79,9 +79,9 @@ def train_district_crop_forecast(
         Number of forecast rows written (should be ``months_ahead`` on success).
     """
     yield_rows = _fetch_yield_series(db, district_id, crop_id)
-    if len(yield_rows) < 5:
+    if len(yield_rows) < 3:
         logger.warning(
-            "Skipping district=%s crop=%s: only %d years of yield data",
+            "Skipping district=%s crop=%s: only %d years of yield data (need >= 3)",
             district_id,
             crop_id,
             len(yield_rows),
@@ -162,9 +162,21 @@ def train_all_forecasts(db: Session, months_ahead: int = 12) -> dict[str, int]:
                 db, int(district_id), int(crop_id), months_ahead
             )
         except Exception as exc:  # noqa: BLE001 — never let one bad combo kill the job
+            reason = str(exc)
             logger.warning(
-                "Forecast failed for district=%s crop=%s: %s", district_id, crop_id, exc
+                "Forecast failed for district=%s crop=%s: %s",
+                district_id,
+                crop_id,
+                exc,
             )
+            # ponytail: log the specific failure shape so silent drops surface
+            # in CI. Add finer-grained reasons when more failure modes appear.
+            if "years of yield data" in reason:
+                logger.info("  -> reason: insufficient historical data")
+            elif "model" in reason.lower() or "fit" in reason.lower():
+                logger.info("  -> reason: model fit failed")
+            else:
+                logger.info("  -> reason: %s", type(exc).__name__)
             n = 0
         if n > 0:
             results[str(district_id)] = results.get(str(district_id), 0) + n

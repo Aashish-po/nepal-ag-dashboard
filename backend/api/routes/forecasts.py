@@ -56,6 +56,15 @@ def get_forecasts(
     years_of_data = len({int(row.year) for row in historical})
 
     if years_of_data < 3:
+        logger.info(
+            "Forecast rejected: insufficient history district_id=%s crop_id=%s "
+            "district=%s crop=%s years_available=%s",
+            district_id,
+            crop_id,
+            district.name,
+            crop.name,
+            years_of_data,
+        )
         raise HTTPException(
             status_code=400,
             detail=(

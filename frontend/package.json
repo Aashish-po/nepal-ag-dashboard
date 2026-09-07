@@ -49,7 +49,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "0.4.26",
     "happy-dom": "^20.12.0",
-    "postcss": "^8.4.0",
+    "postcss": "^8.5.28",
     "tailwindcss": "^4.3.3",
     "typescript": "~5.9.3",
     "vite": "^8.2.1",

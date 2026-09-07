@@ -13,13 +13,20 @@ export function formatNumber(value: number, decimals: number = 0): string {
 }
 
 export function downloadBlob(blob: Blob, filename: string): void {
-  const url = window.URL.createObjectURL(blob)
+  // ponytail: capture URL impl at call-time; happy-dom tears down window before the 100 ms revoke fires
+  const U = typeof window !== 'undefined' ? window.URL : globalThis.URL
+  const url = U.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
   a.download = filename
   document.body.appendChild(a)
   a.click()
   document.body.removeChild(a)
-  // Clean up after download starts
-  setTimeout(() => window.URL.revokeObjectURL(url), 100)
+  setTimeout(() => {
+    try {
+      U.revokeObjectURL(url)
+    } catch {
+      /* empty */
+    }
+  }, 100)
 }

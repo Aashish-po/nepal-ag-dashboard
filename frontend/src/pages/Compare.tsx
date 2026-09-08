@@ -3,10 +3,9 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/shadcn/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/shadcn/card";
 import { TableBody, TableRow, TableCell } from "@/shadcn/table";
-import { getYields, downloadYieldsCsv } from "@/lib/api";
+import { getYields, downloadYieldsCsv, getCrops } from "@/lib/api";
 import { getDistricts } from "@/lib/api";
 import { useFilterStore } from "@/hooks/useFilters";
-import { FilterBar } from "@/components/FilterBar";
 import { TableSkeleton } from "@/components/Loading";
 import { formatNumber, downloadBlob } from "@/lib/utils";
 import {
@@ -36,6 +35,7 @@ export function Compare() {
     yearEnd,
     selectedDistricts,
     setSelectedDistricts,
+    setSelectedCrop,
   } = useFilterStore();
 
   const { data: districtsData } = useQuery({
@@ -44,11 +44,19 @@ export function Compare() {
     staleTime: 3600000,
   });
   const allDistricts = districtsData?.districts || [];
+  const { data: cropsData } = useQuery({
+    queryKey: ["crops"],
+    queryFn: () => getCrops(),
+    staleTime: 3600000,
+  });
+  const allCrops = (cropsData as any)?.crops || [];
 
   // ponytail: native <select multiple> is the smallest working thing here.
   // Selection is immediate — no draft/commit step. Cmd/Ctrl-click to multi-select.
   const onSelectDistricts = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const ids = Array.from(e.target.selectedOptions).map((o) => parseInt(o.value));
+    const ids = Array.from(e.target.selectedOptions).map((o) =>
+      parseInt(o.value),
+    );
     setSelectedDistricts(ids.slice(0, MAX_COMPARE));
   };
 
@@ -168,7 +176,8 @@ export function Compare() {
             htmlFor="compare-districts"
             className="font-mono text-[10px] uppercase tracking-widest text-text-muted"
           >
-            Select Districts to Compare ({compareDistricts.length}/{MAX_COMPARE})
+            Select Districts to Compare ({compareDistricts.length}/{MAX_COMPARE}
+            )
           </label>
           {compareDistricts.length > 0 && (
             <button
@@ -195,7 +204,9 @@ export function Compare() {
           ))}
         </select>
         <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted mt-2">
-          {"// Cmd/Ctrl-click to select multiple. Max "}{MAX_COMPARE}{"."}
+          {"// Cmd/Ctrl-click to select multiple. Max "}
+          {MAX_COMPARE}
+          {"."}
         </p>
       </div>
 
@@ -224,12 +235,30 @@ export function Compare() {
         </div>
       )}
 
-      <FilterBar showCropSelector />
+      <div className="mb-6 border border-border bg-bg-secondary p-3 flex flex-col gap-1 w-fit">
+        <label className="font-mono text-[10px] uppercase tracking-widest text-text-muted mb-1">
+          Crop
+        </label>
+        <select
+          className="w-50 h-10 px-3 border border-border bg-bg-primary font-mono text-xs uppercase tracking-wider text-text-primary focus:outline-none focus:border-accent"
+          value={selectedCrop?.toString() || ""}
+          onChange={(e) =>
+            setSelectedCrop(e.target.value ? parseInt(e.target.value) : null)
+          }
+        >
+          <option value="">Select Crop</option>
+          {allCrops.map((c: { id: number; name: string }) => (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+      </div>
 
       {!compareDistricts.length ? (
         <div className="text-center py-12 border border-border">
           <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
-            Select 2–{MAX_COMPARE} districts above to compare yield trends.
+            {`Select 2–${MAX_COMPARE} districts above to compare yield trends.`}
           </p>
         </div>
       ) : compareDistricts.length === 1 ? (

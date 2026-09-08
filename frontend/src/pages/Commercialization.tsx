@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-comment-textnodes */
 import {
   BarChart,
   Bar,
@@ -17,7 +18,8 @@ import { TableSkeleton } from "@/components/Loading";
 import { formatNumber } from "@/lib/utils";
 
 export function Commercialization() {
-  const { selectedDistrict, yearEnd, setSelectedDistrict } = useFilterStore();
+  const { selectedDistrict, yearEnd, setSelectedDistrict, setYearEnd } =
+    useFilterStore();
   const year = yearEnd || 2024;
 
   const {
@@ -127,104 +129,132 @@ export function Commercialization() {
 
       <FilterBar showCropSelector={false} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-0 border border-border mb-6">
-        <Card className="lg:col-span-2 border-0 border-r border-border">
-          <CardHeader>
-            <CardTitle>Commercialization Scores by District</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={350}>
-              <BarChart data={heatmapRows} layout="vertical">
-                <CartesianGrid
-                  stroke="var(--color-grid)"
-                  strokeDasharray="0"
-                  vertical={false}
-                />
-                <XAxis
-                  type="number"
-                  domain={[0, 100]}
-                  stroke="var(--color-axis)"
-                  fontSize={11}
-                  fontFamily="var(--font-family-mono)"
-                  tickLine={false}
-                />
-                <YAxis
-                  type="category"
-                  dataKey="district"
-                  stroke="var(--color-axis)"
-                  fontSize={11}
-                  fontFamily="var(--font-family-mono)"
-                  tickLine={false}
-                  width={100}
-                />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "var(--color-bg-primary)",
-                    border: "1px solid var(--color-border)",
-                    borderRadius: "0",
-                    fontFamily: "var(--font-family-mono)",
-                    fontSize: "11px",
-                    textTransform: "uppercase",
-                  }}
-                />
-                <Bar
-                  dataKey="score"
-                  name="Score"
-                  fill="var(--color-text-primary)"
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        <Card className="border-0">
-          <CardHeader>
-            <CardTitle>Provincial Comparison</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={350}>
-              <BarChart data={provincialData}>
-                <CartesianGrid
-                  stroke="var(--color-grid)"
-                  strokeDasharray="0"
-                  vertical={false}
-                />
-                <XAxis
-                  dataKey="province"
-                  stroke="var(--color-axis)"
-                  fontSize={11}
-                  fontFamily="var(--font-family-mono)"
-                  tickLine={false}
-                  axisLine={{ stroke: "var(--color-border-light)" }}
-                />
-                <YAxis
-                  domain={[0, 100]}
-                  stroke="var(--color-axis)"
-                  fontSize={11}
-                  fontFamily="var(--font-family-mono)"
-                  tickLine={false}
-                  axisLine={false}
-                />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "var(--color-bg-primary)",
-                    border: "1px solid var(--color-border)",
-                    borderRadius: "0",
-                    fontFamily: "var(--font-family-mono)",
-                    fontSize: "11px",
-                    textTransform: "uppercase",
-                  }}
-                />
-                <Bar
-                  dataKey="score"
-                  fill="var(--color-accent)"
-                  name="Avg Score"
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+      <div className="mb-6 border border-border bg-bg-secondary p-3 flex flex-col gap-1 w-fit">
+        <label className="font-mono text-[10px] uppercase tracking-widest text-text-muted mb-1">
+          Year
+        </label>
+        <select
+          className="w-30 h-10 px-3 border border-border bg-bg-primary font-mono text-xs uppercase tracking-wider text-text-primary focus:outline-none focus:border-accent"
+          value={String(year)}
+          onChange={(e) =>
+            setYearEnd(e.target.value ? parseInt(e.target.value) : null)
+          }
+        >
+          {Array.from({ length: 11 }, (_, i) => 2014 + i).map((y) => (
+            <option key={y} value={y}>
+              {y}
+            </option>
+          ))}
+        </select>
       </div>
+
+      {heatmapRows.length === 0 ? (
+        <div className="text-center py-12 border border-border mb-6">
+          <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
+            // No commercialization records for {year}. Run the ETL to compute
+            indices.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-0 border border-border mb-6">
+          <Card className="lg:col-span-2 border-0 border-r border-border">
+            <CardHeader>
+              <CardTitle>Commercialization Scores by District</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={350}>
+                <BarChart data={heatmapRows} layout="vertical">
+                  <CartesianGrid
+                    stroke="var(--color-grid)"
+                    strokeDasharray="0"
+                    vertical={false}
+                  />
+                  <XAxis
+                    type="number"
+                    domain={[0, 100]}
+                    stroke="var(--color-axis)"
+                    fontSize={11}
+                    fontFamily="var(--font-family-mono)"
+                    tickLine={false}
+                  />
+                  <YAxis
+                    type="category"
+                    dataKey="district"
+                    stroke="var(--color-axis)"
+                    fontSize={11}
+                    fontFamily="var(--font-family-mono)"
+                    tickLine={false}
+                    width={100}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "var(--color-bg-primary)",
+                      border: "1px solid var(--color-border)",
+                      borderRadius: "0",
+                      fontFamily: "var(--font-family-mono)",
+                      fontSize: "11px",
+                      textTransform: "uppercase",
+                    }}
+                  />
+                  <Bar
+                    dataKey="score"
+                    name="Score"
+                    fill="var(--color-text-primary)"
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0">
+            <CardHeader>
+              <CardTitle>Provincial Comparison</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={350}>
+                <BarChart data={provincialData}>
+                  <CartesianGrid
+                    stroke="var(--color-grid)"
+                    strokeDasharray="0"
+                    vertical={false}
+                  />
+                  <XAxis
+                    dataKey="province"
+                    stroke="var(--color-axis)"
+                    fontSize={11}
+                    fontFamily="var(--font-family-mono)"
+                    tickLine={false}
+                    axisLine={{ stroke: "var(--color-border-light)" }}
+                  />
+                  <YAxis
+                    domain={[0, 100]}
+                    stroke="var(--color-axis)"
+                    fontSize={11}
+                    fontFamily="var(--font-family-mono)"
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "var(--color-bg-primary)",
+                      border: "1px solid var(--color-border)",
+                      borderRadius: "0",
+                      fontFamily: "var(--font-family-mono)",
+                      fontSize: "11px",
+                      textTransform: "uppercase",
+                    }}
+                  />
+                  <Bar
+                    dataKey="score"
+                    fill="var(--color-accent)"
+                    name="Avg Score"
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {districtDetail && (
         <Card className="mt-6">

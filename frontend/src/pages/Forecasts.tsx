@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-comment-textnodes */
 import { useQuery } from "@tanstack/react-query";
 import { getForecasts, downloadForecastsExcel } from "@/lib/api";
 import { useFilterStore } from "@/hooks/useFilters";
@@ -57,12 +58,15 @@ export function Forecasts() {
   }
 
   if (error) {
+    const detail =
+      (error as any)?.response?.data?.detail ?? (error as Error)?.message ?? "";
+    const isInsufficient = String(detail).toLowerCase().includes("historical data");
     return (
       <div className="max-w-350 mx-auto p-6">
         <FilterBar showCropSelector />
         <div className="text-center py-12 border border-border">
           <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
-            {"// Could not load forecast data. - "}
+            {isInsufficient ? `// ${detail} - ` : "// Could not load forecast data. - "}
             <button
               type="button"
               onClick={() => refetch()}
@@ -159,7 +163,7 @@ export function Forecasts() {
           </button>
         ))}
       </div>
-      {chartData.length > 0 && (
+      {chartData.length > 0 ? (
         <div className="border border-border p-4 mb-6">
           <h3 className="font-mono text-xs uppercase tracking-widest mb-4">
             Yield Forecast with 95% Confidence Interval
@@ -227,6 +231,12 @@ export function Forecasts() {
               />
             </LineChart>
           </ResponsiveContainer>
+        </div>
+      ) : (
+        <div className="text-center py-12 border border-border mb-6">
+          <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
+            // No precomputed forecasts for this district/crop. Trigger an ETL run to populate.
+          </p>
         </div>
       )}
 

@@ -31,6 +31,7 @@ from sqlalchemy.orm import (
 
 __all__ = [
     "MAX_SUPPORTED_HARVEST_YEAR",
+    "MIN_FORECAST_HISTORY_YEARS",
     "MIN_SUPPORTED_HARVEST_YEAR",
     "MISSING_DATA_SOURCE",
     "Base",
@@ -50,6 +51,7 @@ __all__ = [
 MISSING_DATA_SOURCE: str = "UNKNOWN"
 MIN_SUPPORTED_HARVEST_YEAR: int = 2014
 MAX_SUPPORTED_HARVEST_YEAR: int = 2024
+MIN_FORECAST_HISTORY_YEARS: int = 5  # docs (08_API_REFERENCE) require >= 5 yrs
 
 # ---------------------------------------------------------------------------
 # Declarative base

@@ -1,5 +1,5 @@
 """
-Forecasting service — SARIMAX / ExponentialSmoothing model selection and inference.
+Forecasting service â€” SARIMAX / ExponentialSmoothing model selection and inference.
 
 Trains univariate time-series models on historical yield data and writes
 pre-computed forecasts into the ``forecasts`` table so the API endpoint can
@@ -12,7 +12,7 @@ Model selection strategy (AIC-based):
 
 Outputs are cached in the ``forecasts`` table keyed by
 (district_id, crop_id, forecast_month, forecast_model), so re-running the
-training job is idempotent — existing rows are upserted.
+training job is idempotent â€” existing rows are upserted.
 """
 
 from __future__ import annotations
@@ -23,6 +23,7 @@ from typing import Any
 
 import numpy as np
 import pandas as pd
+from api.models.db_models import MIN_FORECAST_HISTORY_YEARS
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -67,24 +68,25 @@ def train_district_crop_forecast(
     crop_id: int,
     months_ahead: int = 12,
 ) -> int:
-    """Train a forecast model for one district×crop pair and persist results.
+    """Train a forecast model for one districtÃ—crop pair and persist results.
 
     Args:
         db: SQLAlchemy session.
         district_id: Target district.
         crop_id: Target crop.
-        months_ahead: Forecast horizon (1–36).
+        months_ahead: Forecast horizon (1â€“36).
 
     Returns:
         Number of forecast rows written (should be ``months_ahead`` on success).
     """
     yield_rows = _fetch_yield_series(db, district_id, crop_id)
-    if len(yield_rows) < 3:
+    if len(yield_rows) < MIN_FORECAST_HISTORY_YEARS:
         logger.warning(
-            "Skipping district=%s crop=%s: only %d years of yield data (need >= 3)",
+            "Skipping district=%s crop=%s: only %d years of yield data (need >= %s)",
             district_id,
             crop_id,
             len(yield_rows),
+            MIN_FORECAST_HISTORY_YEARS,
         )
         return 0
 
@@ -127,7 +129,7 @@ def train_district_crop_forecast(
 
     _upsert_forecasts(db, records)
     logger.info(
-        "Trained %s for district=%s crop=%s → %d rows",
+        "Trained %s for district=%s crop=%s â†’ %d rows",
         result.model_name,
         district_id,
         crop_id,
@@ -137,14 +139,14 @@ def train_district_crop_forecast(
 
 
 def train_all_forecasts(db: Session, months_ahead: int = 12) -> dict[str, int]:
-    """Train forecasts for every district×crop combination with sufficient data.
+    """Train forecasts for every districtÃ—crop combination with sufficient data.
 
     Args:
         db: SQLAlchemy session.
         months_ahead: Forecast horizon per pair.
 
     Returns:
-        Dict mapping district_id (as string) → rows written.
+        Dict mapping district_id (as string) â†’ rows written.
     """
     from api.models.db_models import Yields
 
@@ -161,7 +163,7 @@ def train_all_forecasts(db: Session, months_ahead: int = 12) -> dict[str, int]:
             n = train_district_crop_forecast(
                 db, int(district_id), int(crop_id), months_ahead
             )
-        except Exception as exc:  # noqa: BLE001 — never let one bad combo kill the job
+        except Exception as exc:  # noqa: BLE001 â€” never let one bad combo kill the job
             reason = str(exc)
             logger.warning(
                 "Forecast failed for district=%s crop=%s: %s",
@@ -183,7 +185,7 @@ def train_all_forecasts(db: Session, months_ahead: int = 12) -> dict[str, int]:
 
     total = sum(results.values())
     logger.info(
-        "train_all_forecasts complete: %d district×crop pairs, %d rows written",
+        "train_all_forecasts complete: %d districtÃ—crop pairs, %d rows written",
         len(results),
         total,
     )
@@ -196,7 +198,7 @@ def train_all_forecasts(db: Session, months_ahead: int = 12) -> dict[str, int]:
 
 
 def _fetch_yield_series(db: Session, district_id: int, crop_id: int) -> list[Any]:
-    """Fetch ordered yield records for one district×crop pair."""
+    """Fetch ordered yield records for one districtÃ—crop pair."""
     from api.models.db_models import Yields
 
     stmt = (
@@ -294,7 +296,7 @@ def _select_model(series: pd.Series) -> _ModelResult | None:
 
 def _fit_sarimax(
     series: pd.Series,
-) -> _FitResult | None:  # pragma: no cover — statsmodels
+) -> _FitResult | None:  # pragma: no cover â€” statsmodels
     try:
         from statsmodels.tsa.statespace.sarimax import (
             SARIMAX,  # type: ignore[import-untyped]
@@ -345,12 +347,12 @@ def _fit_sarimax(
             mae=mae,
             mape=mape,
         )
-    except Exception:  # noqa: BLE001 — SARIMAX may fail on short/noisy series
+    except Exception:  # noqa: BLE001 â€” SARIMAX may fail on short/noisy series
         logger.debug("SARIMAX fit failed")
         return None
 
 
-def _fit_es(series: pd.Series) -> _FitResult | None:  # pragma: no cover — statsmodels
+def _fit_es(series: pd.Series) -> _FitResult | None:  # pragma: no cover â€” statsmodels
     try:
         from statsmodels.tsa.holtwinters import (
             ExponentialSmoothing,  # type: ignore[import-untyped]
@@ -397,7 +399,7 @@ def _fit_es(series: pd.Series) -> _FitResult | None:  # pragma: no cover — sta
             mae=mae,
             mape=mape,
         )
-    except Exception:  # noqa: BLE001 — ExponentialSmoothing may fail on edge cases
+    except Exception:  # noqa: BLE001 â€” ExponentialSmoothing may fail on edge cases
         logger.debug("ExponentialSmoothing fit failed")
         return None
 
@@ -429,7 +431,7 @@ def _upsert_forecasts(db: Session, records: list[dict[str, Any]]) -> None:
             },
         )
         db.execute(upsert)
-    except Exception:  # noqa: BLE001 — SQLite has no on_conflict_do_update
+    except Exception:  # noqa: BLE001 â€” SQLite has no on_conflict_do_update
         stmt = insert(Forecasts).values(records)  # type: ignore[arg-type]
         db.execute(stmt)
     db.commit()

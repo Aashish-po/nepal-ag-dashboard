@@ -2,7 +2,13 @@ import logging
 from typing import Annotated
 
 from api.db import get_db
-from api.models.db_models import Crops, Districts, Forecasts, Yields
+from api.models.db_models import (
+    MIN_FORECAST_HISTORY_YEARS,
+    Crops,
+    Districts,
+    Forecasts,
+    Yields,
+)
 from api.models.schemas import ForecastMonth, ForecastResponse, ModelDiagnostics
 from fastapi import APIRouter, Depends, HTTPException, Query
 from services.correlations import calculate_yield_statistics
@@ -55,7 +61,7 @@ def get_forecasts(
     historical = db.execute(historical_stmt).scalars().all()
     years_of_data = len({int(row.year) for row in historical})
 
-    if years_of_data < 3:
+    if years_of_data < MIN_FORECAST_HISTORY_YEARS:
         logger.info(
             "Forecast rejected: insufficient history district_id=%s crop_id=%s "
             "district=%s crop=%s years_available=%s",
@@ -68,7 +74,7 @@ def get_forecasts(
         raise HTTPException(
             status_code=400,
             detail=(
-                f"Forecast requires >= 3 years of historical data. "
+                f"Forecast requires >= {MIN_FORECAST_HISTORY_YEARS} years of historical data. "
                 f"Only {years_of_data} year(s) available for {crop.name} in {district.name}."
             ),
         )

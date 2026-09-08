@@ -340,9 +340,11 @@ def load_export_crops(filepath: str | None = None) -> int:
     # but the model stores it as an array — split before upsert.
     if "main_export_countries" in df.columns:
         df["main_export_countries"] = df["main_export_countries"].apply(
-            lambda v: [c.strip() for c in str(v).split("|") if c.strip()]
-            if pd.notna(v) and str(v).strip()
-            else None
+            lambda v: (
+                [c.strip() for c in str(v).split("|") if c.strip()]
+                if pd.notna(v) and str(v).strip()
+                else None
+            )
         )
     rows = df.to_dict("records")
     logger.info("Loaded %d export crop records", len(rows))

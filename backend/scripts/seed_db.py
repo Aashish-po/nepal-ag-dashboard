@@ -222,7 +222,7 @@ def main():
 
     if args.load_all or args.strict:
         logger.info("Loading all seed data (strict=%s)...", args.strict)
-        results = asyncio.run(load_all(strict=args.strict))
+        results = asyncio.run(load_all(strict=args.strict, seed_dir=DATA_DIR))
         for table, count in results.items():
             logger.info("  %s: %d rows", table, count)
 

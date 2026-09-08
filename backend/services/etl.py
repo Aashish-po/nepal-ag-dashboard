@@ -240,6 +240,88 @@ def load_climate_from_chirps(
     )
 
 
+def load_rainfall_from_npl(
+    filepath: str | None = None,
+    mapping_filepath: str | None = None,
+    strict: bool = False,
+) -> int:
+    """Load the CHIRPS dekadal rainfall file (npl-rainfall-subnat-full.csv) and
+    aggregate to monthly rainfall per district.
+
+    The source file is keyed by PCODE (e.g. NP0101), not district_id, so a
+    mapping CSV (data/pcode_district_mapping.csv) is required. Rows for the
+    12 districts without a PCODE match are skipped and logged.
+
+    Columns: date, adm_level, adm_id, PCODE, n_pixels, rfh, rfh_avg, r1h,
+    r1h_avg, r3h, r3h_avg, rfq, r1q, r3q, version
+
+    ``rfh`` = rainfall since the last dekad (mm). Three dekads per calendar
+    month, so summing rfh over the month gives monthly rainfall_mm.
+    """
+    filepath = filepath or os.path.join(DATA_DIR, "npl-rainfall-subnat-full.csv")
+    mapping_filepath = mapping_filepath or os.path.join(
+        DATA_DIR, "pcode_district_mapping.csv"
+    )
+
+    if not os.path.exists(filepath):
+        logger.info("npl-rainfall-subnat-full.csv not found, skipping")
+        return 0
+    if not os.path.exists(mapping_filepath):
+        logger.info("pcode_district_mapping.csv not found, skipping rainfall load")
+        return 0
+
+    mapping_df = pd.read_csv(mapping_filepath)
+    pcode_to_district = {
+        row["PCODE"]: int(row["district_id"])
+        for _, row in mapping_df.iterrows()
+        if pd.notna(row.get("PCODE")) and row.get("match") == "auto"
+    }
+    missing_districts = sorted(
+        set(mapping_df.district_id) - set(pcode_to_district.values())
+    )
+    if missing_districts:
+        logger.info(
+            "Rainfall: %d districts without PCODE match (skipped): %s",
+            len(missing_districts),
+            missing_districts,
+        )
+
+    # Only adm_level == 2 (district-level) rows.
+    df = pd.read_csv(filepath)
+    df = df[df["adm_level"] == 2].copy()
+    df["date"] = pd.to_datetime(df["date"], errors="coerce")
+    df = df.dropna(subset=["date"])
+    df["district_id"] = df["PCODE"].map(pcode_to_district)
+    df = df.dropna(subset=["district_id"])
+    df["district_id"] = df["district_id"].astype(int)
+    df["rfh"] = pd.to_numeric(df["rfh"], errors="coerce").fillna(0.0)
+
+    # Aggregate dekadal rfh → monthly rainfall.
+    df["month_start"] = df["date"].dt.to_period("M").dt.to_timestamp()
+    monthly = df.groupby(["district_id", "month_start"], as_index=False).agg(
+        rainfall_mm=("rfh", "sum")
+    )
+    # pop + reassign avoids the DataFrame-vs-Series rename overload ambiguity
+    # that pandas-stubs trips on for the chained groupby().agg().rename() form.
+    monthly["observation_date"] = monthly.pop("month_start")
+    monthly["observation_date"] = monthly["observation_date"].dt.date
+    monthly["rainfall_mm"] = monthly["rainfall_mm"].round(2)
+    monthly["data_source"] = "CHIRPS-dekadal"
+
+    rows = monthly.to_dict("records")
+    logger.info(
+        "Loaded %d monthly rainfall records from %s for %d districts",
+        len(rows),
+        filepath,
+        monthly["district_id"].nunique(),
+    )
+    return _upsert_table_rows(
+        "climate",
+        rows,
+        conflict_cols=["district_id", "observation_date", "data_source"],
+    )
+
+
 def load_export_crops(filepath: str | None = None) -> int:
     """Load export crops metadata from CSV."""
     filepath = filepath or os.path.join(DATA_DIR, "export_crops.csv")
@@ -619,6 +701,17 @@ async def load_all(seed_dir: str | None = None, strict: bool = False) -> dict[st
     results["climate"] = await asyncio.to_thread(
         load_climate_from_chirps,
         os.path.join(seed_dir, "chirps_2014_2024.csv"),
+        strict,
+    )
+
+    # 4b. CHIRPS dekadal rainfall (npl-rainfall-subnat-full.csv) — aggregated
+    # to monthly rainfall per district. Upserts into the same `climate` table
+    # with data_source='CHIRPS-dekadal', so it coexists with the NASA POWER
+    # monthly rows. Skips the 12 districts without a PCODE match.
+    results["rainfall_npl"] = await asyncio.to_thread(
+        load_rainfall_from_npl,
+        os.path.join(seed_dir, "npl-rainfall-subnat-full.csv"),
+        os.path.join(seed_dir, "pcode_district_mapping.csv"),
         strict,
     )
 

@@ -25,16 +25,53 @@ logger = logging.getLogger(__name__)
 DATA_DIR = os.environ.get("DATA_DIR", "./data")
 
 
+def validate_districts(df: pd.DataFrame) -> dict[str, list[str]]:
+    """Validate districts.csv — previously skipped; now fails fast on 0/null population."""
+    report: dict[str, list[str]] = {"errors": [], "warnings": []}
+    if "population" in df.columns:
+        pop = pd.to_numeric(df["population"], errors="coerce")
+        bad = df[pop.isna() | (pop <= 0)]
+        if len(bad) > 0:
+            report["errors"].append(
+                f"{len(bad)} rows with zero/null/non-numeric population"
+            )
+        tiny = df[(pop > 0) & (pop < 5000)]
+        if len(tiny) > 0:
+            report["warnings"].append(
+                f"{len(tiny)} rows with population < 5,000 (implausible)"
+            )
+    if "area_sq_km" in df.columns:
+        area = pd.to_numeric(df["area_sq_km"], errors="coerce")
+        bad = df[area.isna() | (area <= 0)]
+        if len(bad) > 0:
+            report["errors"].append(
+                f"{len(bad)} rows with zero/null/non-numeric area_sq_km"
+            )
+    if "id" in df.columns:
+        dupes = int(df.duplicated(subset=["id"]).sum())
+        if dupes > 0:
+            report["errors"].append(f"{dupes} duplicate district id(s)")
+        if len(df) != 77:
+            report["warnings"].append(f"Expected 77 districts, got {len(df)}")
+    logger.info(
+        "District validation: %d errors, %d warnings",
+        len(report["errors"]),
+        len(report["warnings"]),
+    )
+    return report
+
+
 # --------------------------------------------------------------------------- #
 # Districts
 # --------------------------------------------------------------------------- #
 
 
-def load_districts_csv(filepath: str | None = None) -> int:
+def load_districts_csv(filepath: str | None = None, strict: bool = False) -> int:
     """Load districts from CSV into the database.
 
     Args:
         filepath: Path to districts.csv. Defaults to data/districts.csv.
+        strict: If True, raise on validation errors (e.g. zero population).
 
     Returns:
         Number of rows inserted.
@@ -55,6 +92,14 @@ def load_districts_csv(filepath: str | None = None) -> int:
     if not expected_cols.issubset(df.columns):
         missing = expected_cols - set(df.columns)
         raise ValueError(f"districts.csv missing columns: {missing}")
+
+    report = validate_districts(df)
+    if report["errors"]:
+        if strict:
+            raise ValueError(f"District validation errors: {report['errors']}")
+        logger.warning("District validation errors: %s", report["errors"][:5])
+    if report["warnings"]:
+        logger.warning("District validation warnings: %s", report["warnings"][:5])
 
     rows = df.to_dict("records")
     logger.info("Loading %d districts from %s", len(rows), filepath)
@@ -555,7 +600,7 @@ async def load_all(seed_dir: str | None = None, strict: bool = False) -> dict[st
 
     # 1. Districts
     results["districts"] = await asyncio.to_thread(
-        load_districts_csv, os.path.join(seed_dir, "districts.csv")
+        load_districts_csv, os.path.join(seed_dir, "districts.csv"), strict
     )
 
     # 2. Crops

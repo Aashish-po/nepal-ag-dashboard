@@ -26,6 +26,7 @@ import json
 from pathlib import Path
 
 import pandas as pd
+from shapely import orient_polygons
 from shapely.geometry import mapping, shape
 from shapely.ops import unary_union
 
@@ -59,6 +60,53 @@ PROVINCE_ALIASES: dict[str, str] = {
 # 800x500 viewport. Tighter if you zoom in.
 SIMPLIFY_TOLERANCE = 0.0005
 
+# Nepal WGS84 bounds (conservative — 1° buffer so clipped border districts still pass).
+NEPAL_BOUNDS = (79.0, 25.0, 89.0, 31.5)  # min_lng, min_lat, max_lng, max_lat
+
+
+def _validate_feature(feat: dict) -> None:
+    """Validate a single feature's geometry + population (fails fast)."""
+    props = feat.get("properties", {})
+    name = props.get("district_name") or props.get("name") or "unknown"
+    is_outline = props.get("id") == 0
+    geom = shape(feat["geometry"])
+    if geom.is_empty:
+        raise ValueError(f"Empty geometry for {name!r}")
+    if not geom.is_valid:
+        raise ValueError(f"Invalid geometry for {name!r}: {geom.wkt[:200]}")
+    min_lng, min_lat, max_lng, max_lat = NEPAL_BOUNDS
+    minx, miny, maxx, maxy = geom.bounds
+    if minx < min_lng or maxx > max_lng or miny < min_lat or maxy > max_lat:
+        raise ValueError(
+            f"Geometry for {name!r} bounds {geom.bounds} outside Nepal {NEPAL_BOUNDS} — "
+            "likely lat/lng swap or screen-space coords"
+        )
+    if feat["geometry"]["type"] not in ("Polygon", "MultiPolygon", "Point"):
+        raise ValueError(
+            f"Unexpected geometry type for {name!r}: {feat['geometry']['type']}"
+        )
+    # population 0 is implausible for Nepal (every district >5k); flag so
+    # Map.tsx doesn't have to render '—' silently for bad upstream data.
+    if not is_outline:
+        pop = props.get("census_2021_population", props.get("population"))
+        if pop is not None and (not isinstance(pop, (int, float)) or pop <= 0):
+            raise ValueError(f"Invalid population for {name!r}: {pop!r}")
+
+
+def _validate_features(features: list[dict], outline: dict | None = None) -> None:
+    """Fail fast if any geometry would corrupt the Map page.
+
+    Previously skipped: coordinate range + polygon validity. Called before
+    any file is written so a bad upstream source never lands in
+    frontend/src/data/nepal_districts.json.
+    """
+    for feat in features:
+        _validate_feature(feat)
+    if outline is not None:
+        _validate_feature(outline)
+    if len(features) != 77:
+        raise ValueError(f"Expected 77 district features, got {len(features)}")
+
 
 def canonical_name(source_name: str) -> str:
     return NAME_ALIASES.get(source_name, source_name)
@@ -82,7 +130,7 @@ def load_polygons() -> dict[str, dict]:
         if canon in out:
             raise ValueError(f"Duplicate canonical name in source: {canon}")
         out[canon] = {
-            "geometry": shape(feat["geometry"]),
+            "geometry": orient_polygons(shape(feat["geometry"]), exterior_cw=True),
             "object_id": feat["properties"]["OBJECTID"],
             "province": canonical_province(feat["properties"]["PR_NAME"]),
         }
@@ -164,6 +212,9 @@ def main() -> None:
         simple_geom = polygons[name]["geometry"].simplify(
             SIMPLIFY_TOLERANCE, preserve_topology=True
         )
+        # ponytail: source rings are CCW; d3-geo expects exterior CW for small
+        # spherical area — without this every polygon is ~99% of the earth.
+        simple_geom = orient_polygons(simple_geom, exterior_cw=True)
         features.append(build_feature(row, simple_geom))
 
     # Country outline: dissolve all districts into one polygon
@@ -171,6 +222,7 @@ def main() -> None:
         [polygons[canonical_name(str(n))]["geometry"] for n in df["name"]]
     )
     outline = unioned.simplify(SIMPLIFY_TOLERANCE, preserve_topology=True)
+    outline = orient_polygons(outline, exterior_cw=True)
     outline_feature = {
         "type": "Feature",
         "properties": {
@@ -201,6 +253,12 @@ def main() -> None:
                 ),
             }
         )
+
+    # Previously skipped: fail fast before writing so a bad upstream source
+    # never lands in frontend/src/data/nepal_districts.json.
+    _validate_features(features, outline_feature)
+    for cf in centroid_features:
+        _validate_feature(cf)
 
     collection = {
         "type": "FeatureCollection",

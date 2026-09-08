@@ -12,6 +12,7 @@ from datetime import date, datetime
 from sqlalchemy import (
     ARRAY,
     DECIMAL,
+    JSON,
     Boolean,
     DateTime,
     ForeignKey,
@@ -219,7 +220,8 @@ class ExportCrops(Base):
         ForeignKey("crops.id", ondelete="CASCADE"), unique=True, nullable=False
     )
     main_export_countries: Mapped[list[str] | None] = mapped_column(
-        ARRAY(String), nullable=True
+        ARRAY(String).with_variant(JSON(), "sqlite"),
+        nullable=True,
     )
     avg_price_usd_per_mt: Mapped[float | None] = mapped_column(DECIMAL(10, 2))
     export_season_start_month: Mapped[int | None] = mapped_column(Integer)

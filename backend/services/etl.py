@@ -130,6 +130,12 @@ def load_crops_csv(filepath: str | None = None) -> int:
             f"crops.csv missing columns: {expected_cols - set(df.columns)}"
         )
 
+    # Defensive: CSV booleans may arrive as strings ("True"/"False") or already
+    # as bools depending on read_csv inference. Normalize correctly — NEVER use
+    # .astype(bool) on strings, since bool("False") == True.
+    for col in ("is_export_crop", "is_subsistence"):
+        if col in df.columns:
+            df[col] = df[col].map(lambda x: str(x).lower() == "true")
     rows = df.to_dict("records")
     logger.info("Loading %d crops from %s", len(rows), filepath)
     return _upsert_table_rows("crops", rows, conflict_cols=["id"])
@@ -330,6 +336,14 @@ def load_export_crops(filepath: str | None = None) -> int:
         return 0
 
     df = pd.read_csv(filepath)
+    # main_export_countries is pipe-delimited in the CSV ("India|Japan|EU")
+    # but the model stores it as an array — split before upsert.
+    if "main_export_countries" in df.columns:
+        df["main_export_countries"] = df["main_export_countries"].apply(
+            lambda v: [c.strip() for c in str(v).split("|") if c.strip()]
+            if pd.notna(v) and str(v).strip()
+            else None
+        )
     rows = df.to_dict("records")
     logger.info("Loaded %d export crop records", len(rows))
     return _upsert_table_rows("export_crops", rows, conflict_cols=["crop_id"])

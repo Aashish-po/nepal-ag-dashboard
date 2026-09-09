@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from 'clsx'
 
 export function cn(...inputs: ClassValue[]) {
-  return clsx(inputs)
+  return clsx(...inputs)
 }
 
 export function formatNumber(value: number, decimals: number = 0): string {

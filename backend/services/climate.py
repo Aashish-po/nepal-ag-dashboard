@@ -69,13 +69,14 @@ def compute_climate_summary(records: list[dict]) -> dict:
     # Find monsoon period (3 consecutive months with highest total rainfall)
     month_avg = {m: month_rainfall[m] / max(month_counts[m], 1) for m in month_rainfall}
 
-    best_sum = 0.0
     best_start = 6
     for start in range(1, 13):
-        window = [((start - 1 + offset) % 12) + 1 for offset in range(3)]
-        window_sum = sum(month_avg.get(m, 0) for m in window)
-        if window_sum > best_sum:
-            best_sum = window_sum
+        window_avg = sum(
+            month_avg.get((start - 1 + offset) % 12 + 1, 0) for offset in range(3)
+        )
+        if window_avg > sum(
+            month_avg.get((best_start - 1 + offset) % 12 + 1, 0) for offset in range(3)
+        ):
             best_start = start
 
     monsoon_start = best_start

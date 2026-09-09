@@ -1,14 +1,7 @@
-"""
-Unit tests for utility functions and data services.
-
-Covers:
-  - Yield calculation (computed fields, division by zero)
-  - Climate summary computation
-  - Data quality validation
-  - District/crop lookup helpers
-"""
+"""Unit tests for utility functions and data services."""
 
 from datetime import date
+from typing import Any
 
 # --------------------------------------------------------------------------- #
 # Yield computation tests
@@ -21,19 +14,16 @@ class TestYieldComputation:
     def test_yield_computation_correct(self):
         """yield_kg_ha = (production_mt * 1000) / area_harvested_ha."""
         expected_yield = (450.0 * 1000) / 1200.0  # = 375 kg/ha
-
         assert expected_yield == 375.0
 
     def test_yield_computation_small_area(self):
         """Very small area should produce high yield per hectare."""
         expected_yield = (0.5 * 1000) / 0.001  # = 500000 kg/ha
-
         assert expected_yield == 500000.0
 
     def test_yield_computation_with_decimals(self):
         """Yield computation handles decimal precision correctly."""
         expected_yield = (1234.56 * 1000) / 789.01
-
         assert round(expected_yield, 2) == 1564.69
 
 
@@ -45,88 +35,59 @@ class TestYieldComputation:
 class TestTrendDetection:
     """Tests for yield trend detection logic."""
 
+    @staticmethod
+    def _make_yield(year: int, yield_val: float) -> Any:
+        row = type("Yield", (), {"year": year, "yield_kg_ha": yield_val})
+        return row()
+
     def test_increasing_trend_detected(self):
         """Increasing yields over time should produce 'INCREASING' trend."""
-        from services.correlations import YieldLike, calculate_yield_statistics
-
-        class FakeYield(YieldLike):
-            def __init__(self, year: int, yield_val: float):
-                self.year = year
-                self.yield_kg_ha = yield_val
+        from services.correlations import calculate_yield_statistics
 
         rows = [
-            FakeYield(2014, 350.0),
-            FakeYield(2015, 360.0),
-            FakeYield(2016, 370.0),
-            FakeYield(2017, 380.0),
-            FakeYield(2018, 390.0),
-            FakeYield(2019, 400.0),
-            FakeYield(2020, 410.0),
-            FakeYield(2021, 420.0),
-            FakeYield(2022, 430.0),
-            FakeYield(2024, 440.0),
+            self._make_yield(y, v)
+            for y, v in zip(
+                [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2024],
+                [350.0, 360.0, 370.0, 380.0, 390.0, 400.0, 410.0, 420.0, 430.0, 440.0],
+            )
         ]
-
         stats = calculate_yield_statistics(rows)
         assert stats["trend"] == "INCREASING"
         assert stats["cagr_pct"] > 0
 
     def test_decreasing_trend_detected(self):
         """Decreasing yields should produce 'DECREASING' trend."""
-        from services.correlations import YieldLike, calculate_yield_statistics
-
-        class FakeYield(YieldLike):
-            def __init__(self, year: int, yield_val: float):
-                self.year = year
-                self.yield_kg_ha = yield_val
+        from services.correlations import calculate_yield_statistics
 
         rows = [
-            FakeYield(2014, 440.0),
-            FakeYield(2015, 430.0),
-            FakeYield(2016, 420.0),
-            FakeYield(2017, 410.0),
-            FakeYield(2018, 400.0),
-            FakeYield(2019, 390.0),
-            FakeYield(2020, 380.0),
-            FakeYield(2021, 370.0),
-            FakeYield(2022, 360.0),
-            FakeYield(2024, 350.0),
+            self._make_yield(y, v)
+            for y, v in zip(
+                [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2024],
+                [440.0, 430.0, 420.0, 410.0, 400.0, 390.0, 380.0, 370.0, 360.0, 350.0],
+            )
         ]
-
         stats = calculate_yield_statistics(rows)
         assert stats["trend"] == "DECREASING"
 
     def test_stable_trend_detected(self):
         """Flat yields should produce 'STABLE' trend."""
-        from services.correlations import YieldLike, calculate_yield_statistics
-
-        class FakeYield(YieldLike):
-            def __init__(self, year: int, yield_val: float):
-                self.year = year
-                self.yield_kg_ha = yield_val
+        from services.correlations import calculate_yield_statistics
 
         rows = [
-            FakeYield(2014, 375.0),
-            FakeYield(2015, 376.0),
-            FakeYield(2016, 375.0),
-            FakeYield(2017, 376.0),
-            FakeYield(2018, 375.0),
+            self._make_yield(y, v)
+            for y, v in zip(
+                [2014, 2015, 2016, 2017, 2018],
+                [375.0, 376.0, 375.0, 376.0, 375.0],
+            )
         ]
-
         stats = calculate_yield_statistics(rows)
         assert stats["trend"] == "STABLE"
 
     def test_insufficient_data_handling(self):
         """Less than 2 data points should return INSUFFICIENT_DATA."""
-        from services.correlations import YieldLike, calculate_yield_statistics
+        from services.correlations import calculate_yield_statistics
 
-        class FakeYield(YieldLike):
-            def __init__(self, year: int, yield_val: float):
-                self.year = year
-                self.yield_kg_ha = yield_val
-
-        rows = [FakeYield(2024, 375.0)]
-
+        rows = [self._make_yield(2024, 375.0)]
         stats = calculate_yield_statistics(rows)
         assert stats["trend"] == "INSUFFICIENT_DATA"
         assert stats["cagr_pct"] is None
@@ -140,46 +101,45 @@ class TestTrendDetection:
 class TestCAGR:
     """Tests for Compound Annual Growth Rate computation."""
 
+    @staticmethod
+    def _make_yield(year: int, yield_val: float) -> Any:
+        row = type("Yield", (), {"year": year, "yield_kg_ha": yield_val})
+        return row()
+
     def test_positive_cagr(self):
         """Positive yield growth should produce positive CAGR."""
-        from services.correlations import YieldLike, calculate_yield_statistics
-
-        class FakeYield(YieldLike):
-            def __init__(self, year: int, yield_val: float):
-                self.year = year
-                self.yield_kg_ha = yield_val
+        from services.correlations import calculate_yield_statistics
 
         rows = [
-            FakeYield(2014, 350.0),
-            FakeYield(2015, 375.0),
-            FakeYield(2016, 400.0),
-            FakeYield(2017, 425.0),
-            FakeYield(2018, 450.0),
-            FakeYield(2019, 475.0),
-            FakeYield(2020, 500.0),
-            FakeYield(2021, 500.0),
-            FakeYield(2022, 500.0),
-            FakeYield(2023, 500.0),
-            FakeYield(2024, 500.0),
+            self._make_yield(y, v)
+            for y, v in zip(
+                range(2014, 2025),
+                [
+                    350.0,
+                    375.0,
+                    400.0,
+                    425.0,
+                    450.0,
+                    475.0,
+                    500.0,
+                    500.0,
+                    500.0,
+                    500.0,
+                    500.0,
+                ],
+            )
         ]
-
         stats = calculate_yield_statistics(rows)
         assert stats["cagr_pct"] > 0
-        # CAGR should be between 0 and 10% for this data
         assert 0 < stats["cagr_pct"] < 10
 
     def test_zero_cagr(self):
         """Flat yields should produce ~0% CAGR."""
-        from services.correlations import YieldLike, calculate_yield_statistics
+        from services.correlations import calculate_yield_statistics
 
-        class FakeYield(YieldLike):
-            def __init__(self, year: int, yield_val: float):
-                self.year = year
-                self.yield_kg_ha = yield_val
-
-        rows = [FakeYield(y, 400.0) for y in range(2014, 2024)]
+        rows = [self._make_yield(y, 400.0) for y in range(2014, 2024)]
         stats = calculate_yield_statistics(rows)
-        assert abs(stats["cagr_pct"]) < 0.1  # Near zero
+        assert abs(stats["cagr_pct"]) < 0.1
 
 
 # --------------------------------------------------------------------------- #
@@ -196,32 +156,29 @@ class TestCorrelation:
 
         yields = [350, 375, 400, 425, 450, 475]
         rainfall = [800, 900, 1000, 1100, 1200, 1300]
-
         corr = compute_pearson(yields, rainfall)
         assert corr is not None
-        assert corr > 0.9  # Strong positive
+        assert corr > 0.9
 
     def test_negative_correlation(self):
-        """Yield and temperature should show negative correlation (in some cases)."""
+        """Yield and temperature should show negative correlation."""
         from services.correlations import compute_pearson
 
         yields = [400, 380, 360, 340, 320]
         temp = [15, 20, 25, 30, 35]
-
         corr = compute_pearson(yields, temp)
         assert corr is not None
-        assert corr < -0.5  # Negative
+        assert corr < -0.5
 
     def test_no_correlation(self):
         """Random data should have low correlation."""
         from services.correlations import compute_pearson
 
         yields = [400, 380, 360, 340, 320]
-        temp = [25, 15, 30, 20, 22]  # No clear pattern
-
+        temp = [25, 15, 30, 20, 22]
         corr = compute_pearson(yields, temp)
         assert corr is not None
-        assert abs(corr) < 0.7  # Weak correlation
+        assert abs(corr) < 0.7
 
     def test_insufficient_data(self):
         """Less than 3 data points should return None."""
@@ -230,14 +187,13 @@ class TestCorrelation:
         result = compute_pearson([100], [200])
         assert result is None
 
-    def test_full_correlation_significance(self):
-        """Full correlation should include p-value and significance flag."""
-        from services.correlations import compute_full_correlation
+    def test_pearson_correlation_significance(self):
+        """Pearson correlation should include p-value and significance flag."""
+        from services.correlations import compute_pearson_correlation
 
         x = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         y = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
-
-        result = compute_full_correlation(x, y)
+        result = compute_pearson_correlation(x, y)
         assert result["coefficient"] is not None
         assert result["p_value"] is not None
         assert result["significant"]
@@ -245,21 +201,21 @@ class TestCorrelation:
 
     def test_unequal_length_inputs(self):
         """Unequal-length inputs should pair on shared positions and succeed."""
-        from services.correlations import compute_full_correlation
+        from services.correlations import compute_pearson_correlation
 
         x = [1.0, 2.0, 3.0, 4.0, 5.0]
         y = [10.0, 20.0, 30.0]
-        result = compute_full_correlation(x, y)
+        result = compute_pearson_correlation(x, y)
         assert result["coefficient"] is not None
         assert abs(result["coefficient"] - 1.0) < 1e-6
 
     def test_unequal_length_no_valid_pairs(self):
         """No valid paired observations after zip should return null."""
-        from services.correlations import compute_full_correlation
+        from services.correlations import compute_pearson_correlation
 
         x = [None, None]
         y = [1.0]
-        result = compute_full_correlation(x, y)
+        result = compute_pearson_correlation(x, y)
         assert result["coefficient"] is None
         assert result["p_value"] is None
         assert result["significant"] is False

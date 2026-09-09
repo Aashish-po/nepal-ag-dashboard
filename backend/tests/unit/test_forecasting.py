@@ -141,12 +141,12 @@ class TestSelectModel:
         result = _select_model(series)
 
         assert result is not None
-        assert result.model_name in ("SARIMAX", "ExponentialSmoothing")
-        assert len(result.forecast) == 36
-        assert len(result.ci_width) == 36
-        assert result.rmse >= 0
-        assert result.mae >= 0
-        assert result.mape >= 0
+        assert result["model_name"] in ("SARIMAX", "ExponentialSmoothing")
+        assert len(result["forecast"]) == 36
+        assert len(result["ci_width"]) == 36
+        assert result["rmse"] >= 0
+        assert result["mae"] >= 0
+        assert result["mape"] >= 0
 
     def test_returns_none_when_all_models_fail(self):
         """If every model raises, _select_model should return None."""

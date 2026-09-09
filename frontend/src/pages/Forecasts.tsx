@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-no-comment-textnodes */
 import { useQuery } from "@tanstack/react-query";
 import { getForecasts, downloadForecastsExcel } from "@/lib/api";
+import type { ForecastMonth } from "@/lib/types";
 import { useFilterStore } from "@/hooks/useFilters";
 import { formatNumber } from "@/lib/utils";
 import { FilterBar } from "@/components/FilterBar";
@@ -60,13 +61,17 @@ export function Forecasts() {
   if (error) {
     const detail =
       (error as any)?.response?.data?.detail ?? (error as Error)?.message ?? "";
-    const isInsufficient = String(detail).toLowerCase().includes("historical data");
+    const isInsufficient = String(detail)
+      .toLowerCase()
+      .includes("historical data");
     return (
       <div className="max-w-350 mx-auto p-6">
         <FilterBar showCropSelector />
         <div className="text-center py-12 border border-border">
           <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
-            {isInsufficient ? `// ${detail} - ` : "// Could not load forecast data. - "}
+            {isInsufficient
+              ? `// ${detail} - `
+              : "// Could not load forecast data. - "}
             <button
               type="button"
               onClick={() => refetch()}
@@ -85,7 +90,9 @@ export function Forecasts() {
       <div className="max-w-350 mx-auto p-6">
         <FilterBar showCropSelector />
         <div className="text-center py-12 border border-border">
-          <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">No forecast data available.</p>
+          <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
+            No forecast data available.
+          </p>
         </div>
       </div>
     );
@@ -94,7 +101,7 @@ export function Forecasts() {
   const { forecasts, model_diagnostics, forecast_model, recommendation } =
     forecastData;
 
-  const chartData = (forecasts ?? []).map((f: any) => ({
+  const chartData = (forecasts ?? []).map((f: ForecastMonth) => ({
     month: f.forecast_month,
     forecast: f.forecast_yield_kg_ha,
     lower: f.lower_ci_95,
@@ -135,7 +142,9 @@ export function Forecasts() {
   return (
     <div className="max-w-350 mx-auto p-6">
       <div className="flex items-center justify-between mb-6 border-b border-border pb-3">
-        <h1 className="font-black uppercase tracking-tight text-h1">Forecasts</h1>
+        <h1 className="font-black uppercase tracking-tight text-h1">
+          Forecasts
+        </h1>
         <button
           className={`px-4 py-2 border border-border font-mono text-xs uppercase tracking-widest hover:bg-bg-secondary ${
             exportLoading ? "opacity-50 cursor-not-allowed" : ""
@@ -170,11 +179,25 @@ export function Forecasts() {
           </h3>
           <ResponsiveContainer width="100%" height={350}>
             <LineChart data={chartData}>
-              <CartesianGrid stroke="var(--color-grid)" strokeDasharray="0" vertical={false} />
-              <XAxis dataKey="month" stroke="var(--color-axis)" fontSize={11} fontFamily="var(--font-family-mono)" tickLine={false} />
+              <CartesianGrid
+                stroke="var(--color-grid)"
+                strokeDasharray="0"
+                vertical={false}
+              />
+              <XAxis
+                dataKey="month"
+                stroke="var(--color-axis)"
+                fontSize={11}
+                fontFamily="var(--font-family-mono)"
+                tickLine={false}
+              />
               <YAxis
                 domain={["dataMin", "dataMax"]}
-                stroke="var(--color-axis)" fontSize={11} fontFamily="var(--font-family-mono)" tickLine={false} axisLine={false}
+                stroke="var(--color-axis)"
+                fontSize={11}
+                fontFamily="var(--font-family-mono)"
+                tickLine={false}
+                axisLine={false}
                 tickFormatter={(v) => (v !== null ? `${formatNumber(v)}` : "-")}
               />
               <Tooltip
@@ -186,9 +209,22 @@ export function Forecasts() {
                   fontSize: "11px",
                   textTransform: "uppercase",
                 }}
-                cursor={{ stroke: 'var(--color-accent)', strokeWidth: 1, strokeDasharray: '4 4' }}
+                cursor={{
+                  stroke: "var(--color-accent)",
+                  strokeWidth: 1,
+                  strokeDasharray: "4 4",
+                }}
               />
-              <Legend verticalAlign="top" height={36} wrapperStyle={{ fontFamily: 'var(--font-family-mono)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '.06em' }} />
+              <Legend
+                verticalAlign="top"
+                height={36}
+                wrapperStyle={{
+                  fontFamily: "var(--font-family-mono)",
+                  fontSize: 11,
+                  textTransform: "uppercase",
+                  letterSpacing: ".06em",
+                }}
+              />
               <Area
                 type="monotone"
                 dataKey="upper"
@@ -235,7 +271,8 @@ export function Forecasts() {
       ) : (
         <div className="text-center py-12 border border-border mb-6">
           <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
-            // No precomputed forecasts for this district/crop. Trigger an ETL run to populate.
+            // No precomputed forecasts for this district/crop. Trigger an ETL
+            run to populate.
           </p>
         </div>
       )}
@@ -243,11 +280,15 @@ export function Forecasts() {
       <div className="ruled-grid grid-cols-1 md:grid-cols-3 mb-6">
         <div className="p-4 text-center">
           <p className="caption">Model</p>
-          <p className="font-mono text-sm font-bold uppercase tracking-wider mt-1">{diagnostics.model}</p>
+          <p className="font-mono text-sm font-bold uppercase tracking-wider mt-1">
+            {diagnostics.model}
+          </p>
         </div>
         <div className="p-4 text-center">
           <p className="caption">Historical RMSE</p>
-          <p className="font-mono text-sm font-bold uppercase tracking-wider mt-1">{diagnostics.rmse}</p>
+          <p className="font-mono text-sm font-bold uppercase tracking-wider mt-1">
+            {diagnostics.rmse}
+          </p>
         </div>
         <div className="p-4 text-center">
           <p className="caption">Recommendation</p>
@@ -258,7 +299,9 @@ export function Forecasts() {
       </div>
 
       <div className="border border-border p-4">
-        <h3 className="font-mono text-xs uppercase tracking-widest mb-4">Forecast Table</h3>
+        <h3 className="font-mono text-xs uppercase tracking-widest mb-4">
+          Forecast Table
+        </h3>
         <div className="overflow-x-auto">
           <table className="w-full whitespace-nowrap">
             <thead>
@@ -275,12 +318,23 @@ export function Forecasts() {
                 <th className="px-4 py-2 text-right font-mono text-[10px] uppercase tracking-widest text-text-muted">
                   Upper 95% CI
                 </th>
+                <th className="px-4 py-2 text-right font-mono text-[10px] uppercase tracking-widest text-text-muted">
+                  Model
+                </th>
+                <th className="px-4 py-2 text-right font-mono text-[10px] uppercase tracking-widest text-text-muted">
+                  Forecast Date
+                </th>
               </tr>
             </thead>
             <tbody>
-              {(forecasts ?? []).map((f: any, index: number) => (
-                <tr key={index} className="border-b border-border-light hover:bg-bg-secondary">
-                  <td className="px-4 py-2 font-mono text-xs">{f.forecast_month}</td>
+              {(forecasts ?? []).map((f: ForecastMonth, index: number) => (
+                <tr
+                  key={index}
+                  className="border-b border-border-light hover:bg-bg-secondary"
+                >
+                  <td className="px-4 py-2 font-mono text-xs">
+                    {f.forecast_month}
+                  </td>
                   <td className="px-4 py-2 font-mono text-xs text-right tabular-nums">
                     {f.forecast_yield_kg_ha != null
                       ? `${formatNumber(f.forecast_yield_kg_ha)}`
@@ -294,6 +348,18 @@ export function Forecasts() {
                   <td className="px-4 py-2 font-mono text-xs text-right tabular-nums">
                     {f.upper_ci_95 != null
                       ? `${formatNumber(f.upper_ci_95)}`
+                      : "-"}
+                  </td>
+                  <td className="px-4 py-2 font-mono text-xs text-right">
+                    {f.forecast_model ?? "-"}
+                  </td>
+                  <td className="px-4 py-2 font-mono text-xs text-right">
+                    {f.forecast_date
+                      ? new Date(f.forecast_date).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })
                       : "-"}
                   </td>
                 </tr>

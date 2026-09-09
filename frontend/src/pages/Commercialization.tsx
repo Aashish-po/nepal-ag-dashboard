@@ -1,21 +1,14 @@
 /* eslint-disable react/jsx-no-comment-textnodes */
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/shadcn/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/shadcn/card";
 import { getCommercialization, getCommercializationList } from "@/lib/api";
+import type { CommercializationRankResponse } from "@/lib/types";
 import { useFilterStore } from "@/hooks/useFilters";
 import { FilterBar } from "@/components/FilterBar";
 import { TableSkeleton } from "@/components/Loading";
 import { formatNumber } from "@/lib/utils";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 export function Commercialization() {
   const { selectedDistrict, yearEnd, setSelectedDistrict, setYearEnd } =
@@ -94,21 +87,21 @@ export function Commercialization() {
   }
 
   const heatmapRows = (heatmapData.districts || [])
-    .map((d: any) => ({
-      district: d.district_name || d.name,
+    .map((d: CommercializationRankResponse) => ({
+      district: d.district_name,
       province: d.province,
       score: d.commercialization_score,
       exportArea: d.export_crop_area_pct,
       subsistence: d.subsistence_area_pct,
-      holdingSize: d.avg_holding_size_ha,
+      holdingSize: undefined,
     }))
-    .filter((row: any) => row.score != null)
-    .sort((a: any, b: any) => (b.score ?? -Infinity) - (a.score ?? -Infinity));
+    .filter((row) => row.score != null)
+    .sort((a, b) => (b.score ?? -Infinity) - (a.score ?? -Infinity));
 
-  const provincialMap = heatmapRows.reduce((acc: any, row: any) => {
+  const provincialMap = heatmapRows.reduce<Record<string, number[]>>((acc, row) => {
     const prov = row.province || "Unknown";
     if (!acc[prov]) acc[prov] = [];
-    acc[prov].push(row.score);
+    acc[prov].push(row.score!);
     return acc;
   }, {});
 
@@ -116,7 +109,7 @@ export function Commercialization() {
     Object.entries(provincialMap) as [string, number[]][]
   ).map(([province, scores]) => ({
     province,
-    score: scores.reduce((a: number, b: number) => a + b, 0) / scores.length,
+    score: scores.reduce((a, b) => a + b, 0) / scores.length,
   }));
 
   return (
@@ -259,20 +252,36 @@ export function Commercialization() {
       {districtDetail && (
         <Card className="mt-6">
           <CardHeader>
-            <CardTitle>{districtDetail.district_name} Details</CardTitle>
+            <CardTitle>
+              {districtDetail.district_name} — {districtDetail.year}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="ruled-grid grid-cols-2 md:grid-cols-4">
               <div className="p-4 text-center">
-                <p className="caption">Score</p>
+                <p className="caption">Commercialization Score</p>
                 <p className="metric text-lg mt-1">
                   {districtDetail.commercialization_score} / 100
+                </p>
+              </div>
+              <div className="p-4 text-center">
+                <p className="caption">Level</p>
+                <p className="metric text-lg mt-1">
+                  {districtDetail.commercialization_level ?? "-"}
                 </p>
               </div>
               <div className="p-4 text-center">
                 <p className="caption">Export Area</p>
                 <p className="metric text-lg mt-1">
                   {formatNumber(districtDetail.export_crop_area_pct ?? 0)}%
+                </p>
+              </div>
+              <div className="p-4 text-center">
+                <p className="caption">Export Volume Ratio</p>
+                <p className="metric text-lg mt-1">
+                  {districtDetail.export_volume_ratio != null
+                    ? `${formatNumber(districtDetail.export_volume_ratio, 2)}x`
+                    : "-"}
                 </p>
               </div>
               <div className="p-4 text-center">

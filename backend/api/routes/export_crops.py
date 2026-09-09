@@ -28,6 +28,7 @@ def _export_crop_info(
     main_export_countries: list[str] | None,
     season_start_month: int | None,
     season_end_month: int | None,
+    notes: str | None,
 ) -> ExportCropInfo:
     """Assemble one export-crop row, computing estimated revenue.
 
@@ -54,6 +55,7 @@ def _export_crop_info(
         estimated_revenue_usd=revenue,
         export_season=season,
         main_export_countries=main_export_countries or [],
+        notes=notes,
     )
 
 
@@ -100,6 +102,7 @@ def get_export_crops(
             main_export_countries=ec.main_export_countries if ec is not None else None,
             season_start_month=ec.export_season_start_month if ec is not None else None,
             season_end_month=ec.export_season_end_month if ec is not None else None,
+            notes=ec.notes if ec is not None else None,
         )
         for y, c, ec in db.execute(stmt).all()
     ]

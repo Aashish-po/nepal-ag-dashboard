@@ -1,3 +1,4 @@
+from bisect import bisect_right
 from typing import Annotated
 
 from api.db import get_db
@@ -19,24 +20,13 @@ from sqlalchemy.orm import Session
 
 router = APIRouter()
 
+_LEVELS = ("SUBSISTENCE", "MIXED", "COMMERCIAL", "HIGHLY_COMMERCIAL")
+_LEVELS_BREAKS = (25, 50, 75)
+
 
 def _level(score: float) -> str:
-    """Map a commercialization score (0-100) to a label.
-
-    Thresholds (matching test expectations):
-      0-25   -> SUBSISTENCE
-      26-50  -> MIXED
-      51-75  -> COMMERCIAL
-      76-100 -> HIGHLY_COMMERCIAL
-    """
-    if score <= 25:
-        return "SUBSISTENCE"
-    elif score <= 50:
-        return "MIXED"
-    elif score <= 75:
-        return "COMMERCIAL"
-    else:
-        return "HIGHLY_COMMERCIAL"
+    """Map a commercialization score (0-100) to a label."""
+    return _LEVELS[bisect_right(_LEVELS_BREAKS, score)]
 
 
 @router.get(

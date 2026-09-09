@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router-dom";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { Header } from "@/components/Header";
 import * as api from "@/lib/api";
 
@@ -22,6 +22,10 @@ function renderHeader() {
 }
 
 describe("Header component", () => {
+  beforeEach(() => {
+    queryClient.clear();
+  });
+
   it("renders brand name", () => {
     renderHeader();
     expect(screen.getByText("Intelligence")).toBeInTheDocument();
@@ -64,7 +68,7 @@ describe("Header component", () => {
     fireEvent.change(input, { target: { value: "District" } });
     await waitFor(() => {
       const items = screen.queryAllByRole("listitem");
-      expect(items.length).toBeGreaterThan(0);
+      expect(items.length).toBeGreaterThan(1);
       expect(items.length).toBeLessThanOrEqual(10);
     });
   });

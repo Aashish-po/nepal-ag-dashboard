@@ -152,9 +152,8 @@ describe("Forecasts - data + export journey", () => {
           forecast_yield_kg_ha: 3000,
           lower_ci_95: 2800,
           upper_ci_95: 3200,
-          forecast_model: null,
-          forecast_date: null,
-          confidence: null,
+          forecast_model: "ARIMA",
+          forecast_date: "2024-08-01T00:00:00+00:00",
         },
       ],
     });
@@ -162,7 +161,9 @@ describe("Forecasts - data + export journey", () => {
 
   it("renders diagnostics and forecast table from loaded data", async () => {
     renderWithProviders(<Forecasts />);
-    expect(await screen.findByText("ARIMA")).toBeInTheDocument();
+    // "ARIMA" appears in both the diagnostics bar and the forecast table Model column
+    const modelElements = await screen.findAllByText("ARIMA");
+    expect(modelElements.length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText("Stable outlook")).toBeInTheDocument();
     expect(screen.getByText("2025-01")).toBeInTheDocument();
   });
@@ -173,7 +174,7 @@ describe("Forecasts - data + export journey", () => {
     vi.mocked(api.downloadForecastsExcel).mockResolvedValue(new Blob(["x"]));
 
     renderWithProviders(<Forecasts />);
-    await screen.findByText("ARIMA");
+    await screen.findByText("Stable outlook");
     fireEvent.click(screen.getByRole("button", { name: /download excel/i }));
 
     await waitFor(() =>

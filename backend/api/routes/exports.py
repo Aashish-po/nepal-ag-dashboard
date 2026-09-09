@@ -1,8 +1,7 @@
 import csv
 import re
 import unicodedata
-from collections.abc import Sequence
-from datetime import date, datetime, timezone
+from datetime import datetime, timezone
 from io import BytesIO, StringIO
 from typing import Annotated
 
@@ -10,7 +9,7 @@ from api.db import get_db
 from api.models.db_models import Crops, Districts, Forecasts, Yields
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
-from sqlalchemy import Row, select
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 router = APIRouter()
@@ -25,10 +24,16 @@ def _csv_response(content: str, filename: str) -> StreamingResponse:
 
 
 def _safe_filename_part(value: str) -> str:
-    ascii_value = (
-        unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode()
+    return (
+        re.sub(
+            r"[^A-Za-z0-9._-]+",
+            "_",
+            unicodedata.normalize("NFKD", value)
+            .encode("ascii", "ignore")
+            .decode("ascii", "ignore"),
+        ).strip("_")
+        or "unknown"
     )
-    return re.sub(r"[^A-Za-z0-9._-]+", "_", ascii_value).strip("_") or "unknown"
 
 
 @router.get("/export/yields")
@@ -167,20 +172,7 @@ def export_forecasts(
         .order_by(Forecasts.forecast_month)
     )
 
-    fc_results: Sequence[
-        Row[
-            tuple[
-                date,
-                float | None,
-                float | None,
-                float | None,
-                str | None,
-                float | None,
-                float | None,
-                float | None,
-            ]
-        ]
-    ] = db.execute(fc_stmt).all()
+    fc_results = db.execute(fc_stmt).all()
 
     wb = Workbook()
 
@@ -189,7 +181,7 @@ def export_forecasts(
 
     # Sheet 1: Historical Data
     ws_hist = wb.active
-    assert ws_hist is not None
+    assert ws_hist is not None  # workbook always has a default active sheet
     ws_hist.title = "Historical Data"
     ws_hist.append(["Year", "Yield (kg/ha)", "Production (MT)"])
 
@@ -204,7 +196,6 @@ def export_forecasts(
 
     # Sheet 2: Forecasts
     ws_fc = wb.create_sheet("Forecasts")
-    assert ws_fc is not None
     ws_fc.append(
         [
             "Forecast Month",
@@ -227,7 +218,6 @@ def export_forecasts(
         )
     # Sheet 3: Model Diagnostics
     ws_diag = wb.create_sheet("Model Diagnostics")
-    assert ws_diag is not None
 
     if fc_results:
         ws_diag.append(["Metric", "Value"])
@@ -238,7 +228,6 @@ def export_forecasts(
 
     # Sheet 4: Chart Data
     ws_chart = wb.create_sheet("Chart")
-    assert ws_chart is not None
     ws_chart.append(
         [
             "Month",

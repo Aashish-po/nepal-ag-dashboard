@@ -121,6 +121,7 @@ export interface ExportCropInfo {
   estimated_revenue_usd: number | null;
   export_season: ExportSeason | null;
   main_export_countries: string[];
+  notes: string | null;
 }
 
 export interface ExportCropsResponse {
@@ -173,7 +174,6 @@ export interface ForecastMonth {
   forecast_yield_kg_ha: number | null;
   lower_ci_95: number | null;
   upper_ci_95: number | null;
-  confidence: number | null;
   forecast_model: string | null;
   forecast_date: string | null;
 }

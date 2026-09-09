@@ -1,4 +1,5 @@
 import logging
+from datetime import date, datetime, timezone
 from typing import Annotated
 
 from api.db import get_db
@@ -24,14 +25,32 @@ def _f(value) -> float | None:
     return float(value) if value is not None else None
 
 
+def _format_datetime(value) -> str | None:
+    """ISO-format a datetime/date value for JSON serialization."""
+    if value is None:
+        return None
+    if isinstance(value, (datetime, date)):
+        return value.isoformat()
+    return str(value)
+
+
 def _recommendation(trend: str | None, forecasts: list[ForecastMonth]) -> str:
     if not forecasts:
         return "No forecast data available"
-    if trend == "INCREASING":
-        return "Growth trend expected; consider expanding cultivation area"
-    if trend == "DECREASING":
-        return "Risk of decline; consider drought-resistant varieties"
-    return "Stable yield expected; monitor climate conditions"
+    return next(
+        (
+            m
+            for t, m in (
+                (
+                    "INCREASING",
+                    "Growth trend expected; consider expanding cultivation area",
+                ),
+                ("DECREASING", "Risk of decline; consider drought-resistant varieties"),
+            )
+            if trend == t
+        ),
+        "Stable yield expected; monitor climate conditions",
+    )
 
 
 @router.get("/forecasts/{district_id}/{crop_id}", response_model=ForecastResponse)
@@ -93,8 +112,6 @@ def get_forecasts(
     )
 
     # Join back to get full forecast records for the latest forecast_date per month
-    from datetime import date, datetime, timezone
-
     now = datetime.now(tz=timezone.utc)
     current_month_start = date(now.year, now.month, 1)
     forecast_stmt = (
@@ -111,7 +128,6 @@ def get_forecasts(
     )
     results = db.execute(forecast_stmt).scalars().all()
 
-    months = months_ahead
     forecasts_list = [
         ForecastMonth(
             forecast_month=str(r.forecast_month),
@@ -119,9 +135,9 @@ def get_forecasts(
             lower_ci_95=_f(r.lower_ci_95),
             upper_ci_95=_f(r.upper_ci_95),
             forecast_model=r.forecast_model,
-            forecast_date=str(r.forecast_date) if r.forecast_date else None,
+            forecast_date=_format_datetime(r.forecast_date),
         )
-        for r in results[:months]
+        for r in results[:months_ahead]
     ]
 
     first = results[0] if results else None

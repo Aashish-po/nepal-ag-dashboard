@@ -12,12 +12,14 @@ def test_revenue_computed_from_production_and_price():
         main_export_countries=["India", "Japan"],
         season_start_month=9,
         season_end_month=12,
+        notes="High quality cardamom from Ilam.",
     )
     assert info.estimated_revenue_usd == 40_000_000.0
     assert info.export_potential_mt == 5000.0
     assert info.export_season is not None
     assert info.export_season.start_month == 9
     assert info.main_export_countries == ["India", "Japan"]
+    assert info.notes == "High quality cardamom from Ilam."
 
 
 def test_missing_price_or_season_degrades_gracefully():
@@ -31,7 +33,9 @@ def test_missing_price_or_season_degrades_gracefully():
         main_export_countries=None,
         season_start_month=None,
         season_end_month=None,
+        notes=None,
     )
     assert info.estimated_revenue_usd is None
     assert info.export_season is None
     assert info.main_export_countries == []
+    assert info.notes is None

@@ -13,14 +13,15 @@ export function Header() {
   const setSelectedDistrict = useFilterStore((s) => s.setSelectedDistrict);
   const [query, setQuery] = useState("");
 
-  const { data: districtsData } = useQuery({
-    queryKey: ["districts", query],
+  const { data: allDistricts } = useQuery({
+    queryKey: ["districts"],
     queryFn: () => getDistricts(),
     staleTime: 300000,
-    enabled: query.length >= 1,
   });
-  const districts = (districtsData?.districts || [])
-    .filter((d: { name: string }) => d.name.toLowerCase().includes(query.toLowerCase()))
+  const districts = (allDistricts?.districts || [])
+    .filter((d: { name: string }) =>
+      d.name.toLowerCase().includes(query.toLowerCase())
+    )
     .slice(0, 10);
 
   const handleDistrictSelect = (districtId: number) => {

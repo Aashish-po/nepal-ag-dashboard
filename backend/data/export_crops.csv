@@ -1,7 +1,7 @@
 crop_id,main_export_countries,avg_price_usd_per_mt,export_season_start_month,export_season_end_month,notes
-28,"India|Japan|European Union",12000,9,12,"Cardamom from Ilam, Taplejung. Small volume, high value."
-29,"India|Bangladesh|United Kingdom",800,9,11,"Ginger from Ilam, Jhapa, Dhankuta. Moderate volume."
-30,"India|Malaysia|Middle East",3500,10,2,"Black pepper from Jhapa, Kaski."
-33,"India|Nepal diaspora|European Union",2800,1,12,"Tea from Ilam, Dhankuta, Jhapa. Year-round."
-34,"Germany|Italy|Netherlands",4200,10,6,"Arabica coffee from Gulmi, Palpa."
-35,"India|Bangladesh|Pakistan",300,10,2,"Sugarcane in Terai districts. High volume, low value."
+28,India|European Union|United States,12500,9,12,"Large cardamom from Ilam, Taplejung, Dhankuta. Nepal supplies ~60% of global large cardamom. Harvest: Sept-Oct; auctions in Kolkata & EU."
+29,India|Bangladesh|United Kingdom|Pakistan,950,9,11,"Ginger from Ilan, Jhapa, Dhankuta. Nepal is 2nd largest ginger exporter globally. Harvest: Sept-Oct; peak export Oct-Nov."
+30,India|Malaysia|Indonesia|Vietnam,3800,10,2,"Black pepper from Jhapa, Ilam, Kaski. Small-scale; primarily to India & SE Asia."
+33,India|Nepal diaspora|Germany|United Kingdom,3200,3,10,"Orthodox tea from Ilam, Dhankuta, Jhapa. CTLSH certified; premium Darjeeling-style production. Harvest: Mar-Oct; peak flush Apr-May & Sept-Oct."
+34,Germany|Italy|Netherlands|France|South Korea,4800,10,6,"Arabica coffee from Gulmi, Palpa, Arghakhanchi, Syangja. NCA Organic & Fair Trade certified. Harvest: Oct-May; export season Nov-June."
+35,India|Bangladesh|Pakistan|Indonesia,280,10,4,"Sugarcane from Terai districts (Bara, Parsa, Rautahat, Dhanusha). Raw sugar & ethanol feedstock. Harvest: Oct-Apr; export as raw sugar & molasses."

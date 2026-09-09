@@ -178,6 +178,7 @@ class ExportCropInfo(SchemaBase):
     estimated_revenue_usd: float | None = None
     export_season: ExportSeason | None = None
     main_export_countries: list[str] = []
+    notes: str | None = None
 
 
 class ExportCropsResponse(SchemaBase):

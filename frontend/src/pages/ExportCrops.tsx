@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getExportCrops } from "@/lib/api";
+import type { ExportCropInfo } from "@/lib/types";
 import { useFilterStore } from "@/hooks/useFilters";
 import { FilterBar } from "@/components/FilterBar";
 import { TableSkeleton } from "@/components/Loading";
@@ -66,7 +67,7 @@ export function ExportCrops() {
   const districtName = exportData.district_name || "Unknown District";
 
   const totalRevenue = exportCrops.reduce(
-    (sum: number, c: any) => sum + (c.estimated_revenue_usd || 0),
+    (sum: number, c: ExportCropInfo) => sum + (c.estimated_revenue_usd || 0),
     0,
   );
 
@@ -85,7 +86,7 @@ export function ExportCrops() {
         exportCrops.length > 0
           ? formatNumber(
               exportCrops.reduce(
-                (sum: number, c: any) => sum + (c.yield_kg_ha || 0),
+                (sum: number, c: ExportCropInfo) => sum + (c.yield_kg_ha || 0),
                 0,
               ) / exportCrops.length,
             )
@@ -137,12 +138,24 @@ export function ExportCrops() {
                   Yield (kg/ha)
                 </th>
                 <th className="text-right p-2 font-mono text-[10px] uppercase tracking-widest text-text-muted">
+                  Avg Price (USD/MT)
+                </th>
+                <th className="text-right p-2 font-mono text-[10px] uppercase tracking-widest text-text-muted">
                   Est. Revenue (USD)
+                </th>
+                <th className="text-left p-2 font-mono text-[10px] uppercase tracking-widest text-text-muted">
+                  Main Export Destinations
+                </th>
+                <th className="text-left p-2 font-mono text-[10px] uppercase tracking-widest text-text-muted">
+                  Export Season
+                </th>
+                <th className="text-left p-2 font-mono text-[10px] uppercase tracking-widest text-text-muted">
+                  Notes
                 </th>
               </tr>
             </thead>
             <tbody>
-              {exportCrops.map((item: any, idx: number) => (
+              {exportCrops.map((item: ExportCropInfo, idx: number) => (
                 <tr
                   key={item.crop_id || idx}
                   className="border-b border-border-light hover:bg-bg-secondary"
@@ -162,9 +175,27 @@ export function ExportCrops() {
                       : "-"}
                   </td>
                   <td className="p-2 font-mono text-xs text-right tabular-nums">
-                    {item.estimated_revenue_usd != null
-                      ? `${formatNumber(item.estimated_revenue_usd)}`
+                    {item.avg_price_usd_per_mt != null
+                      ? `$${formatNumber(item.avg_price_usd_per_mt)}`
                       : "-"}
+                  </td>
+                  <td className="p-2 font-mono text-xs text-right tabular-nums">
+                    {item.estimated_revenue_usd != null
+                      ? `$${formatNumber(item.estimated_revenue_usd)}`
+                      : "-"}
+                  </td>
+                  <td className="p-2 font-mono text-xs">
+                    {item.main_export_countries?.length
+                      ? item.main_export_countries.join(", ")
+                      : "-"}
+                  </td>
+                  <td className="p-2 font-mono text-xs">
+                    {item.export_season?.start_month && item.export_season?.end_month
+                      ? `${item.export_season.start_month} – ${item.export_season.end_month}`
+                      : "-"}
+                  </td>
+                  <td className="p-2 font-mono text-xs text-text-secondary">
+                    {item.notes || "-"}
                   </td>
                 </tr>
               ))}

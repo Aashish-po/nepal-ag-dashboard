@@ -53,7 +53,7 @@ def get_districts(
     # Validate and apply province filter
     if province:
         province = province.strip()
-        if not province:  # Empty after strip
+        if not province:
             raise HTTPException(
                 status_code=400, detail="Province filter cannot be empty/whitespace"
             )
@@ -70,7 +70,7 @@ def get_districts(
     # Validate and apply region filter
     if region:
         region = region.strip()
-        if not region:  # Empty after strip
+        if not region:
             raise HTTPException(
                 status_code=400, detail="Region filter cannot be empty/whitespace"
             )

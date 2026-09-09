@@ -14,7 +14,8 @@ import logging
 import math
 from collections import defaultdict
 from collections.abc import Sequence
-from typing import Any, Protocol, cast
+from statistics import fmean, pstdev
+from typing import Any, cast
 
 from scipy import stats  # type: ignore[import-untyped]
 from sqlalchemy import text
@@ -27,14 +28,7 @@ logger = logging.getLogger(__name__)
 # --------------------------------------------------------------------------- #
 
 
-class YieldLike(Protocol):
-    """Structural type for rows with yield stats fields."""
-
-    year: Any
-    yield_kg_ha: Any
-
-
-def calculate_yield_statistics(yield_rows: Sequence[YieldLike]) -> dict[str, Any]:
+def calculate_yield_statistics(yield_rows: Sequence[Any]) -> dict[str, Any]:
     """Compute trend, CAGR, volatility from historical yield records.
 
     Args:
@@ -70,12 +64,10 @@ def calculate_yield_statistics(yield_rows: Sequence[YieldLike]) -> dict[str, Any
             "trend": "INSUFFICIENT_DATA",
         }
 
-    avg_yield = sum(values) / n
+    avg_yield = fmean(values)
     max_yield = max(values)
     min_yield = min(values)
-    volatility = (
-        math.sqrt(sum((v - avg_yield) ** 2 for v in values) / n) if n > 1 else 0.0
-    )
+    volatility = pstdev(values) if n > 1 else 0.0
 
     # CAGR calculation
     first_val = values[0]
@@ -129,13 +121,6 @@ def compute_pearson(
     if math.isnan(corr):
         return None
     return corr
-
-
-def compute_full_correlation(
-    x: Sequence[float | None], y: Sequence[float | None]
-) -> dict[str, Any]:
-    """Compute Pearson correlation with coefficient, p-value, and significance flag."""
-    return compute_pearson_correlation(x, y)
 
 
 # --------------------------------------------------------------------------- #
@@ -290,9 +275,9 @@ def compute_yield_climate_correlation(
     if len(aligned_yield) < 3:
         return None
 
-    rain_corr = compute_full_correlation(aligned_yield, aligned_rain)
-    temp_corr = compute_full_correlation(aligned_yield, aligned_temp)
-    solar_corr = compute_full_correlation(aligned_yield, aligned_solar)
+    rain_corr = compute_pearson_correlation(aligned_yield, aligned_rain)
+    temp_corr = compute_pearson_correlation(aligned_yield, aligned_temp)
+    solar_corr = compute_pearson_correlation(aligned_yield, aligned_solar)
 
     # Compute R-squared (use rainfall as primary predictor for R²)
     r_squared = None
@@ -315,26 +300,31 @@ def compute_yield_climate_correlation(
 
 def _generate_interpretation(rain_corr: dict, temp_corr: dict, solar_corr: dict) -> str:
     """Generate a human-readable interpretation of correlation results."""
+    _specs = (
+        (pos_msg, neg_msg, thresh)
+        for pos_msg, neg_msg, thresh in (
+            (
+                "Rainfall positively correlates with yield",
+                "Rainfall negatively correlates with yield",
+                0.4,
+            ),
+            (
+                "Temperature positively correlates with yield",
+                "temperature negatively correlates with yield",
+                0.4,
+            ),
+            ("Solar radiation supports yield growth", None, 0.3),
+        )
+    )
     parts = []
-
-    rain_c = rain_corr.get("coefficient")
-    temp_c = temp_corr.get("coefficient")
-    solar_c = solar_corr.get("coefficient")
-
-    if rain_c is not None:
-        if rain_c > 0.4:
-            parts.append("Rainfall positively correlates with yield")
-        elif rain_c < -0.4:
-            parts.append("Rainfall negatively correlates with yield")
-
-    if temp_c is not None:
-        if temp_c > 0.4:
-            parts.append("Temperature positively correlates with yield")
-        elif temp_c < -0.4:
-            parts.append("Temperature negatively correlates with yield")
-
-    if solar_c is not None and solar_c > 0.3:
-        parts.append("Solar radiation supports yield growth")
+    for (pos, neg, thresh), corr in zip(_specs, (rain_corr, temp_corr, solar_corr)):
+        c = corr.get("coefficient")
+        if c is None:
+            continue
+        if c > thresh:
+            parts.append(pos)
+        elif neg and c < -thresh:
+            parts.append(neg)
 
     if not parts:
         return "Weak correlations detected; multiple factors may influence yield."

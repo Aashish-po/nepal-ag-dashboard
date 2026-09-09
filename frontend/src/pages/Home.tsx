@@ -10,7 +10,7 @@ import {
 import { Link } from "react-router-dom";
 import { Button } from "@/shadcn/button";
 import { useQuery } from "@tanstack/react-query";
-import { getDistricts, getCrops } from "@/lib/api";
+import { getCrops, getDistricts, getHealth } from "@/lib/api";
 
 export function Home() {
   const features = [
@@ -76,10 +76,7 @@ export function Home() {
   });
   const { data: healthData } = useQuery({
     queryKey: ["health"],
-    queryFn: () =>
-      fetch(
-        `${import.meta.env.VITE_API_BASE_URL || "http://localhost:8000"}/api/v1/health`,
-      ).then((r) => r.json()),
+    queryFn: () => getHealth(),
     staleTime: 300000,
     refetchOnWindowFocus: false,
   });

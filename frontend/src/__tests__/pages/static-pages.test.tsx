@@ -11,9 +11,12 @@ describe("About page", () => {
   it("renders heading and data sources", () => {
     renderWithProviders(<About />);
     expect(screen.getByText("About & Methodology")).toBeInTheDocument();
-    expect(screen.getByText("FAOSTAT")).toBeInTheDocument();
-    expect(screen.getByText("NASA POWER")).toBeInTheDocument();
-    expect(screen.getByText("CHIRPS")).toBeInTheDocument();
+    const sourcesCard = within(
+      screen.getByRole("heading", { name: "Data Sources" }).closest(".card")!,
+    );
+    expect(sourcesCard.getByText("FAOSTAT")).toBeInTheDocument();
+    expect(sourcesCard.getByText("NASA POWER")).toBeInTheDocument();
+    expect(sourcesCard.getByText("CHIRPS")).toBeInTheDocument();
   });
 });
 

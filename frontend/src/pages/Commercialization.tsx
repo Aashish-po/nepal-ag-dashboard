@@ -8,7 +8,15 @@ import { useFilterStore } from "@/hooks/useFilters";
 import { FilterBar } from "@/components/FilterBar";
 import { TableSkeleton } from "@/components/Loading";
 import { formatNumber } from "@/lib/utils";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 export function Commercialization() {
   const { selectedDistrict, yearEnd, setSelectedDistrict, setYearEnd } =
@@ -98,12 +106,15 @@ export function Commercialization() {
     .filter((row) => row.score != null)
     .sort((a, b) => (b.score ?? -Infinity) - (a.score ?? -Infinity));
 
-  const provincialMap = heatmapRows.reduce<Record<string, number[]>>((acc, row) => {
-    const prov = row.province || "Unknown";
-    if (!acc[prov]) acc[prov] = [];
-    acc[prov].push(row.score!);
-    return acc;
-  }, {});
+  const provincialMap = heatmapRows.reduce<Record<string, number[]>>(
+    (acc, row) => {
+      const prov = row.province || "Unknown";
+      if (!acc[prov]) acc[prov] = [];
+      acc[prov].push(row.score!);
+      return acc;
+    },
+    {},
+  );
 
   const provincialData = (
     Object.entries(provincialMap) as [string, number[]][]
@@ -261,8 +272,10 @@ export function Commercialization() {
               <div className="p-4 text-center">
                 <p className="caption">Commercialization Score</p>
                 <p className="metric text-lg mt-1">
-                  {districtDetail.commercialization_score} / 100
-                </p>
+                  {districtDetail.commercialization_score != null
+                    ? `${formatNumber(districtDetail.commercialization_score, 1)} / 100`
+                    : "-"}
+                </p>{" "}
               </div>
               <div className="p-4 text-center">
                 <p className="caption">Level</p>

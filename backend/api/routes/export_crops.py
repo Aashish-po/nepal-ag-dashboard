@@ -25,7 +25,7 @@ def _export_crop_info(
     area_harvested_ha: float | None,
     yield_kg_ha: float | None,
     avg_price_usd_per_mt: float | None,
-    main_export_countries: list[str] | None,
+    main_export_countries: list[str] | str | None,
     season_start_month: int | None,
     season_end_month: int | None,
     notes: str | None,
@@ -34,6 +34,17 @@ def _export_crop_info(
 
     Revenue is production x price when both are known, else ``None``.
     """
+    # ponytail: normalize legacy data. Older seeds stored this as a raw
+    # pipe-delimited string ("India|Japan") in a non-JSON SQLite column;
+    # joining such a string char-by-char produces "I, n, d, i, a". Coerce
+    # both shapes (list or pipe-string) here so every caller is protected.
+    # Remove once all deployments re-seed with the JSON-column ETL.
+    if isinstance(main_export_countries, str):
+        countries = [c.strip() for c in main_export_countries.split("|") if c.strip()]
+    elif isinstance(main_export_countries, list):
+        countries = [str(c).strip() for c in main_export_countries if str(c).strip()]
+    else:
+        countries = []
     revenue = (
         production_mt * avg_price_usd_per_mt
         if production_mt is not None and avg_price_usd_per_mt is not None
@@ -54,7 +65,7 @@ def _export_crop_info(
         avg_price_usd_per_mt=avg_price_usd_per_mt,
         estimated_revenue_usd=revenue,
         export_season=season,
-        main_export_countries=main_export_countries or [],
+        main_export_countries=countries,
         notes=notes,
     )
 

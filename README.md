@@ -67,8 +67,8 @@ source venv/bin/activate        # macOS/Linux
 pip install --upgrade pip
 pip install -r requirements.txt
 
-cp .env.example .env.local
-# Edit .env.local to set your DATABASE_URL, CORS_ORIGINS, etc.
+cp .env.example backend/.env.local
+# Edit backend/.env.local to set your DATABASE_URL, CORS_ORIGINS, etc.
 ```
 
 ### 2. Set up a local database
@@ -97,7 +97,7 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 cd ../frontend
 pnpm install
 
-cp .env.example .env.local
+cp ../.env.example frontend/.env.local
 # VITE_API_BASE_URL should point to your backend: http://localhost:8000
 
 pnpm dev

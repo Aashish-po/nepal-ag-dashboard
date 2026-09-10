@@ -70,8 +70,8 @@ export function Forecasts() {
         <div className="text-center py-12 border border-border">
           <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
             {isInsufficient
-              ? `// ${detail} - `
-              : "// Could not load forecast data. - "}
+              ? `${detail} - `
+              : "Could not load forecast data. - "}
             <button
               type="button"
               onClick={() => refetch()}
@@ -271,8 +271,8 @@ export function Forecasts() {
       ) : (
         <div className="text-center py-12 border border-border mb-6">
           <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
-            // No precomputed forecasts for this district/crop. Trigger an ETL
-            run to populate.
+            {/* No precomputed forecasts for this district/crop. Trigger an ETL
+            run to populate. */}
           </p>
         </div>
       )}

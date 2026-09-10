@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-no-comment-textnodes */
 import { useQuery } from "@tanstack/react-query";
 import { getForecasts, downloadForecastsExcel } from "@/lib/api";
 import type { ForecastMonth } from "@/lib/types";

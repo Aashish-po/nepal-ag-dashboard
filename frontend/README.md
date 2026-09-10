@@ -3,27 +3,28 @@
 ## Setup
 
 ```bash
-npm install
+pnpm install
 cp .env.example .env.local
-npm run dev
+pnpm dev
 ```
 
 Open <http://localhost:5173>
 
 ## Scripts
 
-- `npm run dev` - Start dev server
-- `npm run build` - Production build
-- `npm run preview` - Preview build locally
-- `npm run lint` - Run ESLint
-- `npm run type-check` - Run TypeScript compiler
+- `pnpm dev` - Start dev server
+- `pnpm build` - Production build
+- `pnpm preview` - Preview build locally
+- `pnpm lint` - Run ESLint
+- `pnpm type-check` - Run TypeScript compiler
 
 ## Tech Stack
 
-- React 18 + TypeScript
+- React 19 + TypeScript
 - Vite
 - Tailwind CSS + shadcn/ui
-- React Router v6
+- React Router v7
 - Recharts
+- d3-geo
 - Axios
 - Zustand

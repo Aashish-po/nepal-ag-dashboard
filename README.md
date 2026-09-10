@@ -1,6 +1,6 @@
 # Nepal Agricultural Intelligence Dashboard
 
-Version: 0.1.0 (development)
+Version: 1.0.1
 
 Real-time agricultural analytics dashboard analyzing yield, climate, export crop performance, and commercialization trends across Nepal's 77 districts.
 
@@ -35,13 +35,10 @@ The Nepal Agricultural Intelligence Dashboard provides data-driven insights into
 
 | Layer | Technology |
 | ------- | ----------- |
-| Frontend | React 18 + TypeScript, Vite, Tailwind CSS, shadcn/ui, Recharts, react-leaflet, Vitest (testing) |
-| Backend | Python 3.12, FastAPI, SQLAlchemy, Statsmodels, with dev dependencies: ruff, mypy, bandit, pip-audit, httpx (for integration tests) |
-| Database | PostgreSQL (Supabase) |
-| Data Processing | Pandas, NumPy, SciPy |
-| Caching | Redis (Upstash) |
+| Frontend | React 19 + TypeScript, Vite, Tailwind CSS, shadcn/ui, Recharts, d3-geo, Vitest |
+| Backend | Python 3.12, FastAPI, SQLAlchemy 2.0, Statsmodels, Pandas, NumPy |
+| Database | PostgreSQL |
 | Deployment | Render (backend), Vercel (frontend) |
-| Monitoring | Sentry (error tracking), PostHog (analytics) |
 | CI/CD | GitHub Actions |
 
 ---
@@ -126,7 +123,6 @@ All endpoints are public (read-only) in v1.
 | GET | `/api/v1/export-crops/{district_id}` | Export crop production and revenue |
 | GET | `/api/v1/commercialization/{district_id}` | Commercialization index and score |
 | GET | `/api/v1/forecasts/{district_id}/{crop_id}` | Yield forecasts with confidence intervals |
-| GET | `/api/v1/heatmap/yield-climate-correlation` | Pre-computed correlation matrix |
 | GET | `/api/v1/export/yields` | Download yields as CSV |
 | GET | `/api/v1/export/forecasts` | Download forecasts as Excel |
 
@@ -172,6 +168,7 @@ nepal-ag-dashboard/
 │   │   ├── components/
 │   │   │   ├── Header.tsx
 │   │   │   ├── Sidebar.tsx
+│   │   │   ├── FilterBar.tsx
 │   │   │   ├── Loading.tsx
 │   │   │   └── ErrorBoundary.tsx
 │   │   ├── pages/
@@ -186,11 +183,13 @@ nepal-ag-dashboard/
 │   │   │   ├── Compare.tsx
 │   │   │   └── About.tsx
 │   │   ├── hooks/
-│   │   │   ├── useApi.ts
 │   │   │   └── useFilters.ts
 │   │   ├── lib/
 │   │   │   ├── api.ts
+│   │   │   ├── types.ts
 │   │   │   └── utils.ts
+│   │   ├── data/
+│   │   │   └── nepal_districts.json
 │   │   ├── styles/
 │   │   │   ├── tokens.css
 │   │   │   └── globals.css
@@ -218,8 +217,7 @@ nepal-ag-dashboard/
 │   │   │   ├── forecasts.py
 │   │   │   ├── exports.py
 │   │   │   ├── commercialization.py
-│   │   │   ├── correlation.py
-│   │   │   └── heatmap.py
+│   │   │   └── correlation.py
 │   │   └── models/
 │   │       ├── __init__.py
 │   │       ├── schemas.py      # Pydantic models
@@ -249,22 +247,27 @@ nepal-ag-dashboard/
 │       ├── conftest.py
 │       ├── unit/
 │       │   ├── test_services.py
-│   │       ├── test_schemas.py
-│   │       └── test_utils.py
-│       ├── integration/
-│   │       │   └── test_api.py
+│       │   ├── test_schemas.py
+│       │   └── test_utils.py
+│       ├── test_api.py
 │       └── fixtures/
 │           ├── districts.json
 │           ├── yields.json
 │           └── climate.json
 ├── .github/
 │   └── workflows/
-│       ├── ci.yml
-│       └── e2e.yml
-└── README.md
+│       └── ci.yml    
+├── README.md
+├── LICENSE
+├── .gitignore
+├── SECURITY.md
+├── CODE_OF_CONDUCT.md
+├── mypy.ini
+├── pyproject.toml
+├── ruff.toml
+├── pre-commit-config.yaml
+└── CONTRIBUTING.md
 ```
-
----
 
 ## Testing
 

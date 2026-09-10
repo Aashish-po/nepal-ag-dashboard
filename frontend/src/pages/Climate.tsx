@@ -39,7 +39,7 @@ export function Climate() {
         <FilterBar showCropSelector={false} />
         <div className="text-center py-12 border border-border">
           <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
-            {"// Could not load climate data. - "}
+            Could not load climate data.
             <button
               type="button"
               onClick={() => refetch()}

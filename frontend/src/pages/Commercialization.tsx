@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-no-comment-textnodes */
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/shadcn/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/shadcn/card";
@@ -51,7 +50,7 @@ export function Commercialization() {
         <FilterBar showCropSelector={false} />
         <div className="text-center py-12 border border-border">
           <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
-            {"// Could not load commercialization data. - "}
+            Could not load commercialization data. —
             <button
               type="button"
               onClick={() => refetchDetail()}
@@ -71,7 +70,7 @@ export function Commercialization() {
         <FilterBar showCropSelector={false} />
         <div className="text-center py-12 border border-border">
           <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
-            {"// Could not load commercialization rankings. - "}
+            Could not load commercialization rankings. —
             <button
               type="button"
               onClick={() => refetchHeatmap()}
@@ -155,8 +154,8 @@ export function Commercialization() {
       {heatmapRows.length === 0 ? (
         <div className="text-center py-12 border border-border mb-6">
           <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
-            // No commercialization records for {year}. Run the ETL to compute
-            indices.
+            No commercialization records for {year}. Data may not be available for
+            this year or district.
           </p>
         </div>
       ) : (

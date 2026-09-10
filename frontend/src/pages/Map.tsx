@@ -380,7 +380,7 @@ export function Map() {
             </CardHeader>
             <CardContent>
               <p className="font-mono text-xs uppercase tracking-widest text-text-muted">
-                {/* Click any district on the map to see its details here. */}
+                Click any district on the map to see its details here.
               </p>
             </CardContent>
           </Card>

@@ -212,9 +212,7 @@ export function Compare() {
           ))}
         </div>
         <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted mt-2">
-          {"// Click to select. Max "}
-          {MAX_COMPARE}
-          {"."}
+          Click to select. Max {MAX_COMPARE}.
         </p>
       </div>
 
@@ -278,7 +276,7 @@ export function Compare() {
       ) : error ? (
         <div className="text-center py-12 border border-border">
           <p className="font-mono text-xs uppercase tracking-widest text-text-secondary">
-            {"// Could not load comparison data. - "}
+            Could not load comparison data. —
             <button
               type="button"
               onClick={() => refetch()}

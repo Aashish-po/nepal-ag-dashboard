@@ -165,13 +165,14 @@ export function Commercialization() {
             <CardHeader>
               <CardTitle>Commercialization Scores by District</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pb-2">
               <ResponsiveContainer width="100%" height={350}>
-                <BarChart data={heatmapRows} layout="vertical">
+                <BarChart data={heatmapRows} layout="vertical" margin={{ top: 0, right: 0, bottom: 0, left: -4 }}>
                   <CartesianGrid
                     stroke="var(--color-grid)"
                     strokeDasharray="0"
                     vertical={false}
+                    horizontal={true}
                   />
                   <XAxis
                     type="number"
@@ -180,6 +181,8 @@ export function Commercialization() {
                     fontSize={11}
                     fontFamily="var(--font-family-mono)"
                     tickLine={false}
+                    axisLine={{ stroke: "var(--color-border-light)" }}
+                    tickMargin={4}
                   />
                   <YAxis
                     type="category"
@@ -188,7 +191,9 @@ export function Commercialization() {
                     fontSize={11}
                     fontFamily="var(--font-family-mono)"
                     tickLine={false}
-                    width={100}
+                    axisLine={false}
+                    width={160}
+                    tickMargin={8}
                   />
                   <Tooltip
                     contentStyle={{
@@ -199,24 +204,31 @@ export function Commercialization() {
                       fontSize: "11px",
                       textTransform: "uppercase",
                     }}
+                    cursor={{
+                      stroke: "var(--color-accent)",
+                      strokeWidth: 1,
+                      strokeDasharray: "4 4",
+                    }}
                   />
                   <Bar
                     dataKey="score"
                     name="Score"
                     fill="var(--color-text-primary)"
+                    barSize={14}
+                    radius={[0, 0, 0, 0]}
                   />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
           </Card>
 
-          <Card className="border-0">
+          <Card className="border-0 border-l border-border">
             <CardHeader>
               <CardTitle>Provincial Comparison</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pb-2">
               <ResponsiveContainer width="100%" height={350}>
-                <BarChart data={provincialData}>
+                <BarChart data={provincialData} margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
                   <CartesianGrid
                     stroke="var(--color-grid)"
                     strokeDasharray="0"
@@ -229,6 +241,7 @@ export function Commercialization() {
                     fontFamily="var(--font-family-mono)"
                     tickLine={false}
                     axisLine={{ stroke: "var(--color-border-light)" }}
+                    tickMargin={4}
                   />
                   <YAxis
                     domain={[0, 100]}
@@ -237,6 +250,8 @@ export function Commercialization() {
                     fontFamily="var(--font-family-mono)"
                     tickLine={false}
                     axisLine={false}
+                    width={50}
+                    tickMargin={8}
                   />
                   <Tooltip
                     contentStyle={{
@@ -247,11 +262,18 @@ export function Commercialization() {
                       fontSize: "11px",
                       textTransform: "uppercase",
                     }}
+                    cursor={{
+                      stroke: "var(--color-accent)",
+                      strokeWidth: 1,
+                      strokeDasharray: "4 4",
+                    }}
                   />
                   <Bar
                     dataKey="score"
                     fill="var(--color-accent)"
                     name="Avg Score"
+                    barSize={24}
+                    radius={[0, 0, 0, 0]}
                   />
                 </BarChart>
               </ResponsiveContainer>

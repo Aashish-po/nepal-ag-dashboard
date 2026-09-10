@@ -51,14 +51,16 @@ export function Compare() {
   });
   const allCrops = (cropsData as any)?.crops || [];
 
-  // ponytail: native <select multiple> is the smallest working thing here.
-  // Selection is immediate — no draft/commit step. Cmd/Ctrl-click to multi-select.
-  const onSelectDistricts = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const ids = Array.from(e.target.selectedOptions).map((o) =>
-      parseInt(o.value),
-    );
-    setSelectedDistricts(ids.slice(0, MAX_COMPARE));
+  const onSelectDistricts = (id: number) => {
+    if (selectedDistricts.includes(id)) {
+      setSelectedDistricts(selectedDistricts.filter((x) => x !== id));
+    } else if (selectedDistricts.length < MAX_COMPARE) {
+      setSelectedDistricts([...selectedDistricts, id]);
+    }
   };
+
+  const isDistrictSelected = (id: number) =>
+    selectedDistricts.includes(id);
 
   const removeOne = (id: number) => {
     setSelectedDistricts(selectedDistricts.filter((x) => x !== id));
@@ -176,10 +178,10 @@ export function Compare() {
             htmlFor="compare-districts"
             className="font-mono text-[10px] uppercase tracking-widest text-text-muted"
           >
-            Select Districts to Compare ({compareDistricts.length}/{MAX_COMPARE}
+            Select Districts to Compare ({selectedDistricts.length}/{MAX_COMPARE}
             )
           </label>
-          {compareDistricts.length > 0 && (
+          {selectedDistricts.length > 0 && (
             <button
               type="button"
               onClick={clearCompare}
@@ -189,22 +191,28 @@ export function Compare() {
             </button>
           )}
         </div>
-        <select
-          id="compare-districts"
-          multiple
-          size={Math.min(8, Math.max(4, allDistricts.length))}
-          value={compareDistricts.map(String)}
-          onChange={onSelectDistricts}
-          className="w-full border border-border bg-bg-primary font-mono text-xs uppercase tracking-wider text-text-primary focus:outline-none focus:border-accent"
-        >
+        <div className="border border-border bg-bg-primary max-h-64 overflow-y-auto">
           {allDistricts.map((d: { id: number; name: string }) => (
-            <option key={d.id} value={d.id}>
+            <label
+              key={d.id}
+              className="flex items-center gap-2 px-3 py-2 font-mono text-xs uppercase tracking-wider text-text-primary hover:bg-bg-secondary cursor-pointer border-b border-border-light last:border-b-0"
+            >
+              <input
+                type="checkbox"
+                className="w-3 h-3 border border-border accent-accent focus:outline-none focus:ring-1 focus:ring-accent"
+                checked={isDistrictSelected(d.id)}
+                disabled={
+                  !isDistrictSelected(d.id) &&
+                  selectedDistricts.length >= MAX_COMPARE
+                }
+                onChange={() => onSelectDistricts(d.id)}
+              />
               {d.name}
-            </option>
+            </label>
           ))}
-        </select>
+        </div>
         <p className="font-mono text-[10px] uppercase tracking-widest text-text-muted mt-2">
-          {"// Cmd/Ctrl-click to select multiple. Max "}
+          {"// Click to select. Max "}
           {MAX_COMPARE}
           {"."}
         </p>

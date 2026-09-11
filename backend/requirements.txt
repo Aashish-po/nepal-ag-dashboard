@@ -18,7 +18,7 @@ apscheduler==3.10.4
 python-dotenv==1.2.3
 
 openpyxl==3.1.5
-python-multipart==0.0.31
+python-multipart==0.0.32
 
 # Type-checking stubs (dev-only, safe pinned here too)
 pandas-stubs==3.0.5.260730

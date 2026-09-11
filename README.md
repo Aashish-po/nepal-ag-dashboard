@@ -2,9 +2,19 @@
 
 Version: 1.0.1
 
-Real-time agricultural analytics dashboard analyzing yield, climate, export crop performance, and commercialization trends across Nepal's 77 districts.
+![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=flat&logo=fastapi)
+![React](https://img.shields.io/badge/React-20232A?style=flat&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=flat&logo=postgresql)
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=flat&logo=vercel)
+![Render](https://img.shields.io/badge/Render-46E3B7?style=flat&logo=render)
+![Python](https://img.shields.io/badge/Python-3.12-blue?style=flat&logo=python)
+![pnpm](https://img.shields.io/badge/pnpm-10.15.0-F69220?style=flat&logo=pnpm)
+![CI](https://img.shields.io/github/actions/workflow/status/Aashish-po/nepal-ag-dashboard/ci.yml?style=flat&logo=githubactions)
+![Issues](https://img.shields.io/github/issues/Aashish-po/nepal-ag-dashboard?style=flat&logo=github)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat)
 
-**Report Issues:** [GitHub Issues](https://github.com/Aashish-po/nepal-ag-dashboard/issues)
+Real-time agricultural analytics dashboard analyzing yield, climate, export crop performance, and commercialization trends across Nepal's 77 districts.
 
 ---
 

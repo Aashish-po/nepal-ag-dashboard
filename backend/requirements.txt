@@ -21,4 +21,4 @@ openpyxl==3.1.5
 python-multipart==0.0.32
 
 # Type-checking stubs (dev-only, safe pinned here too)
-pandas-stubs==3.0.5.260730
+pandas-stubs==3.0.5.260914
